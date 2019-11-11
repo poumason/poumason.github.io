@@ -3,5 +3,14 @@
 <body>
 <h1>Hello World</h1>
 <p>I'm hosted with GitHub Pages.</p>
+  <br/>
+  <a href="kktix://reload_orders?status=unpaid">close</a>
+  <br/>
+  <script>
+    function reload() {
+      window.location = "kktix://reload_orders?status=unpaid";
+    }
+  </script>
+  <input type="button" click="reload()" label="reload"></input>
 </body>
 </html>
