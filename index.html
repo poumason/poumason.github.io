@@ -14,7 +14,16 @@
     function reload() {
       window.location.href = "kktix://reload_orders";
     }
+    
+    function prompt() {
+      var person = prompt("Please enter your name", "Harry Potter");
+  if (person != null) {
+    document.getElementById("demo").innerHTML =
+    "Hello " + person + "! How are you today?";
+  }
+    }
   </script>
   <input type="button" onClick="reload()" value="reload_1"></input>
+  <input type="button" onClick="prompt()" value="inputAlert"></input>
 </body>
 </html>
