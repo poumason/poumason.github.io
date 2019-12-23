@@ -17,10 +17,9 @@
     
     function prompt() {
       var person = prompt("Please enter your name", "Harry Potter");
-  if (person != null) {
-    document.getElementById("demo").innerHTML =
-    "Hello " + person + "! How are you today?";
-  }
+      if (person != null) {
+        alert("Hello " + person + "! How are you today?");
+      }
     }
   </script>
   <input type="button" onClick="reload()" value="reload_1"></input>
