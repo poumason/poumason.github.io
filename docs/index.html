@@ -8,8 +8,6 @@
   <meta name="description" content="Description">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
-
-  <script src="https://cdn.jsdelivr.net/npm/markmap-autoloader"></script>
   <style>
     .content .markmap>svg {
       width: 100%;
@@ -33,14 +31,7 @@
       subMaxLevel: 2,
       loadSidebar: true,
       // coverpage: true,
-      homepage: 'home.md',
-      plugins: [
-        function (hook, vm) {
-          hook.doneEach(function () {
-            markmap.autoLoader.renderAll();
-          });
-        }
-      ]
+      homepage: 'home.md'
     };
   </script>
   <!-- Docsify v4 -->
