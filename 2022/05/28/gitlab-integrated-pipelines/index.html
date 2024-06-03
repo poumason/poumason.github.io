@@ -9,18 +9,18 @@
   <meta name="description" content="介紹如何透過 GitLab API 在 Upstream 取得 Downstream 的 artifact。 大家都熟悉在 repo 裏面建立自己的 GitLab CI&#x2F;CD，一個 repo 每次產生一組 pipeline 裏面帶有多個 jobs，如下圖：   那如果需要在 A repo 的 pipeline 通知 repo B 一起進行編譯，並把 repo B 的 artifact 放">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何取得 GitLab 另一個 Pipeline 的 artifacts">
-<meta property="og:url" content="https://poumason.github.io/2024/06/03/gitlab-integrated-pipelines/index.html">
+<meta property="og:url" content="https://poumason.github.io/2022/05/28/gitlab-integrated-pipelines/index.html">
 <meta property="og:site_name" content="Pou&#39;s Life">
 <meta property="og:description" content="介紹如何透過 GitLab API 在 Upstream 取得 Downstream 的 artifact。 大家都熟悉在 repo 裏面建立自己的 GitLab CI&#x2F;CD，一個 repo 每次產生一組 pipeline 裏面帶有多個 jobs，如下圖：   那如果需要在 A repo 的 pipeline 通知 repo B 一起進行編譯，並把 repo B 的 artifact 放">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://poumason.github.io/2024/06/03/gitlab-integrated-pipelines/0_N35pBzNuBNRg5K1b.png">
-<meta property="og:image" content="https://poumason.github.io/2024/06/03/gitlab-integrated-pipelines/0_nKLsfI8gNXjYY0W6.png">
-<meta property="article:published_time" content="2024-06-03T05:42:17.000Z">
-<meta property="article:modified_time" content="2024-06-03T06:07:12.374Z">
+<meta property="og:image" content="https://poumason.github.io/2022/05/28/gitlab-integrated-pipelines/0_N35pBzNuBNRg5K1b.png">
+<meta property="og:image" content="https://poumason.github.io/2022/05/28/gitlab-integrated-pipelines/0_nKLsfI8gNXjYY0W6.png">
+<meta property="article:published_time" content="2022-05-28T05:42:17.000Z">
+<meta property="article:modified_time" content="2024-06-03T14:17:44.371Z">
 <meta property="article:author" content="Pou Lin">
 <meta property="article:tag" content="DevOps">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://poumason.github.io/2024/06/03/gitlab-integrated-pipelines/0_N35pBzNuBNRg5K1b.png">
+<meta name="twitter:image" content="https://poumason.github.io/2022/05/28/gitlab-integrated-pipelines/0_N35pBzNuBNRg5K1b.png">
   
     <link rel="alternate" href="/atom.xml" title="Pou's Life" type="application/atom+xml">
   
@@ -81,8 +81,8 @@
       <div class="outer">
         <section id="main"><article id="post-gitlab-integrated-pipelines" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2024/06/03/gitlab-integrated-pipelines/" class="article-date">
-  <time class="dt-published" datetime="2024-06-03T05:42:17.000Z" itemprop="datePublished">2024-06-03</time>
+    <a href="/2022/05/28/gitlab-integrated-pipelines/" class="article-date">
+  <time class="dt-published" datetime="2022-05-28T05:42:17.000Z" itemprop="datePublished">2022-05-28</time>
 </a>
     
   </div>
@@ -103,7 +103,7 @@
       
         <p>介紹如何透過 GitLab API 在 Upstream 取得 Downstream 的 artifact。</p>
 <p>大家都熟悉在 repo 裏面建立自己的 GitLab CI&#x2F;CD，一個 repo 每次產生一組 pipeline 裏面帶有多個 jobs，如下圖：</p>
-<img src="/2024/06/03/gitlab-integrated-pipelines/0_N35pBzNuBNRg5K1b.png" class="">
+<img src="/2022/05/28/gitlab-integrated-pipelines/0_N35pBzNuBNRg5K1b.png" class="">
 
 <p>那如果需要在 A repo 的 pipeline 通知 repo B 一起進行編譯，並把 repo B 的 artifact 放進 A repo 的 artifact 時，我們能怎麽做？</p>
 <p>option 1: 把 repo B 加入 repo A 的 sub module 一起編譯</p>
@@ -116,7 +116,7 @@
 <p>關鍵字：<strong>trigger</strong>，它可指定變數從到 downstream，或是要觸發的 project 與 branch，以及是否要等待 pipeline 執行狀態再接著往下。</p>
 <p>trigger 下可以用的 keywords 可以參考 Trigger job configuration keywords。</p>
 <p>觸發其他 project 的 pipeline 的畫面如下，可以看到 Downstream 可有多個，而且各自 Downstream 的 pipeline 可同時進行：</p>
-<p><img src="/2024/06/03/gitlab-integrated-pipelines/0_nKLsfI8gNXjYY0W6.png"></p>
+<p><img src="/2022/05/28/gitlab-integrated-pipelines/0_nKLsfI8gNXjYY0W6.png"></p>
 <p>更多詳細的介紹請參考 Multiple-project pipelines。</p>
 <p>取得 Downstream 的 artifact</p>
 <p>熟悉 Multiple-project pipelines 後，接下來是重點，我怎麽能從 upstream 取得 downstream 裏面 Job 的 artifact 呢？</p>
@@ -138,7 +138,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://poumason.github.io/2024/06/03/gitlab-integrated-pipelines/" data-id="clwykvzmz0000kotv1r9f8u9s" data-title="如何取得 GitLab 另一個 Pipeline 的 artifacts" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://poumason.github.io/2022/05/28/gitlab-integrated-pipelines/" data-id="clwz22r560000v9tva566231i" data-title="如何取得 GitLab 另一個 Pipeline 的 artifacts" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -150,11 +150,15 @@
     
 <nav id="article-nav">
   
-  
-    <a href="/2024/06/03/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Hello World</div>
+    <a href="/2024/06/03/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Hello World
+        
+      </div>
     </a>
+  
   
 </nav>
 
@@ -192,7 +196,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/06/">June 2024</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/06/">June 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
     </div>
   </div>
 
@@ -205,11 +209,11 @@
       <ul>
         
           <li>
-            <a href="/2024/06/03/gitlab-integrated-pipelines/">如何取得 GitLab 另一個 Pipeline 的 artifacts</a>
+            <a href="/2024/06/03/hello-world/">Hello World</a>
           </li>
         
           <li>
-            <a href="/2024/06/03/hello-world/">Hello World</a>
+            <a href="/2022/05/28/gitlab-integrated-pipelines/">如何取得 GitLab 另一個 Pipeline 的 artifacts</a>
           </li>
         
       </ul>

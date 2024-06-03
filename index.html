@@ -74,79 +74,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-gitlab-integrated-pipelines" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2024/06/03/gitlab-integrated-pipelines/" class="article-date">
-  <time class="dt-published" datetime="2024-06-03T05:42:17.000Z" itemprop="datePublished">2024-06-03</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2024/06/03/gitlab-integrated-pipelines/">如何取得 GitLab 另一個 Pipeline 的 artifacts</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>介紹如何透過 GitLab API 在 Upstream 取得 Downstream 的 artifact。</p>
-<p>大家都熟悉在 repo 裏面建立自己的 GitLab CI&#x2F;CD，一個 repo 每次產生一組 pipeline 裏面帶有多個 jobs，如下圖：</p>
-<img src="/2024/06/03/gitlab-integrated-pipelines/0_N35pBzNuBNRg5K1b.png" class="">
-
-<p>那如果需要在 A repo 的 pipeline 通知 repo B 一起進行編譯，並把 repo B 的 artifact 放進 A repo 的 artifact 時，我們能怎麽做？</p>
-<p>option 1: 把 repo B 加入 repo A 的 sub module 一起編譯</p>
-<p>option 2: 利用 GitLab 的 multiple-project pipeline 機制觸發另一個 pipeline</p>
-<p>本篇將介紹 option 2 的 multiple-project pipeline 機制。</p>
-<h1 id="基本介紹-multiple-project-pipeline"><a href="#基本介紹-multiple-project-pipeline" class="headerlink" title="基本介紹 multiple-project pipeline"></a>基本介紹 multiple-project pipeline</h1><p>GitLab CI&#x2F;CD 支援跨 project 的特性，由一個 pipeline 觸發另一個 pipeline。</p>
-<p>觸發者被稱爲 upstream，接受被觸發的稱爲 downstream (它可以多個)。</p>
-<p>如何觸發另一個 repo 的 pipeline 呢？</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">stages:</span><br><span class="line">  - trigger_repob</span><br><span class="line">  - buildTrigger-Repo-B:</span><br><span class="line"> </span><br><span class="line">stage: trigger_repob</span><br><span class="line">  variables:</span><br><span class="line">    ENVIRONMENT: staging</span><br><span class="line">  trigger: </span><br><span class="line">    project: my_group/repoB</span><br><span class="line">    branc: dev</span><br><span class="line">    strategy: dependBuild-Repo-A:</span><br><span class="line">  stage: build</span><br><span class="line">  script:</span><br><span class="line">    - echo &quot;upstream&quot;</span><br></pre></td></tr></table></figure>
-<p>關鍵字：<strong>trigger</strong>，它可指定變數從到 downstream，或是要觸發的 project 與 branch，以及是否要等待 pipeline 執行狀態再接著往下。</p>
-<p>trigger 下可以用的 keywords 可以參考 Trigger job configuration keywords。</p>
-<p>觸發其他 project 的 pipeline 的畫面如下，可以看到 Downstream 可有多個，而且各自 Downstream 的 pipeline 可同時進行：</p>
-<p><img src="/2024/06/03/gitlab-integrated-pipelines/0_nKLsfI8gNXjYY0W6.png"></p>
-<p>更多詳細的介紹請參考 Multiple-project pipelines。</p>
-<p>取得 Downstream 的 artifact</p>
-<p>熟悉 Multiple-project pipelines 後，接下來是重點，我怎麽能從 upstream 取得 downstream 裏面 Job 的 artifact 呢？</p>
-<p>從 GitLab issues 可以找到很多人許願這樣的功能：<a target="_blank" rel="noopener" href="https://gitlab.com/gitlab-org/gitlab/-/issues/285100">Allow job in upstream pipeline to reference artifacts from a downstream pipeline</a>，但目前還沒有被支援，不過這篇裏面有人介紹了 workaround 做法，我們來看看吧。</p>
-<p>以下 GitLab API 是我們下手的機會：</p>
-<p><a target="_blank" rel="noopener" href="https://docs.gitlab.com/ee/api/jobs.html#list-pipeline-trigger-jobs">List pipeline bridges</a>：取得 upstream 下擁有的 downstream pipeline<br><a target="_blank" rel="noopener" href="https://docs.gitlab.com/ee/api/jobs.html#list-pipeline-jobs">List pipeline jobs</a>：取得 pipeline 的 jobs<br><a target="_blank" rel="noopener" href="https://docs.gitlab.com/ee/api/job_artifacts.html#get-job-artifacts">Get job artifacts</a>：取得 job 的 artifacts</p>
-<p>API 的使用流程(記得要申請 GitLab API Token)如下：</p>
-<p>使用 API 的流程，我不建議寫在 .gitlab-ci.yml，因爲非常難 debug，因此，如果您是熟悉 shell 或 powershell 的人可以直接包裝成執行檔來進行。</p>
-<p>以下是我用 powershell 寫的範例(rebuild.ps1: 假設 repoB 有一個 job: build-repo 是我想要的 artifact)：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># use Bridge API to get downstream project id</span><br><span class="line">$BRIDGE_API = &quot;$CI_API/$PROJECT_ID/pipelines/$PIPELINE_ID/bridges&quot;</span><br><span class="line">$response = Invoke-RestMethod -URI $BRIDGE_API -HEADERS @&#123;&#x27;PRIVATE-TKEN&#x27; = $TOKEN &#125;</span><br><span class="line">$downstream_project_id = $response.downstream_pipleline.project_id</span><br><span class="line"></span><br><span class="line"># use Job API to get job content by downstream pipeline id</span><br><span class="line">$JOB_API = &quot;$CI_API/$downstream_project_id/pipelines/jobs&quot;</span><br><span class="line">$response = Invoke-RestMethod -URI $JOB_API -HEADERS @&#123;&#x27;PRIVATE-TKEN&#x27; = $TOKEN &#125;</span><br><span class="line"></span><br><span class="line"># find target job to get id and artifact</span><br><span class="line">$job_id = &quot;&quot;</span><br><span class="line">$artifact = &quot;&quot;foreach ($job in $response) &#123;</span><br><span class="line">  if ($job.name -eq &quot;build-repo&quot;) &#123;</span><br><span class="line">     $artifact = $job.artifacts_file</span><br><span class="line">     $job_id = $job.id  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># download artifact</span><br><span class="line">$ARTIFACTS_API = &quot;$CI_API/$downstream_project_id/jobs/$job_id/artifacts&quot;</span><br><span class="line">Invoke-RestMethod -URI $ARTIFACTS_API -HEADERS @&#123;&#x27;PRIVATE-TKEN&#x27; = $TOKEN &#125; -OutFile &quot;./$($artifact.filename)&quot;</span><br></pre></td></tr></table></figure>
-<p>最終合并到 .gitlab-ci.yml 的内容如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">stages:</span><br><span class="line">  - build</span><br><span class="line">  - deploybuild-sharecode:</span><br><span class="line">  </span><br><span class="line">stage: build</span><br><span class="line">  trigger:</span><br><span class="line">    project: poulin/shopping-radar-sharecode</span><br><span class="line">    branch: master</span><br><span class="line">    strategy: depend</span><br><span class="line">    </span><br><span class="line">deploy-linbot:</span><br><span class="line">  stage: delpoy</span><br><span class="line">  script:</span><br><span class="line">    - echo &quot;start build&quot;</span><br><span class="line">    - powershell &quot;./rebuild.ps1&quot; &quot;$CI_API_V4_URL/projects&quot; $CI_PROJECT_ID $CI_PIPELINE_ID $env:GITLAB_TOKEN</span><br><span class="line">    - cp ./sharecode ./bin</span><br><span class="line">  needs:</span><br><span class="line">    - build-sharecode</span><br><span class="line">  only:</span><br><span class="line">    - master</span><br><span class="line">  tags:</span><br><span class="line">    - windows</span><br><span class="line"></span><br><span class="line">做法確實很 workaround，但很實用。上面的範例是針對 downstream 下的其中一個 job，如果您有多個 job 的 artifacts 要存取也可以修改裏面的程式碼進行使用哦。</span><br></pre></td></tr></table></figure>
-
-<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
-<li><a target="_blank" rel="noopener" href="https://gitlab.com/gitlab-org/gitlab/-/issues/285100">List pipeline bridges</a></li>
-<li><a target="_blank" rel="noopener" href="https://docs.gitlab.com/ee/api/job_artifacts.html#get-job-artifacts">Get job artifacts</a></li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://poumason.github.io/2024/06/03/gitlab-integrated-pipelines/" data-id="clwykvzmz0000kotv1r9f8u9s" data-title="如何取得 GitLab 另一個 Pipeline 的 artifacts" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DevOps/" rel="tag">DevOps</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
     <article id="post-hello-world" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2024/06/03/hello-world/" class="article-date">
@@ -186,10 +113,83 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://poumason.github.io/2024/06/03/hello-world/" data-id="clwykvzn10001kotvboozfnm2" data-title="Hello World" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://poumason.github.io/2024/06/03/hello-world/" data-id="clwz22r590001v9tv8et0g7kn" data-title="Hello World" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-gitlab-integrated-pipelines" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/05/28/gitlab-integrated-pipelines/" class="article-date">
+  <time class="dt-published" datetime="2022-05-28T05:42:17.000Z" itemprop="datePublished">2022-05-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2022/05/28/gitlab-integrated-pipelines/">如何取得 GitLab 另一個 Pipeline 的 artifacts</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>介紹如何透過 GitLab API 在 Upstream 取得 Downstream 的 artifact。</p>
+<p>大家都熟悉在 repo 裏面建立自己的 GitLab CI&#x2F;CD，一個 repo 每次產生一組 pipeline 裏面帶有多個 jobs，如下圖：</p>
+<img src="/2022/05/28/gitlab-integrated-pipelines/0_N35pBzNuBNRg5K1b.png" class="">
+
+<p>那如果需要在 A repo 的 pipeline 通知 repo B 一起進行編譯，並把 repo B 的 artifact 放進 A repo 的 artifact 時，我們能怎麽做？</p>
+<p>option 1: 把 repo B 加入 repo A 的 sub module 一起編譯</p>
+<p>option 2: 利用 GitLab 的 multiple-project pipeline 機制觸發另一個 pipeline</p>
+<p>本篇將介紹 option 2 的 multiple-project pipeline 機制。</p>
+<h1 id="基本介紹-multiple-project-pipeline"><a href="#基本介紹-multiple-project-pipeline" class="headerlink" title="基本介紹 multiple-project pipeline"></a>基本介紹 multiple-project pipeline</h1><p>GitLab CI&#x2F;CD 支援跨 project 的特性，由一個 pipeline 觸發另一個 pipeline。</p>
+<p>觸發者被稱爲 upstream，接受被觸發的稱爲 downstream (它可以多個)。</p>
+<p>如何觸發另一個 repo 的 pipeline 呢？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">stages:</span><br><span class="line">  - trigger_repob</span><br><span class="line">  - buildTrigger-Repo-B:</span><br><span class="line"> </span><br><span class="line">stage: trigger_repob</span><br><span class="line">  variables:</span><br><span class="line">    ENVIRONMENT: staging</span><br><span class="line">  trigger: </span><br><span class="line">    project: my_group/repoB</span><br><span class="line">    branc: dev</span><br><span class="line">    strategy: dependBuild-Repo-A:</span><br><span class="line">  stage: build</span><br><span class="line">  script:</span><br><span class="line">    - echo &quot;upstream&quot;</span><br></pre></td></tr></table></figure>
+<p>關鍵字：<strong>trigger</strong>，它可指定變數從到 downstream，或是要觸發的 project 與 branch，以及是否要等待 pipeline 執行狀態再接著往下。</p>
+<p>trigger 下可以用的 keywords 可以參考 Trigger job configuration keywords。</p>
+<p>觸發其他 project 的 pipeline 的畫面如下，可以看到 Downstream 可有多個，而且各自 Downstream 的 pipeline 可同時進行：</p>
+<p><img src="/2022/05/28/gitlab-integrated-pipelines/0_nKLsfI8gNXjYY0W6.png"></p>
+<p>更多詳細的介紹請參考 Multiple-project pipelines。</p>
+<p>取得 Downstream 的 artifact</p>
+<p>熟悉 Multiple-project pipelines 後，接下來是重點，我怎麽能從 upstream 取得 downstream 裏面 Job 的 artifact 呢？</p>
+<p>從 GitLab issues 可以找到很多人許願這樣的功能：<a target="_blank" rel="noopener" href="https://gitlab.com/gitlab-org/gitlab/-/issues/285100">Allow job in upstream pipeline to reference artifacts from a downstream pipeline</a>，但目前還沒有被支援，不過這篇裏面有人介紹了 workaround 做法，我們來看看吧。</p>
+<p>以下 GitLab API 是我們下手的機會：</p>
+<p><a target="_blank" rel="noopener" href="https://docs.gitlab.com/ee/api/jobs.html#list-pipeline-trigger-jobs">List pipeline bridges</a>：取得 upstream 下擁有的 downstream pipeline<br><a target="_blank" rel="noopener" href="https://docs.gitlab.com/ee/api/jobs.html#list-pipeline-jobs">List pipeline jobs</a>：取得 pipeline 的 jobs<br><a target="_blank" rel="noopener" href="https://docs.gitlab.com/ee/api/job_artifacts.html#get-job-artifacts">Get job artifacts</a>：取得 job 的 artifacts</p>
+<p>API 的使用流程(記得要申請 GitLab API Token)如下：</p>
+<p>使用 API 的流程，我不建議寫在 .gitlab-ci.yml，因爲非常難 debug，因此，如果您是熟悉 shell 或 powershell 的人可以直接包裝成執行檔來進行。</p>
+<p>以下是我用 powershell 寫的範例(rebuild.ps1: 假設 repoB 有一個 job: build-repo 是我想要的 artifact)：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># use Bridge API to get downstream project id</span><br><span class="line">$BRIDGE_API = &quot;$CI_API/$PROJECT_ID/pipelines/$PIPELINE_ID/bridges&quot;</span><br><span class="line">$response = Invoke-RestMethod -URI $BRIDGE_API -HEADERS @&#123;&#x27;PRIVATE-TKEN&#x27; = $TOKEN &#125;</span><br><span class="line">$downstream_project_id = $response.downstream_pipleline.project_id</span><br><span class="line"></span><br><span class="line"># use Job API to get job content by downstream pipeline id</span><br><span class="line">$JOB_API = &quot;$CI_API/$downstream_project_id/pipelines/jobs&quot;</span><br><span class="line">$response = Invoke-RestMethod -URI $JOB_API -HEADERS @&#123;&#x27;PRIVATE-TKEN&#x27; = $TOKEN &#125;</span><br><span class="line"></span><br><span class="line"># find target job to get id and artifact</span><br><span class="line">$job_id = &quot;&quot;</span><br><span class="line">$artifact = &quot;&quot;foreach ($job in $response) &#123;</span><br><span class="line">  if ($job.name -eq &quot;build-repo&quot;) &#123;</span><br><span class="line">     $artifact = $job.artifacts_file</span><br><span class="line">     $job_id = $job.id  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># download artifact</span><br><span class="line">$ARTIFACTS_API = &quot;$CI_API/$downstream_project_id/jobs/$job_id/artifacts&quot;</span><br><span class="line">Invoke-RestMethod -URI $ARTIFACTS_API -HEADERS @&#123;&#x27;PRIVATE-TKEN&#x27; = $TOKEN &#125; -OutFile &quot;./$($artifact.filename)&quot;</span><br></pre></td></tr></table></figure>
+<p>最終合并到 .gitlab-ci.yml 的内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">stages:</span><br><span class="line">  - build</span><br><span class="line">  - deploybuild-sharecode:</span><br><span class="line">  </span><br><span class="line">stage: build</span><br><span class="line">  trigger:</span><br><span class="line">    project: poulin/shopping-radar-sharecode</span><br><span class="line">    branch: master</span><br><span class="line">    strategy: depend</span><br><span class="line">    </span><br><span class="line">deploy-linbot:</span><br><span class="line">  stage: delpoy</span><br><span class="line">  script:</span><br><span class="line">    - echo &quot;start build&quot;</span><br><span class="line">    - powershell &quot;./rebuild.ps1&quot; &quot;$CI_API_V4_URL/projects&quot; $CI_PROJECT_ID $CI_PIPELINE_ID $env:GITLAB_TOKEN</span><br><span class="line">    - cp ./sharecode ./bin</span><br><span class="line">  needs:</span><br><span class="line">    - build-sharecode</span><br><span class="line">  only:</span><br><span class="line">    - master</span><br><span class="line">  tags:</span><br><span class="line">    - windows</span><br><span class="line"></span><br><span class="line">做法確實很 workaround，但很實用。上面的範例是針對 downstream 下的其中一個 job，如果您有多個 job 的 artifacts 要存取也可以修改裏面的程式碼進行使用哦。</span><br></pre></td></tr></table></figure>
+
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://gitlab.com/gitlab-org/gitlab/-/issues/285100">List pipeline bridges</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.gitlab.com/ee/api/job_artifacts.html#get-job-artifacts">Get job artifacts</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://poumason.github.io/2022/05/28/gitlab-integrated-pipelines/" data-id="clwz22r560000v9tva566231i" data-title="如何取得 GitLab 另一個 Pipeline 的 artifacts" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DevOps/" rel="tag">DevOps</a></li></ul>
+
     </footer>
   </div>
   
@@ -230,7 +230,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/06/">June 2024</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/06/">June 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
     </div>
   </div>
 
@@ -243,11 +243,11 @@
       <ul>
         
           <li>
-            <a href="/2024/06/03/gitlab-integrated-pipelines/">如何取得 GitLab 另一個 Pipeline 的 artifacts</a>
+            <a href="/2024/06/03/hello-world/">Hello World</a>
           </li>
         
           <li>
-            <a href="/2024/06/03/hello-world/">Hello World</a>
+            <a href="/2022/05/28/gitlab-integrated-pipelines/">如何取得 GitLab 另一個 Pipeline 的 artifacts</a>
           </li>
         
       </ul>
