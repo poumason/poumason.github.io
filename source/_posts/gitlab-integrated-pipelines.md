@@ -1,6 +1,6 @@
 ---
 title: 如何取得 GitLab 另一個 Pipeline 的 artifacts
-date: 2024-06-03 13:42:17
+date: 2022-05-28 13:42:17
 tags: DevOps
 ---
 介紹如何透過 GitLab API 在 Upstream 取得 Downstream 的 artifact。
