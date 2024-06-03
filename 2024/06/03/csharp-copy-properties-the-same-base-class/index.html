@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>如何讓不同的子類別同步父類別屬性值 | Pou&#39;s Life</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="之前在開發程式時，總會習慣為 data model 建立個 base class 方便把常用的 properties 包裝起來，或是做一些客製的處理。 隨著繼續的子類別變多時，有遇過幾次 需要將某個子類別 copy 屬性至不同子類別。 按照物件導向原理∶ 子類別無法互轉，或是先轉父類別再轉子類別。如果要做到複雜屬性的目的，只能經過 Relction 的方式了。 作法說明 確認二個子類別均繼承相同的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何讓不同的子類別同步父類別屬性值">
+<meta property="og:url" content="https://poumason.github.io/2024/06/03/csharp-copy-properties-the-same-base-class/index.html">
+<meta property="og:site_name" content="Pou&#39;s Life">
+<meta property="og:description" content="之前在開發程式時，總會習慣為 data model 建立個 base class 方便把常用的 properties 包裝起來，或是做一些客製的處理。 隨著繼續的子類別變多時，有遇過幾次 需要將某個子類別 copy 屬性至不同子類別。 按照物件導向原理∶ 子類別無法互轉，或是先轉父類別再轉子類別。如果要做到複雜屬性的目的，只能經過 Relction 的方式了。 作法說明 確認二個子類別均繼承相同的">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-06-03T14:20:47.000Z">
+<meta property="article:modified_time" content="2024-06-03T15:36:49.429Z">
+<meta property="article:author" content="Pou Lin">
+<meta property="article:tag" content="C#">
+<meta property="article:tag" content=".NET">
+<meta property="article:tag" content="ASP.NET">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Pou's Life" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Pou&#39;s Life</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">abort software development, DevOps and K8s.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://poumason.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-csharp-copy-properties-the-same-base-class" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/06/03/csharp-copy-properties-the-same-base-class/" class="article-date">
+  <time class="dt-published" datetime="2024-06-03T14:20:47.000Z" itemprop="datePublished">2024-06-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      如何讓不同的子類別同步父類別屬性值
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>之前在開發程式時，總會習慣為 data model 建立個 base class 方便把常用的 properties 包裝起來，或是做一些客製的處理。</p>
+<p>隨著繼續的子類別變多時，有遇過幾次 <code>需要將某個子類別 copy 屬性至不同子類別</code>。</p>
+<p>按照物件導向原理∶ <strong>子類別無法互轉，或是先轉父類別再轉子類別</strong>。如果要做到複雜屬性的目的，只能經過 Relction 的方式了。</p>
+<h2 id="作法說明"><a href="#作法說明" class="headerlink" title="作法說明"></a>作法說明</h2><ol>
+<li>確認二個子類別均繼承相同的父類別</li>
+<li>建立一個 Extension 並且定義使用的物件必須是父類別家族的人</li>
+<li>利用 Reflection 的方式將 Properties 取出 (由於二者均是相同的父類別，所以該有的屬性均會存在)</li>
+<li>範例程式</li>
+</ol>
+<ul>
+<li>先定義範例用的父類別&#x2F;子類別  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">namespace TodoApi.Models</span><br><span class="line">&#123;</span><br><span class="line">    public abstract class BaseInfo</span><br><span class="line">    &#123;</span><br><span class="line">        public string UserName &#123; get; set; &#125;  </span><br><span class="line">        public string Old &#123; get; set; &#125;</span><br><span class="line">    &#125;  </span><br><span class="line">    public class Student : BaseInfo</span><br><span class="line">    &#123;</span><br><span class="line">        public string School &#123; get; set; &#125;  </span><br><span class="line">        public string Dept &#123; get; set; &#125;</span><br><span class="line">    &#125;  </span><br><span class="line">    public class Employee : BaseInfo</span><br><span class="line">    &#123;</span><br><span class="line">        public string Company &#123; get; set; &#125;</span><br><span class="line">        public string Salary &#123; get; set; &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>Extension 寫法  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public static class ObjectExtensions</span><br><span class="line">&#123;</span><br><span class="line">    public static void CopyProperiesFromBaseClass&lt;T, Y&gt;(this T self, Y from)</span><br><span class="line">    where T : BaseInfo</span><br><span class="line">    where Y : BaseInfo</span><br><span class="line">    &#123;</span><br><span class="line">        var selfProperties = self.GetType().GetProperties();</span><br><span class="line">        var fromProperties = from.GetType().GetProperties();</span><br><span class="line">        foreach (var item in fromProperties)</span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine($&quot;feed proprerty &#123;item.Name&#125;=&#123;item.GetValue(from)&#125;&quot;);</span><br><span class="line">            selfProperties.Where(x =&gt; x.Name == item.Name).FirstOrDefault()?.SetValue(self, item.GetValue(from));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>用法(以 ASP.NET 為例)  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[HttpPost]</span><br><span class="line"> public Employee ConvertData(Student student) &#123;</span><br><span class="line">     var sBaseInfo = student as BaseInfo;</span><br><span class="line">     var employee = new Employee();   </span><br><span class="line">     employee.CopyProperiesFromBaseClass(sBaseInfo);   </span><br><span class="line">     return employee;</span><br><span class="line"> &#125; </span><br></pre></td></tr></table></figure></li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://www.pluralsight.com/resources/blog/guides/property-copying-between-two-objects-using-reflection">Property Copying Between Two Objects using Reflection</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://poumason.github.io/2024/06/03/csharp-copy-properties-the-same-base-class/" data-id="clwz4xaal000022tv6ccyhse8" data-title="如何讓不同的子類別同步父類別屬性值" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NET/" rel="tag">.NET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ASP-NET/" rel="tag">ASP.NET</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C#</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2024/06/03/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hello World</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/NET/" rel="tag">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ASP-NET/" rel="tag">ASP.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C#</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DevOps/" rel="tag">DevOps</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/NET/" style="font-size: 10px;">.NET</a> <a href="/tags/ASP-NET/" style="font-size: 10px;">ASP.NET</a> <a href="/tags/C/" style="font-size: 10px;">C#</a> <a href="/tags/DevOps/" style="font-size: 10px;">DevOps</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/06/">June 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2024/06/03/csharp-copy-properties-the-same-base-class/">如何讓不同的子類別同步父類別屬性值</a>
+          </li>
+        
+          <li>
+            <a href="/2024/06/03/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2022/05/28/gitlab-integrated-pipelines/">如何取得 GitLab 另一個 Pipeline 的 artifacts</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2024 Pou Lin<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
