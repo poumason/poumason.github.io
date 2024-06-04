@@ -1,13 +1,15 @@
 ---
 title: 如何取得 GitLab 另一個 Pipeline 的 artifacts
 date: 2022-05-28 13:42:17
+categories:
+  - DevOps
 tags: DevOps
 ---
 介紹如何透過 GitLab API 在 Upstream 取得 Downstream 的 artifact。
-
+<!-- more -->
 大家都熟悉在 repo 裏面建立自己的 GitLab CI/CD，一個 repo 每次產生一組 pipeline 裏面帶有多個 jobs，如下圖：
 
-![](./gitlab-integrated-pipelines/0_N35pBzNuBNRg5K1b.png)
+![](0_N35pBzNuBNRg5K1b.png)
 
 那如果需要在 A repo 的 pipeline 通知 repo B 一起進行編譯，並把 repo B 的 artifact 放進 A repo 的 artifact 時，我們能怎麽做？
 
@@ -64,8 +66,7 @@ trigger 下可以用的 keywords 可以參考 Trigger job configuration keywords
 [Get job artifacts](https://docs.gitlab.com/ee/api/job_artifacts.html#get-job-artifacts)：取得 job 的 artifacts
 
 API 的使用流程(記得要申請 GitLab API Token)如下：
-
-
+![](0_QGpkFooLNK8YGmJU.png)
 
 使用 API 的流程，我不建議寫在 .gitlab-ci.yml，因爲非常難 debug，因此，如果您是熟悉 shell 或 powershell 的人可以直接包裝成執行檔來進行。
 
