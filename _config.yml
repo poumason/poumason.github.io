@@ -4,9 +4,9 @@
 
 # Site
 title: Pou's Life
-subtitle: 'abort software development, DevOps and K8s.'
+subtitle: 'abort software development and DevOps.'
 description: ''
-keywords: C#,DevOps,Python,K8s
+keywords: C#,DevOps,Python,K8s,Swift
 author: Pou Lin
 language: en
 timezone: 'Asia/Taipei'
@@ -108,3 +108,10 @@ deploy:
   repo: https://github.com/poumason/poumason.github.io.git
   branch: master
   token: $DEPLOY_TOKEN
+
+# Search Page
+search:
+  path: search.xml
+  field: post
+  content: true
+  format: html
