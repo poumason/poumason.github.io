@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Hello World</title>
+    <url>/2024/06/03/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>如何讓不同的子類別同步父類別屬性值</title>
+    <url>/2024/06/03/C#/csharp-copy-properties-the-same-base-class/</url>
+    <content><![CDATA[<p>在開發程式時，習慣為 data model 建立個 base class 方便把常用的 properties 包裝起來，或是做一些客製的處理。隨著繼續的子類別變多時，有遇過幾次 <code>需要將某個子類別 copy 屬性至不同子類別</code>。<br>按照物件導向原理∶ <strong>子類別無法互轉，或是先轉父類別再轉子類別</strong>。如果要做到複雜屬性的目的，只能經過 Relction 的方式了，以下將介紹如何使用。</p>
+<span id="more"></span>
+
+<h2 id="作法說明"><a href="#作法說明" class="headerlink" title="作法說明"></a>作法說明</h2><ol>
+<li>確認二個子類別均繼承相同的父類別</li>
+<li>建立一個 Extension 並且定義使用的物件必須是父類別家族的人</li>
+<li>利用 Reflection 的方式將 Properties 取出 (由於二者均是相同的父類別，所以該有的屬性均會存在)</li>
+<li>範例程式</li>
+</ol>
+<ul>
+<li>先定義範例用的父類別&#x2F;子類別  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">namespace TodoApi.Models</span><br><span class="line">&#123;</span><br><span class="line">    public abstract class BaseInfo</span><br><span class="line">    &#123;</span><br><span class="line">        public string UserName &#123; get; set; &#125;  </span><br><span class="line">        public string Old &#123; get; set; &#125;</span><br><span class="line">    &#125;  </span><br><span class="line">    public class Student : BaseInfo</span><br><span class="line">    &#123;</span><br><span class="line">        public string School &#123; get; set; &#125;  </span><br><span class="line">        public string Dept &#123; get; set; &#125;</span><br><span class="line">    &#125;  </span><br><span class="line">    public class Employee : BaseInfo</span><br><span class="line">    &#123;</span><br><span class="line">        public string Company &#123; get; set; &#125;</span><br><span class="line">        public string Salary &#123; get; set; &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>Extension 寫法  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public static class ObjectExtensions</span><br><span class="line">&#123;</span><br><span class="line">    public static void CopyProperiesFromBaseClass&lt;T, Y&gt;(this T self, Y from)</span><br><span class="line">    where T : BaseInfo</span><br><span class="line">    where Y : BaseInfo</span><br><span class="line">    &#123;</span><br><span class="line">        var selfProperties = self.GetType().GetProperties();</span><br><span class="line">        var fromProperties = from.GetType().GetProperties();</span><br><span class="line">        foreach (var item in fromProperties)</span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine($&quot;feed proprerty &#123;item.Name&#125;=&#123;item.GetValue(from)&#125;&quot;);</span><br><span class="line">            selfProperties.Where(x =&gt; x.Name == item.Name).FirstOrDefault()?.SetValue(self, item.GetValue(from));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>用法(以 ASP.NET 為例)  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[HttpPost]</span><br><span class="line"> public Employee ConvertData(Student student) &#123;</span><br><span class="line">     var sBaseInfo = student as BaseInfo;</span><br><span class="line">     var employee = new Employee();   </span><br><span class="line">     employee.CopyProperiesFromBaseClass(sBaseInfo);   </span><br><span class="line">     return employee;</span><br><span class="line"> &#125; </span><br></pre></td></tr></table></figure></li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://www.pluralsight.com/resources/blog/guides/property-copying-between-two-objects-using-reflection">Property Copying Between Two Objects using Reflection</a></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>C#</tag>
+        <tag>.NET</tag>
+        <tag>ASP.NET</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>在 Azure functions 使用自定義的 Docker Image</title>
+    <url>/2022/01/28/DevOps/custom-image-on-azure-functions/</url>
+    <content><![CDATA[<p>如需在 Azure functions 使用特定的 Lib 版本或第三方套件，例如：ffmpeg，可建立專用的 Docker Image。本篇利用 <a href="https://docs.microsoft.com/en-us/azure/developer/javascript/how-to/develop-serverless-apps">Node.js</a> 為例分享使用的心得。</p>
+<span id="more"></span>
+
+<h1 id="基本需求"><a href="#基本需求" class="headerlink" title="基本需求"></a>基本需求</h1><ul>
+<li>使用 <a href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-premium-plan">Premium plan</a> 或是 <a href="https://docs.microsoft.com/en-us/azure/azure-functions/dedicated-plan">Dedicated (App Service) plan</a></li>
+<li>使用的 docker image 必須基於 <a href="https://hub.docker.com/_/microsoft-azure-functions-base">Azure Functions Base</a></li>
+<li>擁有 <a href="https://hub.docker.com/">docker hub</a> 或 <a href="https://azure.microsoft.com/zh-tw/services/container-registry/">Azure Container registry</a></li>
+<li><a href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-function-linux-custom-image?tabs=in-process,bash,azure-cli&pivots=programming-language-javascript#configure-your-local-environment">開發環境安裝必要的工具</a></li>
+</ul>
+<p>下面分別介紹幾個步驟</p>
+<h1 id="建立-Docker-Image-加入需要的內容"><a href="#建立-Docker-Image-加入需要的內容" class="headerlink" title="建立 Docker Image 加入需要的內容"></a>建立 Docker Image 加入需要的內容</h1><blockquote>
+<p>沒有 Azure functions 專案，參考 建立和測試本機 Functions 專案 準備具有 Http Trigger專案；<br>在本機專案的根目錄建立 Dockerfile，並填入 ffmpeg 與 curl 的安裝。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">FROM mcr.microsoft.com/azure-functions/node:3.0</span><br><span class="line"># Install ffmpeg and curl</span><br><span class="line">RUN apt-get update</span><br><span class="line">RUN apt-get -y install curl</span><br><span class="line">RUN apt-get -y install ffmpeg</span><br><span class="line"># Setting environment variables of Azure functions</span><br><span class="line">ENV AzureWebJobsScriptRoot=/home/site/wwwroot \</span><br><span class="line">    AzureFunctionsJobHost__Logging__Console__IsEnabled=true</span><br><span class="line">COPY . /home/site/wwwroot</span><br><span class="line">RUN cd /home/site/wwwroot &amp;&amp; \</span><br><span class="line">    npm install</span><br></pre></td></tr></table></figure>
+<p>上述指令把專案中所有的 functions 複製到 <strong>&#x2F;home&#x2F;site&#x2F;wwwroot</strong>。專案目錄結構需要符合基本規範。</p>
+<p>介紹環境變數：</p>
+<ul>
+<li>AzureWebJobsScriptRoot<br>代表 Azure functions 專案的執行根目錄，也就是 host.json 的目錄；</li>
+<li>AzureFunctionsJobHost{__path__to__setting}<br>設定需要複寫(overwrite) host.json 裡面的變數值，__path__to__settings 可<a href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-host-json#override-hostjson-values">參考說明</a>換成需要的變數名稱，例如：AzureFunctionsJobHost__Logging_Console__IsEnabled；</li>
+</ul>
+<p>設定 Azure functions 的環境變數，可以從兩個來源：</p>
+<ul>
+<li>固定寫在 Docker image：常放一些通用的資訊</li>
+<li>利用 Azure portal 上的應用程式設定：建議放有安全疑慮的資訊</li>
+</ul>
+<p>兩個來源在 functions 執行時組合在 environment variables，以 node.js 為例，可以使用 <code>process.env.XXXXX</code> 的方式來取得；<br>在測試 docker image 時，建議使用 Http Trigger 的 azure function，因為較能方便測試與除錯。</p>
+<h1 id="建立-docker-container-與本機測試"><a href="#建立-docker-container-與本機測試" class="headerlink" title="建立 docker container 與本機測試"></a>建立 docker container 與本機測試</h1><p><code>docker build --tag &lt;docker ID&gt;/my_az_functions_image:latest .</code><br>如果有修改專案，要記得重新建立 image 並送到 regsitry。</p>
+<p>本機測試檢查 http trigger 是否被掛起：<br><code>docker run -it --rm -p 8080:80 &lt;docker ID&gt;/my_az_functions_image:latest</code></p>
+<p>啟動後，利用 <code>http://localhost:8080/api/&#123;http trigger name&#125;?name=pou</code> 檢查 function 是否被掛起；如果預設使用 template 建立的 http trigger 會看到對應的 response，例如下面的 log：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">info: Function.HttpGreeting[1]</span><br><span class="line">      Executing &#x27;Functions.HttpGreeting&#x27; (Reason=&#x27;This function was programmatically called via the host APIs.&#x27;, Id=cb489e5e-ef7e-4840-aa08-9bf1bcc32961)</span><br><span class="line">info: Function.HttpGreeting.User[0]</span><br><span class="line">      JavaScript HTTP trigger function processed a request.</span><br><span class="line">info: Function.HttpGreeting[2]</span><br><span class="line">      Executed &#x27;Functions.HttpGreeting&#x27; (Succeeded, Id=cb489e5e-ef7e-4840-aa08-9bf1bcc32961, Duration=115ms)</span><br><span class="line">info: Function.HttpGreeting[1]</span><br><span class="line">      Executing &#x27;Functions.HttpGreeting&#x27; (Reason=&#x27;This function was programmatically called via the host APIs.&#x27;, Id=61e1265a-59c3-4d24-86c8-2c7d55021149)</span><br><span class="line">info: Function.HttpGreeting.User[0]</span><br><span class="line">      JavaScript HTTP trigger function processed a request.</span><br><span class="line">info: Function.HttpGreeting[2]</span><br><span class="line">      Executed &#x27;Functions.HttpGreeting&#x27; (Succeeded, Id=61e1265a-59c3-4d24-86c8-2c7d55021149, Duration=7ms)</span><br></pre></td></tr></table></figure>
+
+<p>使用 timer trigger 要記得啟動 docker 時帶入 AzureWebJobsStorage 的設定值才能正常執行，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 在根目錄加入 dev.env</span><br><span class="line">AzureWebJobsStorage=DefaultEndpointsProtocol=https;AccountName=myazfunctions;AccountKey=ONDu3VvJpg;EndpointSuffix=core.windows.net&quot;</span><br><span class="line"></span><br><span class="line">// 執行 docker 時加入 env file </span><br><span class="line">docker run -it --rm -p 8080:80 --env-file ./dev.env &lt;docker ID&gt;/my_az_functions_image:latest</span><br></pre></td></tr></table></figure>
+
+<h1 id="上傳-Docker-Image-到-Docker-Hub"><a href="#上傳-Docker-Image-到-Docker-Hub" class="headerlink" title="上傳 Docker Image 到 Docker Hub"></a>上傳 Docker Image 到 Docker Hub</h1><p><code>docker push &lt;docker ID&gt;/my_az_functions_image:latest </code><br>上傳完畢後，可以從 Docker Hub 看到上傳的內容。</p>
+<h1 id="建立-Azure-Function"><a href="#建立-Azure-Function" class="headerlink" title="建立 Azure Function"></a>建立 Azure Function</h1><ul>
+<li>選擇 Docker-Container<br><img src="/2022/01/28/DevOps/custom-image-on-azure-functions/1_sZr48yiG9sLcMsHJoeNFcw.png"></li>
+<li>建立 Storage account, 選擇 Linux 與 App service Plan(要 premium 喔)<br><img src="/2022/01/28/DevOps/custom-image-on-azure-functions/1_6GJoxBMqhhuNLP15Sa2WtQ.png"><br>也可以<a href="https://docs.microsoft.com/zh-tw/azure/azure-functions/functions-create-function-linux-custom-image?tabs=in-process,bash,azure-cli&pivots=programming-language-javascript#create-supporting-azure-resources-for-your-function">利用 CLI 的方式建立 Azure function 與對應的 resource group</a>。</li>
+</ul>
+<h1 id="到-Azure-functions-的-portal-把必要環境變數加入"><a href="#到-Azure-functions-的-portal-把必要環境變數加入" class="headerlink" title="到 Azure functions 的 portal 把必要環境變數加入"></a>到 Azure functions 的 portal 把必要環境變數加入</h1><p><img src="/2022/01/28/DevOps/custom-image-on-azure-functions/1_a2vR3iXjYmn0RS0DZ9HaGQ.png"><br>詳細設定可參考 <a href="https://docs.microsoft.com/en-us/azure/app-service/configure-common">Configure apps in the portal — Azure App Service</a> 與 <a href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-node?tabs=v2#environment-variables">JavaScript developer reference for Azure Functions</a>。</p>
+<h1 id="部署到-Azure-functions"><a href="#部署到-Azure-functions" class="headerlink" title="部署到 Azure functions"></a>部署到 Azure functions</h1><p><code>az functionapp create --name &lt;APP_NAME&gt; --storage-account &lt;STORAGE_NAME&gt; --resource-group &lt;RESOURCE_GROUP&gt; --plan myPremiumPlan --deployment-container-image-name &lt;DOCKER_ID&gt;/azurefunctionsimage:v1.0.0</code></p>
+<p>其中的 <App_Name>、<RESOURCE_GROUP>、<STORAGE_NAME>、<DOCKER_ID>請已上面步驟建立的值做更換。</p>
+<h1 id="設定-Azure-functions-使用的-Storage-connection"><a href="#設定-Azure-functions-使用的-Storage-connection" class="headerlink" title="設定 Azure functions 使用的 Storage connection"></a>設定 Azure functions 使用的 Storage connection</h1><p>設定 Storage connection 可參考下面的指令，或是使用步驟 4 的介紹從 Azure Portal 上進行設定。<br>Storage connection 的值必須設定在 AzureWebJobsStorage。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 取得 Stroage connection</span><br><span class="line">az storage account show-connection-string --resource-group &lt;RESOURCE_GROUP&gt; --name &lt;STORAGE_NAME&gt; --query connectionString --output tsv</span><br><span class="line"></span><br><span class="line">// 設定 Azure function 使用的 Storage connection</span><br><span class="line">az functionapp config appsettings set --name &lt;APP_NAME&gt; --resource-group &lt;RESOURCE_GROUP&gt; --settings AzureWebJobsStorage=&lt;CONNECTION_STRING&gt;</span><br></pre></td></tr></table></figure>
+
+<h1 id="確認-Azure-Function-是否正確被執行"><a href="#確認-Azure-Function-是否正確被執行" class="headerlink" title="確認 Azure Function 是否正確被執行"></a>確認 Azure Function 是否正確被執行</h1><p>在步驟 2 介紹使用 HTTP trigger，所以可透過下面的連結來做測試<br><code>https://&lt;APP_NAME&gt;.azurewebsites.net/api/&#123;http trigger name&#125;?name=pou</code></p>
+<p>以上是紀錄把 Azure Function 用 Docker Image 包裝起來的方法。<br>如果大家有遇到其他問題歡迎一起討論。</p>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ul>
+<li><a href="https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-node">Quickstart: Create a JavaScript function in Azure using Visual Studio Code</a></li>
+<li><a href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-function-linux-custom-image?tabs=in-process,bash,azure-cli&pivots=programming-language-javascript">Create a function on Linux using a custom container</a></li>
+<li><a href="https://hub.docker.com/_/microsoft-azure-functions-base?tab=description">Azure Functions base Images</a> &amp; <a href="https://github.com/Azure/azure-functions-docker">Github</a></li>
+<li><a href="https://www.programmingwithwolfgang.com/deploy-docker-container-azure-functions/">Deploy a Docker Container to Azure Functions using an Azure DevOps YAML Pipeline</a></li>
+<li><a href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings#azurewebjobsscriptroo">App settings reference for Azure Functions</a></li>
+<li><a href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-host-json#override-hostjson-values">Override host.json values</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>DevOps</category>
+      </categories>
+      <tags>
+        <tag>DevOps</tag>
+        <tag>Azure</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>如何取得 GitLab 另一個 Pipeline 的 artifacts</title>
+    <url>/2022/05/28/DevOps/gitlab-integrated-pipelines/</url>
+    <content><![CDATA[<p>介紹如何透過 GitLab API 在 Upstream 取得 Downstream 的 artifact。</p>
+<span id="more"></span>
+<p>大家都熟悉在 repo 裏面建立自己的 GitLab CI&#x2F;CD，一個 repo 每次產生一組 pipeline 裏面帶有多個 jobs，如下圖：</p>
+<p><img src="/2022/05/28/DevOps/gitlab-integrated-pipelines/0_N35pBzNuBNRg5K1b.png"></p>
+<p>那如果需要在 A repo 的 pipeline 通知 repo B 一起進行編譯，並把 repo B 的 artifact 放進 A repo 的 artifact 時，我們能怎麽做？</p>
+<p>option 1: 把 repo B 加入 repo A 的 sub module 一起編譯</p>
+<p>option 2: 利用 GitLab 的 multiple-project pipeline 機制觸發另一個 pipeline</p>
+<p>本篇將介紹 option 2 的 multiple-project pipeline 機制。</p>
+<h1 id="基本介紹-multiple-project-pipeline"><a href="#基本介紹-multiple-project-pipeline" class="headerlink" title="基本介紹 multiple-project pipeline"></a>基本介紹 multiple-project pipeline</h1><p>GitLab CI&#x2F;CD 支援跨 project 的特性，由一個 pipeline 觸發另一個 pipeline。</p>
+<p>觸發者被稱爲 upstream，接受被觸發的稱爲 downstream (它可以多個)。</p>
+<p>如何觸發另一個 repo 的 pipeline 呢？</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">stages:</span><br><span class="line">  - trigger_repob</span><br><span class="line">  - buildTrigger-Repo-B:</span><br><span class="line"> </span><br><span class="line">stage: trigger_repob</span><br><span class="line">  variables:</span><br><span class="line">    ENVIRONMENT: staging</span><br><span class="line">  trigger: </span><br><span class="line">    project: my_group/repoB</span><br><span class="line">    branc: dev</span><br><span class="line">    strategy: dependBuild-Repo-A:</span><br><span class="line">  stage: build</span><br><span class="line">  script:</span><br><span class="line">    - echo &quot;upstream&quot;</span><br></pre></td></tr></table></figure>
+<p>關鍵字：<strong>trigger</strong>，它可指定變數從到 downstream，或是要觸發的 project 與 branch，以及是否要等待 pipeline 執行狀態再接著往下。</p>
+<p>trigger 下可以用的 keywords 可以參考 Trigger job configuration keywords。</p>
+<p>觸發其他 project 的 pipeline 的畫面如下，可以看到 Downstream 可有多個，而且各自 Downstream 的 pipeline 可同時進行：</p>
+<p><img src="/2022/05/28/DevOps/gitlab-integrated-pipelines/0_nKLsfI8gNXjYY0W6.png"></p>
+<p>更多詳細的介紹請參考 Multiple-project pipelines。</p>
+<p>取得 Downstream 的 artifact</p>
+<p>熟悉 Multiple-project pipelines 後，接下來是重點，我怎麽能從 upstream 取得 downstream 裏面 Job 的 artifact 呢？</p>
+<p>從 GitLab issues 可以找到很多人許願這樣的功能：<a href="https://gitlab.com/gitlab-org/gitlab/-/issues/285100">Allow job in upstream pipeline to reference artifacts from a downstream pipeline</a>，但目前還沒有被支援，不過這篇裏面有人介紹了 workaround 做法，我們來看看吧。</p>
+<p>以下 GitLab API 是我們下手的機會：</p>
+<p><a href="https://docs.gitlab.com/ee/api/jobs.html#list-pipeline-trigger-jobs">List pipeline bridges</a>：取得 upstream 下擁有的 downstream pipeline<br><a href="https://docs.gitlab.com/ee/api/jobs.html#list-pipeline-jobs">List pipeline jobs</a>：取得 pipeline 的 jobs<br><a href="https://docs.gitlab.com/ee/api/job_artifacts.html#get-job-artifacts">Get job artifacts</a>：取得 job 的 artifacts</p>
+<p>API 的使用流程(記得要申請 GitLab API Token)如下：<br><img src="/2022/05/28/DevOps/gitlab-integrated-pipelines/0_QGpkFooLNK8YGmJU.png"></p>
+<p>使用 API 的流程，我不建議寫在 .gitlab-ci.yml，因爲非常難 debug，因此，如果您是熟悉 shell 或 powershell 的人可以直接包裝成執行檔來進行。</p>
+<p>以下是我用 powershell 寫的範例(rebuild.ps1: 假設 repoB 有一個 job: build-repo 是我想要的 artifact)：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># use Bridge API to get downstream project id</span><br><span class="line">$BRIDGE_API = &quot;$CI_API/$PROJECT_ID/pipelines/$PIPELINE_ID/bridges&quot;</span><br><span class="line">$response = Invoke-RestMethod -URI $BRIDGE_API -HEADERS @&#123;&#x27;PRIVATE-TKEN&#x27; = $TOKEN &#125;</span><br><span class="line">$downstream_project_id = $response.downstream_pipleline.project_id</span><br><span class="line"></span><br><span class="line"># use Job API to get job content by downstream pipeline id</span><br><span class="line">$JOB_API = &quot;$CI_API/$downstream_project_id/pipelines/jobs&quot;</span><br><span class="line">$response = Invoke-RestMethod -URI $JOB_API -HEADERS @&#123;&#x27;PRIVATE-TKEN&#x27; = $TOKEN &#125;</span><br><span class="line"></span><br><span class="line"># find target job to get id and artifact</span><br><span class="line">$job_id = &quot;&quot;</span><br><span class="line">$artifact = &quot;&quot;foreach ($job in $response) &#123;</span><br><span class="line">  if ($job.name -eq &quot;build-repo&quot;) &#123;</span><br><span class="line">     $artifact = $job.artifacts_file</span><br><span class="line">     $job_id = $job.id  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># download artifact</span><br><span class="line">$ARTIFACTS_API = &quot;$CI_API/$downstream_project_id/jobs/$job_id/artifacts&quot;</span><br><span class="line">Invoke-RestMethod -URI $ARTIFACTS_API -HEADERS @&#123;&#x27;PRIVATE-TKEN&#x27; = $TOKEN &#125; -OutFile &quot;./$($artifact.filename)&quot;</span><br></pre></td></tr></table></figure>
+<p>最終合并到 .gitlab-ci.yml 的内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">stages:</span><br><span class="line">  - build</span><br><span class="line">  - deploybuild-sharecode:</span><br><span class="line">  </span><br><span class="line">stage: build</span><br><span class="line">  trigger:</span><br><span class="line">    project: poulin/shopping-radar-sharecode</span><br><span class="line">    branch: master</span><br><span class="line">    strategy: depend</span><br><span class="line">    </span><br><span class="line">deploy-linbot:</span><br><span class="line">  stage: delpoy</span><br><span class="line">  script:</span><br><span class="line">    - echo &quot;start build&quot;</span><br><span class="line">    - powershell &quot;./rebuild.ps1&quot; &quot;$CI_API_V4_URL/projects&quot; $CI_PROJECT_ID $CI_PIPELINE_ID $env:GITLAB_TOKEN</span><br><span class="line">    - cp ./sharecode ./bin</span><br><span class="line">  needs:</span><br><span class="line">    - build-sharecode</span><br><span class="line">  only:</span><br><span class="line">    - master</span><br><span class="line">  tags:</span><br><span class="line">    - windows</span><br><span class="line"></span><br><span class="line">做法確實很 workaround，但很實用。上面的範例是針對 downstream 下的其中一個 job，如果您有多個 job 的 artifacts 要存取也可以修改裏面的程式碼進行使用哦。</span><br></pre></td></tr></table></figure>
+
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://gitlab.com/gitlab-org/gitlab/-/issues/285100">List pipeline bridges</a></li>
+<li><a href="https://docs.gitlab.com/ee/api/job_artifacts.html#get-job-artifacts">Get job artifacts</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>DevOps</category>
+      </categories>
+      <tags>
+        <tag>DevOps</tag>
+      </tags>
+  </entry>
+</search>
