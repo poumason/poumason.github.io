@@ -26,7 +26,7 @@
 <meta property="og:site_name" content="Pou&#39;s Life">
 <meta property="og:locale" content="en_US">
 <meta property="article:author" content="Pou Lin">
-<meta property="article:tag" content="C#,DevOps,Python,K8s">
+<meta property="article:tag" content="C#,DevOps,Python,K8s,Swift">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://poumason.github.io/">
@@ -96,7 +96,7 @@
       <h1 class="site-title">Pou's Life</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
-      <p class="site-subtitle" itemprop="description">abort software development, DevOps and K8s.</p>
+      <p class="site-subtitle" itemprop="description">abort software development and DevOps.</p>
   </div>
 
   <div class="site-nav-right">
@@ -123,6 +123,11 @@
         <li class="menu-item menu-item-tags">
 
     <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
 
   </li>
         <li class="menu-item menu-item-archives">
@@ -157,7 +162,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://poumason.github.io/2024/06/03/csharp-copy-properties-the-same-base-class/">
+    <link itemprop="mainEntityOfPage" href="https://poumason.github.io/2024/06/03/C#/csharp-copy-properties-the-same-base-class/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -171,7 +176,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2024/06/03/csharp-copy-properties-the-same-base-class/" class="post-title-link" itemprop="url">如何讓不同的子類別同步父類別屬性值</a>
+            <a href="/2024/06/03/C#/csharp-copy-properties-the-same-base-class/" class="post-title-link" itemprop="url">如何讓不同的子類別同步父類別屬性值</a>
         </h2>
 
         <div class="post-meta">
@@ -205,7 +210,7 @@
           <p>在開發程式時，習慣為 data model 建立個 base class 方便把常用的 properties 包裝起來，或是做一些客製的處理。隨著繼續的子類別變多時，有遇過幾次 <code>需要將某個子類別 copy 屬性至不同子類別</code>。<br>按照物件導向原理∶ <strong>子類別無法互轉，或是先轉父類別再轉子類別</strong>。如果要做到複雜屬性的目的，只能經過 Relction 的方式了，以下將介紹如何使用。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2024/06/03/csharp-copy-properties-the-same-base-class/#more" rel="contents">
+              <a class="btn" href="/2024/06/03/C#/csharp-copy-properties-the-same-base-class/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -299,7 +304,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://poumason.github.io/2022/05/28/gitlab-integrated-pipelines/">
+    <link itemprop="mainEntityOfPage" href="https://poumason.github.io/2022/05/28/DevOps/gitlab-integrated-pipelines/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -313,7 +318,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/05/28/gitlab-integrated-pipelines/" class="post-title-link" itemprop="url">如何取得 GitLab 另一個 Pipeline 的 artifacts</a>
+            <a href="/2022/05/28/DevOps/gitlab-integrated-pipelines/" class="post-title-link" itemprop="url">如何取得 GitLab 另一個 Pipeline 的 artifacts</a>
         </h2>
 
         <div class="post-meta">
@@ -356,7 +361,88 @@
           <p>介紹如何透過 GitLab API 在 Upstream 取得 Downstream 的 artifact。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/05/28/gitlab-integrated-pipelines/#more" rel="contents">
+              <a class="btn" href="/2022/05/28/DevOps/gitlab-integrated-pipelines/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://poumason.github.io/2022/01/28/DevOps/custom-image-on-azure-functions/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Pou Lin">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Pou's Life">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/01/28/DevOps/custom-image-on-azure-functions/" class="post-title-link" itemprop="url">在 Azure functions 使用自定義的 Docker Image</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-01-28 22:16:09" itemprop="dateCreated datePublished" datetime="2022-01-28T22:16:09+08:00">2022-01-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-06-05 22:39:33" itemprop="dateModified" datetime="2024-06-05T22:39:33+08:00">2024-06-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DevOps/" itemprop="url" rel="index"><span itemprop="name">DevOps</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>如需在 Azure functions 使用特定的 Lib 版本或第三方套件，例如：ffmpeg，可建立專用的 Docker Image。本篇利用 <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/azure/developer/javascript/how-to/develop-serverless-apps">Node.js</a> 為例分享使用的心得。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/01/28/DevOps/custom-image-on-azure-functions/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -442,19 +528,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-count">4</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
+          
         <span class="site-state-item-count">1</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

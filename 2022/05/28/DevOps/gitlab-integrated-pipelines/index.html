@@ -23,21 +23,21 @@
   <meta name="description" content="介紹如何透過 GitLab API 在 Upstream 取得 Downstream 的 artifact。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何取得 GitLab 另一個 Pipeline 的 artifacts">
-<meta property="og:url" content="https://poumason.github.io/2022/05/28/gitlab-integrated-pipelines/index.html">
+<meta property="og:url" content="https://poumason.github.io/2022/05/28/DevOps/gitlab-integrated-pipelines/index.html">
 <meta property="og:site_name" content="Pou&#39;s Life">
 <meta property="og:description" content="介紹如何透過 GitLab API 在 Upstream 取得 Downstream 的 artifact。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://poumason.github.io/2022/05/28/gitlab-integrated-pipelines/0_N35pBzNuBNRg5K1b.png">
-<meta property="og:image" content="https://poumason.github.io/2022/05/28/gitlab-integrated-pipelines/0_nKLsfI8gNXjYY0W6.png">
-<meta property="og:image" content="https://poumason.github.io/2022/05/28/gitlab-integrated-pipelines/0_QGpkFooLNK8YGmJU.png">
+<meta property="og:image" content="https://poumason.github.io/2022/05/28/DevOps/gitlab-integrated-pipelines/0_N35pBzNuBNRg5K1b.png">
+<meta property="og:image" content="https://poumason.github.io/2022/05/28/DevOps/gitlab-integrated-pipelines/0_nKLsfI8gNXjYY0W6.png">
+<meta property="og:image" content="https://poumason.github.io/2022/05/28/DevOps/gitlab-integrated-pipelines/0_QGpkFooLNK8YGmJU.png">
 <meta property="article:published_time" content="2022-05-28T05:42:17.000Z">
 <meta property="article:modified_time" content="2024-06-04T14:47:36.093Z">
 <meta property="article:author" content="Pou Lin">
 <meta property="article:tag" content="DevOps">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://poumason.github.io/2022/05/28/gitlab-integrated-pipelines/0_N35pBzNuBNRg5K1b.png">
+<meta name="twitter:image" content="https://poumason.github.io/2022/05/28/DevOps/gitlab-integrated-pipelines/0_N35pBzNuBNRg5K1b.png">
 
-<link rel="canonical" href="https://poumason.github.io/2022/05/28/gitlab-integrated-pipelines/">
+<link rel="canonical" href="https://poumason.github.io/2022/05/28/DevOps/gitlab-integrated-pipelines/">
 
 
 <script id="page-configurations">
@@ -104,7 +104,7 @@
       <h1 class="site-title">Pou's Life</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
-      <p class="site-subtitle" itemprop="description">abort software development, DevOps and K8s.</p>
+      <p class="site-subtitle" itemprop="description">abort software development and DevOps.</p>
   </div>
 
   <div class="site-nav-right">
@@ -131,6 +131,11 @@
         <li class="menu-item menu-item-tags">
 
     <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
 
   </li>
         <li class="menu-item menu-item-archives">
@@ -166,7 +171,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://poumason.github.io/2022/05/28/gitlab-integrated-pipelines/">
+    <link itemprop="mainEntityOfPage" href="https://poumason.github.io/2022/05/28/DevOps/gitlab-integrated-pipelines/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -222,7 +227,7 @@
         <p>介紹如何透過 GitLab API 在 Upstream 取得 Downstream 的 artifact。</p>
 <span id="more"></span>
 <p>大家都熟悉在 repo 裏面建立自己的 GitLab CI&#x2F;CD，一個 repo 每次產生一組 pipeline 裏面帶有多個 jobs，如下圖：</p>
-<p><img src="/2022/05/28/gitlab-integrated-pipelines/0_N35pBzNuBNRg5K1b.png"></p>
+<p><img src="/2022/05/28/DevOps/gitlab-integrated-pipelines/0_N35pBzNuBNRg5K1b.png"></p>
 <p>那如果需要在 A repo 的 pipeline 通知 repo B 一起進行編譯，並把 repo B 的 artifact 放進 A repo 的 artifact 時，我們能怎麽做？</p>
 <p>option 1: 把 repo B 加入 repo A 的 sub module 一起編譯</p>
 <p>option 2: 利用 GitLab 的 multiple-project pipeline 機制觸發另一個 pipeline</p>
@@ -234,14 +239,14 @@
 <p>關鍵字：<strong>trigger</strong>，它可指定變數從到 downstream，或是要觸發的 project 與 branch，以及是否要等待 pipeline 執行狀態再接著往下。</p>
 <p>trigger 下可以用的 keywords 可以參考 Trigger job configuration keywords。</p>
 <p>觸發其他 project 的 pipeline 的畫面如下，可以看到 Downstream 可有多個，而且各自 Downstream 的 pipeline 可同時進行：</p>
-<p><img src="/2022/05/28/gitlab-integrated-pipelines/0_nKLsfI8gNXjYY0W6.png"></p>
+<p><img src="/2022/05/28/DevOps/gitlab-integrated-pipelines/0_nKLsfI8gNXjYY0W6.png"></p>
 <p>更多詳細的介紹請參考 Multiple-project pipelines。</p>
 <p>取得 Downstream 的 artifact</p>
 <p>熟悉 Multiple-project pipelines 後，接下來是重點，我怎麽能從 upstream 取得 downstream 裏面 Job 的 artifact 呢？</p>
 <p>從 GitLab issues 可以找到很多人許願這樣的功能：<a target="_blank" rel="noopener" href="https://gitlab.com/gitlab-org/gitlab/-/issues/285100">Allow job in upstream pipeline to reference artifacts from a downstream pipeline</a>，但目前還沒有被支援，不過這篇裏面有人介紹了 workaround 做法，我們來看看吧。</p>
 <p>以下 GitLab API 是我們下手的機會：</p>
 <p><a target="_blank" rel="noopener" href="https://docs.gitlab.com/ee/api/jobs.html#list-pipeline-trigger-jobs">List pipeline bridges</a>：取得 upstream 下擁有的 downstream pipeline<br><a target="_blank" rel="noopener" href="https://docs.gitlab.com/ee/api/jobs.html#list-pipeline-jobs">List pipeline jobs</a>：取得 pipeline 的 jobs<br><a target="_blank" rel="noopener" href="https://docs.gitlab.com/ee/api/job_artifacts.html#get-job-artifacts">Get job artifacts</a>：取得 job 的 artifacts</p>
-<p>API 的使用流程(記得要申請 GitLab API Token)如下：<br><img src="/2022/05/28/gitlab-integrated-pipelines/0_QGpkFooLNK8YGmJU.png"></p>
+<p>API 的使用流程(記得要申請 GitLab API Token)如下：<br><img src="/2022/05/28/DevOps/gitlab-integrated-pipelines/0_QGpkFooLNK8YGmJU.png"></p>
 <p>使用 API 的流程，我不建議寫在 .gitlab-ci.yml，因爲非常難 debug，因此，如果您是熟悉 shell 或 powershell 的人可以直接包裝成執行檔來進行。</p>
 <p>以下是我用 powershell 寫的範例(rebuild.ps1: 假設 repoB 有一個 job: build-repo 是我想要的 artifact)：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># use Bridge API to get downstream project id</span><br><span class="line">$BRIDGE_API = &quot;$CI_API/$PROJECT_ID/pipelines/$PIPELINE_ID/bridges&quot;</span><br><span class="line">$response = Invoke-RestMethod -URI $BRIDGE_API -HEADERS @&#123;&#x27;PRIVATE-TKEN&#x27; = $TOKEN &#125;</span><br><span class="line">$downstream_project_id = $response.downstream_pipleline.project_id</span><br><span class="line"></span><br><span class="line"># use Job API to get job content by downstream pipeline id</span><br><span class="line">$JOB_API = &quot;$CI_API/$downstream_project_id/pipelines/jobs&quot;</span><br><span class="line">$response = Invoke-RestMethod -URI $JOB_API -HEADERS @&#123;&#x27;PRIVATE-TKEN&#x27; = $TOKEN &#125;</span><br><span class="line"></span><br><span class="line"># find target job to get id and artifact</span><br><span class="line">$job_id = &quot;&quot;</span><br><span class="line">$artifact = &quot;&quot;foreach ($job in $response) &#123;</span><br><span class="line">  if ($job.name -eq &quot;build-repo&quot;) &#123;</span><br><span class="line">     $artifact = $job.artifacts_file</span><br><span class="line">     $job_id = $job.id  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># download artifact</span><br><span class="line">$ARTIFACTS_API = &quot;$CI_API/$downstream_project_id/jobs/$job_id/artifacts&quot;</span><br><span class="line">Invoke-RestMethod -URI $ARTIFACTS_API -HEADERS @&#123;&#x27;PRIVATE-TKEN&#x27; = $TOKEN &#125; -OutFile &quot;./$($artifact.filename)&quot;</span><br></pre></td></tr></table></figure>
@@ -269,7 +274,10 @@
 
         
     <div class="post-nav">
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2022/01/28/DevOps/custom-image-on-azure-functions/" rel="prev" title="在 Azure functions 使用自定義的 Docker Image">
+      <i class="fa fa-chevron-left"></i> 在 Azure functions 使用自定義的 Docker Image
+    </a></div>
       <div class="post-nav-item">
     <a href="/2024/06/03/hello-world/" rel="next" title="Hello World">
       Hello World <i class="fa fa-chevron-right"></i>
@@ -346,19 +354,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-count">4</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
+          
         <span class="site-state-item-count">1</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

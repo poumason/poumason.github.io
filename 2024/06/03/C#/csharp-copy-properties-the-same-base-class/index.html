@@ -23,7 +23,7 @@
   <meta name="description" content="在開發程式時，習慣為 data model 建立個 base class 方便把常用的 properties 包裝起來，或是做一些客製的處理。隨著繼續的子類別變多時，有遇過幾次 需要將某個子類別 copy 屬性至不同子類別。按照物件導向原理∶ 子類別無法互轉，或是先轉父類別再轉子類別。如果要做到複雜屬性的目的，只能經過 Relction 的方式了，以下將介紹如何使用。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何讓不同的子類別同步父類別屬性值">
-<meta property="og:url" content="https://poumason.github.io/2024/06/03/csharp-copy-properties-the-same-base-class/index.html">
+<meta property="og:url" content="https://poumason.github.io/2024/06/03/C#/csharp-copy-properties-the-same-base-class/index.html">
 <meta property="og:site_name" content="Pou&#39;s Life">
 <meta property="og:description" content="在開發程式時，習慣為 data model 建立個 base class 方便把常用的 properties 包裝起來，或是做一些客製的處理。隨著繼續的子類別變多時，有遇過幾次 需要將某個子類別 copy 屬性至不同子類別。按照物件導向原理∶ 子類別無法互轉，或是先轉父類別再轉子類別。如果要做到複雜屬性的目的，只能經過 Relction 的方式了，以下將介紹如何使用。">
 <meta property="og:locale" content="en_US">
@@ -35,7 +35,7 @@
 <meta property="article:tag" content="ASP.NET">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://poumason.github.io/2024/06/03/csharp-copy-properties-the-same-base-class/">
+<link rel="canonical" href="https://poumason.github.io/2024/06/03/C#/csharp-copy-properties-the-same-base-class/">
 
 
 <script id="page-configurations">
@@ -102,7 +102,7 @@
       <h1 class="site-title">Pou's Life</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
-      <p class="site-subtitle" itemprop="description">abort software development, DevOps and K8s.</p>
+      <p class="site-subtitle" itemprop="description">abort software development and DevOps.</p>
   </div>
 
   <div class="site-nav-right">
@@ -129,6 +129,11 @@
         <li class="menu-item menu-item-tags">
 
     <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
 
   </li>
         <li class="menu-item menu-item-archives">
@@ -164,7 +169,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://poumason.github.io/2024/06/03/csharp-copy-properties-the-same-base-class/">
+    <link itemprop="mainEntityOfPage" href="https://poumason.github.io/2024/06/03/C#/csharp-copy-properties-the-same-base-class/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -321,19 +326,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-count">4</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
+          
         <span class="site-state-item-count">1</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
