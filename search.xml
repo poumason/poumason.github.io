@@ -47,7 +47,7 @@
       </tags>
   </entry>
   <entry>
-    <title>auto_deploy_winget_by_github</title>
+    <title>程式化發送 GitHub 的 PullRequest，解決手動 winget 上架</title>
     <url>/2020/06/20/DevOps/auto-deploy-winget-by-github/</url>
     <content><![CDATA[<p>人都是想偷懶的，本篇介紹怎麼程式化發 Pull Reqeust，解決手動上新的版本到 <a href="https://docs.microsoft.com/zh-tw/windows/package-manager/winget/">winget</a> 的流程。</p>
 <span id="more"></span>
