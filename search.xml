@@ -4,6 +4,7 @@
     <title>Hello World</title>
     <url>/2024/06/03/hello-world/</url>
     <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<span id="more"></span>
 <h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
@@ -20,11 +21,11 @@
   </entry>
   <entry>
     <title>如何讓不同的子類別同步父類別屬性值</title>
-    <url>/2024/06/03/C#/csharp-copy-properties-the-same-base-class/</url>
+    <url>/2024/06/03/CSharp/csharp-copy-properties-the-same-base-class/</url>
     <content><![CDATA[<p>在開發程式時，習慣為 data model 建立個 base class 方便把常用的 properties 包裝起來，或是做一些客製的處理。隨著繼續的子類別變多時，有遇過幾次 <code>需要將某個子類別 copy 屬性至不同子類別</code>。<br>按照物件導向原理∶ <strong>子類別無法互轉，或是先轉父類別再轉子類別</strong>。如果要做到複雜屬性的目的，只能經過 Relction 的方式了，以下將介紹如何使用。</p>
 <span id="more"></span>
 
-<h2 id="作法說明"><a href="#作法說明" class="headerlink" title="作法說明"></a>作法說明</h2><ol>
+<h1 id="作法說明"><a href="#作法說明" class="headerlink" title="作法說明"></a>作法說明</h1><ol>
 <li>確認二個子類別均繼承相同的父類別</li>
 <li>建立一個 Extension 並且定義使用的物件必須是父類別家族的人</li>
 <li>利用 Reflection 的方式將 Properties 取出 (由於二者均是相同的父類別，所以該有的屬性均會存在)</li>
