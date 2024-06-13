@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"poumason.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"style":null,"show_result":false},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content=".gitlab-ci.yml 是一份事先定義好的執行腳本，讓 Gitlab 根據裡面的設定產生對應的 pipeline。那如何需要按不同的執行參數來切換不同的腳本內容，又要怎麼定義呢？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何利用 variables 切換不同的 CI template">
+<meta property="og:url" content="https://poumason.github.io/2024/06/13/DevOps/using-variable-with-rules-ctl-pipeline/index.html">
+<meta property="og:site_name" content="Pou&#39;s Life">
+<meta property="og:description" content=".gitlab-ci.yml 是一份事先定義好的執行腳本，讓 Gitlab 根據裡面的設定產生對應的 pipeline。那如何需要按不同的執行參數來切換不同的腳本內容，又要怎麼定義呢？">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-06-13T15:10:34.000Z">
+<meta property="article:modified_time" content="2024-06-13T15:10:34.787Z">
+<meta property="article:author" content="Pou Lin">
+<meta property="article:tag" content="DevOps">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://poumason.github.io/2024/06/13/DevOps/using-variable-with-rules-ctl-pipeline/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://poumason.github.io/2024/06/13/DevOps/using-variable-with-rules-ctl-pipeline/","path":"2024/06/13/DevOps/using-variable-with-rules-ctl-pipeline/","title":"如何利用 variables 切換不同的 CI template"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>如何利用 variables 切換不同的 CI template | Pou's Life</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Pou's Life</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">abort software development and DevOps.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9A%E7%BE%A9%E8%AE%8A%E6%95%B8%E4%BE%86%E5%88%87%E6%8F%9B%E4%B8%8D%E5%90%8C%E7%9A%84-yml"><span class="nav-number">1.</span> <span class="nav-text">定義變數來切換不同的 yml</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%AE%93-downstream-%E5%8F%96%E5%BE%97-upstream-%E7%9A%84-artificat"><span class="nav-number">2.</span> <span class="nav-text">如何讓 downstream 取得 upstream 的 artificat</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#upstream-%E7%9A%84-ci-yaml"><span class="nav-number">2.1.</span> <span class="nav-text">upstream 的 ci yaml</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#downstream-%E7%9A%84-ci-yaml"><span class="nav-number">2.2.</span> <span class="nav-text">downstream 的 ci yaml</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">3.</span> <span class="nav-text">References</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Pou Lin"
+      src="/images/pou.jpg">
+  <p class="site-author-name" itemprop="name">Pou Lin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/poumason" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;poumason" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/pou-lin-06483955/" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;pou-lin-06483955&#x2F;" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://poumason.github.io/2024/06/13/DevOps/using-variable-with-rules-ctl-pipeline/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/pou.jpg">
+      <meta itemprop="name" content="Pou Lin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Pou's Life">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="如何利用 variables 切換不同的 CI template | Pou's Life">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          如何利用 variables 切換不同的 CI template
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-06-13 23:10:34" itemprop="dateCreated datePublished" datetime="2024-06-13T23:10:34+08:00">2024-06-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/DevOps/" itemprop="url" rel="index"><span itemprop="name">DevOps</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>.gitlab-ci.yml 是一份事先定義好的執行腳本，讓 Gitlab 根據裡面的設定產生對應的 pipeline。<br>那如何需要按不同的執行參數來切換不同的腳本內容，又要怎麼定義呢？</p>
+<span id="more"></span>
+
+<h1 id="定義變數來切換不同的-yml"><a href="#定義變數來切換不同的-yml" class="headerlink" title="定義變數來切換不同的 yml"></a>定義變數來切換不同的 yml</h1><p>repo 檔案結構如下:</p>
+<ul>
+<li>.gitlab-ci.yml</li>
+<li>HOME&#x2F;deploy.yml</li>
+<li>SCHOOL&#x2F;deploy.yml</li>
+</ul>
+<p>在 .gitlab-ci.yml 利用特定變數(ex: $ENV)與 rules 來判斷該讀取哪一份 yml 進來，如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">include:</span><br><span class="line">  - local: HOME/deploy.yml</span><br><span class="line">    rules:</span><br><span class="line">      - if: $ENV == &quot;home&quot;</span><br><span class="line">  - local: SCHOOL/deploy.yml</span><br><span class="line">    rules:</span><br><span class="line">      - if: $ENV == &quot;school&quot;</span><br><span class="line">stages:</span><br><span class="line">  - test</span><br><span class="line"></span><br><span class="line">test:</span><br><span class="line">  stage: test</span><br><span class="line">  script:</span><br><span class="line">    - echo $ENV</span><br><span class="line">    # 來自 deploy.yml 內有的變數</span><br><span class="line">    - echo $LOCATION</span><br><span class="line">  rules:</span><br><span class="line">    - if: $ENV != null</span><br></pre></td></tr></table></figure>
+<p>那 deploy.yml 要放什麼呢？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">variables:</span><br><span class="line">  LOCATION: &quot;HOME&quot;</span><br></pre></td></tr></table></figure>
+
+<p>透過 $ENV 的變數來控制 .gitlab-ci.yml 應該 include 哪一份 yaml 進來。</p>
+<h1 id="如何讓-downstream-取得-upstream-的-artificat"><a href="#如何讓-downstream-取得-upstream-的-artificat" class="headerlink" title="如何讓 downstream 取得 upstream 的 artificat"></a>如何讓 downstream 取得 upstream 的 artificat</h1><h2 id="upstream-的-ci-yaml"><a href="#upstream-的-ci-yaml" class="headerlink" title="upstream 的 ci yaml"></a>upstream 的 ci yaml</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">stages:</span><br><span class="line">  - build</span><br><span class="line">  - trigger</span><br><span class="line"></span><br><span class="line">build-job:</span><br><span class="line">  stage: build</span><br><span class="line">  script:</span><br><span class="line">    - echo &quot;Building the project...&quot;</span><br><span class="line">    - mkdir -p output</span><br><span class="line">    - echo &quot;artifact content&quot; &gt; output/artifact.txt</span><br><span class="line">  artifacts:</span><br><span class="line">    paths:</span><br><span class="line">      - output/artifact.txt</span><br><span class="line">    expire_in: 1 day</span><br><span class="line"></span><br><span class="line">trigger_job:</span><br><span class="line">  stage: trigger</span><br><span class="line">  trigger:</span><br><span class="line">    project: poulin/cd-template</span><br><span class="line">    branch: main</span><br><span class="line">    #wait for pipeline to run</span><br><span class="line">    strategy: depend </span><br><span class="line">  variables:</span><br><span class="line">    UPSTREAM_PROJECT_ID: $CI_PROJECT_ID</span><br><span class="line">    UPSTREAM_PIPELINE_ID: $CI_PIPELINE_ID</span><br><span class="line">  when: manual</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="downstream-的-ci-yaml"><a href="#downstream-的-ci-yaml" class="headerlink" title="downstream 的 ci yaml"></a>downstream 的 ci yaml</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">stages:</span><br><span class="line">  - download</span><br><span class="line"></span><br><span class="line">download-upstream-artifacts:</span><br><span class="line">  stage: download</span><br><span class="line">  variables:</span><br><span class="line">    DEPLOY_TOKEN_PASSWORD: $TOKEN</span><br><span class="line">  image:</span><br><span class="line">    name: amazon/aws-cli:latest</span><br><span class="line">    entrypoint:</span><br><span class="line">      - &quot;&quot;</span><br><span class="line">  script:</span><br><span class="line">    - yum install jq unzip -y</span><br><span class="line">    - echo &quot;Downloading artifacts from upstream...&quot;</span><br><span class="line">    - |</span><br><span class="line">      job_id=$(curl --silent --header &quot;PRIVATE-TOKEN: $&#123;DEPLOY_TOKEN_PASSWORD&#125;&quot; \</span><br><span class="line">        &quot;https://gitlab.com/api/v4/projects/$&#123;UPSTREAM_PROJECT_ID&#125;/pipelines/$&#123;UPSTREAM_PIPELINE_ID&#125;/jobs&quot; \</span><br><span class="line">        | jq -r &#x27;.[] | select(.name==&quot;build-job&quot;) | .id&#x27;)</span><br><span class="line">      curl --location --header &quot;PRIVATE-TOKEN: $&#123;DEPLOY_TOKEN_PASSWORD&#125;&quot; \</span><br><span class="line">        &quot;https://gitlab.com/api/v4/projects/$&#123;UPSTREAM_PROJECT_ID&#125;/jobs/$&#123;job_id&#125;/artifacts&quot; --output artifacts.zip</span><br><span class="line">    - echo &quot;Unzipping the artifacts&quot;</span><br><span class="line">    - unzip artifacts.zip</span><br><span class="line">    - cat output/artifact.txt</span><br><span class="line">  needs:</span><br><span class="line">    - pipeline: $UPSTREAM_PIPELINE_ID</span><br><span class="line">      job: build-job</span><br><span class="line">      artifacts: false</span><br><span class="line">  dependencies: []</span><br><span class="line">  only:</span><br><span class="line">    - pipelines</span><br></pre></td></tr></table></figure>
+<ul>
+<li>需要設定一組 access token 放在 downstream 的 repo 中</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://blog.devops.dev/accessing-artifacts-created-in-a-gitlab-upstream-pipeline-from-a-downstream-pipeline-e50c16ab6f87">Accessing Artifacts Created in a GitLab Upstream Pipeline From A Downstream Pipeline</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/DevOps/" rel="tag"># DevOps</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/06/03/CSharp/csharp-copy-properties-the-same-base-class/" rel="prev" title="如何讓不同的子類別同步父類別屬性值">
+                  <i class="fa fa-angle-left"></i> 如何讓不同的子類別同步父類別屬性值
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Pou Lin</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

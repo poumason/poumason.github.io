@@ -1,25 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Hello World</title>
-    <url>/2024/06/03/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<span id="more"></span>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
-  </entry>
-  <entry>
     <title>如何讓不同的子類別同步父類別屬性值</title>
     <url>/2024/06/03/CSharp/csharp-copy-properties-the-same-base-class/</url>
     <content><![CDATA[<p>在開發程式時，習慣為 data model 建立個 base class 方便把常用的 properties 包裝起來，或是做一些客製的處理。隨著繼續的子類別變多時，有遇過幾次 <code>需要將某個子類別 copy 屬性至不同子類別</code>。<br>按照物件導向原理∶ <strong>子類別無法互轉，或是先轉父類別再轉子類別</strong>。如果要做到複雜屬性的目的，只能經過 Relction 的方式了，以下將介紹如何使用。</p>
@@ -45,6 +26,25 @@
         <tag>.NET</tag>
         <tag>ASP.NET</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2024/06/03/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<span id="more"></span>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
   </entry>
   <entry>
     <title>程式化發送 GitHub 的 PullRequest，解決手動 winget 上架</title>
@@ -228,6 +228,40 @@
 <h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
 <li><a href="https://gitlab.com/gitlab-org/gitlab/-/issues/285100">List pipeline bridges</a></li>
 <li><a href="https://docs.gitlab.com/ee/api/job_artifacts.html#get-job-artifacts">Get job artifacts</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>DevOps</category>
+      </categories>
+      <tags>
+        <tag>DevOps</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>如何利用 variables 切換不同的 CI template</title>
+    <url>/2024/06/13/DevOps/using-variable-with-rules-ctl-pipeline/</url>
+    <content><![CDATA[<p>.gitlab-ci.yml 是一份事先定義好的執行腳本，讓 Gitlab 根據裡面的設定產生對應的 pipeline。<br>那如何需要按不同的執行參數來切換不同的腳本內容，又要怎麼定義呢？</p>
+<span id="more"></span>
+
+<h1 id="定義變數來切換不同的-yml"><a href="#定義變數來切換不同的-yml" class="headerlink" title="定義變數來切換不同的 yml"></a>定義變數來切換不同的 yml</h1><p>repo 檔案結構如下:</p>
+<ul>
+<li>.gitlab-ci.yml</li>
+<li>HOME&#x2F;deploy.yml</li>
+<li>SCHOOL&#x2F;deploy.yml</li>
+</ul>
+<p>在 .gitlab-ci.yml 利用特定變數(ex: $ENV)與 rules 來判斷該讀取哪一份 yml 進來，如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">include:</span><br><span class="line">  - local: HOME/deploy.yml</span><br><span class="line">    rules:</span><br><span class="line">      - if: $ENV == &quot;home&quot;</span><br><span class="line">  - local: SCHOOL/deploy.yml</span><br><span class="line">    rules:</span><br><span class="line">      - if: $ENV == &quot;school&quot;</span><br><span class="line">stages:</span><br><span class="line">  - test</span><br><span class="line"></span><br><span class="line">test:</span><br><span class="line">  stage: test</span><br><span class="line">  script:</span><br><span class="line">    - echo $ENV</span><br><span class="line">    # 來自 deploy.yml 內有的變數</span><br><span class="line">    - echo $LOCATION</span><br><span class="line">  rules:</span><br><span class="line">    - if: $ENV != null</span><br></pre></td></tr></table></figure>
+<p>那 deploy.yml 要放什麼呢？</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">variables:</span><br><span class="line">  LOCATION: &quot;HOME&quot;</span><br></pre></td></tr></table></figure>
+
+<p>透過 $ENV 的變數來控制 .gitlab-ci.yml 應該 include 哪一份 yaml 進來。</p>
+<h1 id="如何讓-downstream-取得-upstream-的-artificat"><a href="#如何讓-downstream-取得-upstream-的-artificat" class="headerlink" title="如何讓 downstream 取得 upstream 的 artificat"></a>如何讓 downstream 取得 upstream 的 artificat</h1><h2 id="upstream-的-ci-yaml"><a href="#upstream-的-ci-yaml" class="headerlink" title="upstream 的 ci yaml"></a>upstream 的 ci yaml</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">stages:</span><br><span class="line">  - build</span><br><span class="line">  - trigger</span><br><span class="line"></span><br><span class="line">build-job:</span><br><span class="line">  stage: build</span><br><span class="line">  script:</span><br><span class="line">    - echo &quot;Building the project...&quot;</span><br><span class="line">    - mkdir -p output</span><br><span class="line">    - echo &quot;artifact content&quot; &gt; output/artifact.txt</span><br><span class="line">  artifacts:</span><br><span class="line">    paths:</span><br><span class="line">      - output/artifact.txt</span><br><span class="line">    expire_in: 1 day</span><br><span class="line"></span><br><span class="line">trigger_job:</span><br><span class="line">  stage: trigger</span><br><span class="line">  trigger:</span><br><span class="line">    project: poulin/cd-template</span><br><span class="line">    branch: main</span><br><span class="line">    #wait for pipeline to run</span><br><span class="line">    strategy: depend </span><br><span class="line">  variables:</span><br><span class="line">    UPSTREAM_PROJECT_ID: $CI_PROJECT_ID</span><br><span class="line">    UPSTREAM_PIPELINE_ID: $CI_PIPELINE_ID</span><br><span class="line">  when: manual</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="downstream-的-ci-yaml"><a href="#downstream-的-ci-yaml" class="headerlink" title="downstream 的 ci yaml"></a>downstream 的 ci yaml</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">stages:</span><br><span class="line">  - download</span><br><span class="line"></span><br><span class="line">download-upstream-artifacts:</span><br><span class="line">  stage: download</span><br><span class="line">  variables:</span><br><span class="line">    DEPLOY_TOKEN_PASSWORD: $TOKEN</span><br><span class="line">  image:</span><br><span class="line">    name: amazon/aws-cli:latest</span><br><span class="line">    entrypoint:</span><br><span class="line">      - &quot;&quot;</span><br><span class="line">  script:</span><br><span class="line">    - yum install jq unzip -y</span><br><span class="line">    - echo &quot;Downloading artifacts from upstream...&quot;</span><br><span class="line">    - |</span><br><span class="line">      job_id=$(curl --silent --header &quot;PRIVATE-TOKEN: $&#123;DEPLOY_TOKEN_PASSWORD&#125;&quot; \</span><br><span class="line">        &quot;https://gitlab.com/api/v4/projects/$&#123;UPSTREAM_PROJECT_ID&#125;/pipelines/$&#123;UPSTREAM_PIPELINE_ID&#125;/jobs&quot; \</span><br><span class="line">        | jq -r &#x27;.[] | select(.name==&quot;build-job&quot;) | .id&#x27;)</span><br><span class="line">      curl --location --header &quot;PRIVATE-TOKEN: $&#123;DEPLOY_TOKEN_PASSWORD&#125;&quot; \</span><br><span class="line">        &quot;https://gitlab.com/api/v4/projects/$&#123;UPSTREAM_PROJECT_ID&#125;/jobs/$&#123;job_id&#125;/artifacts&quot; --output artifacts.zip</span><br><span class="line">    - echo &quot;Unzipping the artifacts&quot;</span><br><span class="line">    - unzip artifacts.zip</span><br><span class="line">    - cat output/artifact.txt</span><br><span class="line">  needs:</span><br><span class="line">    - pipeline: $UPSTREAM_PIPELINE_ID</span><br><span class="line">      job: build-job</span><br><span class="line">      artifacts: false</span><br><span class="line">  dependencies: []</span><br><span class="line">  only:</span><br><span class="line">    - pipelines</span><br></pre></td></tr></table></figure>
+<ul>
+<li>需要設定一組 access token 放在 downstream 的 repo 中</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://blog.devops.dev/accessing-artifacts-created-in-a-gitlab-upstream-pipeline-from-a-downstream-pipeline-e50c16ab6f87">Accessing Artifacts Created in a GitLab Upstream Pipeline From A Downstream Pipeline</a></li>
 </ul>
 ]]></content>
       <categories>
