@@ -201,7 +201,7 @@ method channel 傳遞參數的類型是有限制的，可以參考 [Platform cha
    | -- | -- |--|
    |   ![](1597566128.png)|   ![](1597566139.png)|   ![](1597566151.png)|
    
-範例程式：[share_calednar](https://github.com/poumason/flutter_samples/tree/master/share_calendar)。
+   範例程式：[share_calednar](https://github.com/poumason/flutter_samples/tree/master/share_calendar)。
 ---
 以上是介紹如何從 Flutter 加入活動資料到 iOS 的行事曆。希望對大家有所幫助，謝謝。
  
