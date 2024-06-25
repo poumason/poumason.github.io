@@ -333,9 +333,11 @@ EventActivity.swift<figure class="highlight plaintext"><table><tr><td class="cod
 <td><img src="/2020/08/16/Flutter/flutter-ios-uiactivityviewcontroller-calendar/1597566151.png"></td>
 </tr>
 </tbody></table>
+<p>範例程式：<a href="https://github.com/poumason/flutter_samples/tree/master/share_calendar">share_calednar</a>。</p>
 </li>
 </ol>
-<h2 id="範例程式：share-calednar。"><a href="#範例程式：share-calednar。" class="headerlink" title="範例程式：share_calednar。"></a>範例程式：<a href="https://github.com/poumason/flutter_samples/tree/master/share_calendar">share_calednar</a>。</h2><p>以上是介紹如何從 Flutter 加入活動資料到 iOS 的行事曆。希望對大家有所幫助，謝謝。</p>
+<hr>
+<p>以上是介紹如何從 Flutter 加入活動資料到 iOS 的行事曆。希望對大家有所幫助，謝謝。</p>
 <h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><ul>
 <li><a href="https://www.itread01.com/content/1545857656.html">[iOS] Get the name of the running application</a></li>
 <li><a href="https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundledisplayname">CFBundleDisplayName</a></li>
