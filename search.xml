@@ -271,4 +271,95 @@
         <tag>DevOps</tag>
       </tags>
   </entry>
+  <entry>
+    <title>實現 iOS 在 UIActivityViewController 加入行事曆</title>
+    <url>/2020/08/16/Flutter/flutter-ios-uiactivityviewcontroller-calendar/</url>
+    <content><![CDATA[<p>如果要在 Flutter 呼叫分享很簡單，利用 <a href="https://pub.dev/packages/share">share</a> plugin 一下就完成，開發過 Flutter 的人一定都知道。<br>剛好今天有需求是在 iOS 分享活動連結時可以多顯示一個自訂的按鈕，讓使用者可以加入到行事曆。</p>
+<span id="more"></span>
+<p>要做到 iOS 分享時加入自訂的按鈕，有兩個重要的元素： <a href="http://developer.apple.com/documentation/uikit/uiactivityviewcontroller">UIActivityController</a> 與 <a href="http://developer.apple.com/documentation/uikit/uiactivity">UIActivity</a> 。</p>
+<h2 id="UIActivityController"><a href="#UIActivityController" class="headerlink" title="UIActivityController"></a>UIActivityController</h2><p>系統提供多種 services (例如：複製內容到剪貼簿，分享文字到 social media 或 email …等)。也提供開發者自訂 service 來提供服務。</p>
+<p><a href="https://developer.apple.com/documentation/uikit/uiactivityviewcontroller">UIActivityController</a> 集合這些 services 來呈現在畫面上供用戶選擇。可設定該 View Controller 傳遞的資料結構與對應的 services。</p>
+<p>最簡單的分享如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">let shareItems = [&quot;Hello&quot;]</span><br><span class="line">let activityVC = UIActivityViewController(activityItems: shareItems, applicationActivities: nil)</span><br><span class="line"></span><br><span class="line">self.presentViewController(activityVC, animated: true, completion: nil)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><a href="https://developer.apple.com/documentation/uikit/uiactivityviewcontroller/1622019-init">activityItems</a> ：資料物件的 array，可以是字串，圖片或自訂的資料內容。</li>
+<li><a href="https://developer.apple.com/documentation/uikit/uiactivityviewcontroller/1622019-init">applicationActivities</a> <a href="https://developer.apple.com/documentation/uikit/uiactivity">：UIActivity</a> 的 array，放有自訂 service 的 <a href="http://developer.apple.com/documentation/uikit/uiactivity">UIActivity</a> 。</li>
+</ul>
+<h2 id="UIActivity"><a href="#UIActivity" class="headerlink" title="UIActivity"></a>UIActivity</h2><p>該類別配合 <a href="http://developer.apple.com/documentation/uikit/uiactivityviewcontroller">UIActivityController</a> 使用，如果想要提供自訂的 service 給用戶使用，需要繼承該類別來實作並處理用戶傳入的資料做互動。</p>
+<p>需要 override 幾個地方：</p>
+<ul>
+<li><a href="https://developer.apple.com/documentation/uikit/uiactivity/1620671-activitytype">activityType</a> ：代表該 service 的識別。例如：通常使用 <a href="https://developer.apple.com/documentation/foundation/nsbundle/1418023-bundleidentifier">Bundle.main.bundleIdentifier</a> 加一些自訂的值。</li>
+<li><a href="https://developer.apple.com/documentation/uikit/uiactivity/1620674-activitytitle">activityTitle</a> ：顯示在 <a href="http://developer.apple.com/documentation/uikit/uiactivityviewcontroller">UIActivityController</a> 的名稱，要記得做多國語系的處理。</li>
+<li><a href="https://developer.apple.com/documentation/uikit/uiactivity/1620658-activityimage">activityImage</a> ：顯示在 <a href="http://developer.apple.com/documentation/uikit/uiactivityviewcontroller">UIActivityController</a> 的圖示。需要處理不同 iOS 版本需要的圖示大小不一樣。如果使用 iOS 內建系統圖示的話，在 iOS13 可以額外設定大小：UIImage.SymbolConfiguration。</li>
+<li><a href="https://developer.apple.com/documentation/uikit/uiactivity/1620677-canperform">activityCategory</a> ：定義該 service 的類型，<a href="https://developer.apple.com/documentation/uikit/uiactivity/category">UIActivity.Category</a> 提供了 action 與 share，自訂的 service 要給 action。</li>
+<li><a href="https://developer.apple.com/documentation/uikit/uiactivity/1620677-canperform">canPerform</a> ：可以根據傳入的 data 先做檢查，如果可以處理就回傳 true。</li>
+<li><a href="https://developer.apple.com/documentation/uikit/uiactivity/1620668-prepare">prepare</a> ：在用戶選擇該 service 時會呼叫該 method，該 method 則實際處理資料被如何使用。如果需要而外的 UI 互動，也是在這裡準備好需要的 view controller。</li>
+</ul>
+<p>操作行事曆則需要： <a href="http://developer.apple.com/documentation/eventkit/ekeventstore">EKEventStore</a>，<a href="http://developer.apple.com/documentation/eventkitui/ekeventeditviewcontroller">EKEventEditViewController</a>。</p>
+<h2 id="EKEventStore"><a href="#EKEventStore" class="headerlink" title="EKEventStore"></a>EKEventStore</h2><p>管理存取行事曆與提醒權限的元件。需要在初始化後，利用 <a href="https://developer.apple.com/documentation/eventkit/ekeventstore/1507547-requestaccess">requestAccess(to:completion:)</a> 來取得存取權限。</p>
+<p>需要在 Info.plist 加入  <a href="https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html#//apple_ref/doc/uid/TP40009251-SW16">NSRemindersUsageDescription</a> 與 <a href="https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html#//apple_ref/doc/uid/TP40009251-SW15">NSCalendarsUsageDescription</a> 的宣告，才能使用  EKEventStore。</p>
+<h2 id="EKEventEditViewController"><a href="#EKEventEditViewController" class="headerlink" title="EKEventEditViewController"></a>EKEventEditViewController</h2><p>view controller 用來建立，編輯或刪除行事曆的活動。使用該 view congtroller 的 class 需要實作 <a href="https://developer.apple.com/documentation/eventkitui/ekeventeditviewdelegate">EKEventEditViewDelegate</a>。</p>
+<h2 id="範例"><a href="#範例" class="headerlink" title="範例"></a>範例</h2><p>介紹完 iOS 怎麼使用分享介面(<a href="http://developer.apple.com/documentation/uikit/uiactivityviewcontroller">UIActivityViewController</a>) 與操作行事曆(<a href="https://developer.apple.com/documentation/eventkitui/ekeventeditviewcontroller">EKEventEditViewController</a>)後，下面串起來從 Flutter 利用 method channel 通知 iOS 顯示分享的介面。</p>
+<ol>
+<li>實作 EventActivity 繼承 <a href="https://developer.apple.com/documentation/uikit/uiactivity">UIActivity</a> 處理傳入的活動資訊，並呼叫行事曆(<a href="https://developer.apple.com/documentation/eventkitui/ekeventeditviewcontroller">EKEventEditViewController</a>)<br>Info.plist 加入存取行事曆的宣告。<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;plist version=&quot;1.0&quot;&gt;</span><br><span class="line">  &lt;dict&gt;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    &lt;key&gt;NSCalendarsUsageDescription&lt;/key&gt;</span><br><span class="line">    &lt;string&gt;to add this event to your calendar&lt;/string&gt;</span><br><span class="line">  &lt;/dict&gt;</span><br><span class="line">&lt;/plist&gt;</span><br></pre></td></tr></table></figure>
+EventActivity.swift<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">override func prepare(withActivityItems activityItems: [Any]) &#123;</span><br><span class="line">  // 利用 EKEventStore 請求操作 Calendar 的權限</span><br><span class="line">  let eventStore = EKEventStore()</span><br><span class="line">  eventStore.requestAccess(to: .event) &#123; (granted, error) in</span><br><span class="line">    if (granted &amp;&amp; error == nil) &#123;</span><br><span class="line">      // 先關閉 UIActivityViewController 再開啟 EKEventEditViewController</span><br><span class="line">      DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) &#123;</span><br><span class="line">        // 把 activityItems 帶入的參數包裝成 EKEvent </span><br><span class="line">        let event = self.genereateEvent(eventStore: eventStore, arguments: activityItems as NSArray);</span><br><span class="line"></span><br><span class="line">        if (event == nil) &#123;</span><br><span class="line">          return</span><br><span class="line">        &#125;</span><br><span class="line">        // 利用 EKEventStore 把 EKEvent 加入             </span><br><span class="line">        self.insertEvent(event: event!, eventStore: eventStore)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      // 如果被取消授權要顯示訊息告訴使用者</span><br><span class="line">      self.showAccessDeinedOrRestricted()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+利用 <a href="https://developer.apple.com/documentation/eventkit/ekeventstore">EKEventStore</a> 請求並取得權限之後，利用  <a href="https://developer.apple.com/documentation/dispatch/dispatchqueue/2300020-asyncafter">DispatchQueue.main.asyncAfter(deadline: .now() + 0.7)</a> 延後 7 秒的方式來開啟 <a href="https://developer.apple.com/documentation/eventkitui/ekeventeditviewcontroller">EKEventEditViewController</a>。</li>
+</ol>
+<p>為什麼需要延後？<br><strong>因為 rootViewController 開啟了 UIActivityViewController ，無法再從 UIActivityViewController 開一個 ViewController，需要先關它後才能再開啟 EKEventEditViewController。</strong></p>
+<ol start="2">
+<li><p>iOS 定義 method channel 接受來自 Flutter 的傳入活動資訊<br>打開 AppDelegate.swift 加入下面的 code：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">override func application(</span><br><span class="line">        _ application: UIApplication,</span><br><span class="line">        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?</span><br><span class="line">    ) -&gt; Bool &#123;</span><br><span class="line">  </span><br><span class="line">  guard let controller = window?.rootViewController as? FlutterViewController else &#123;</span><br><span class="line">    fatalError(&quot;rootViewController is not type FlutterViewController&quot;)</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  // 定義要處理的 method channel      </span><br><span class="line">  let methodChannel = FlutterMethodChannel(name: &quot;sample.poumason.dev/channels&quot;, binaryMessenger: controller.binaryMessenger)</span><br><span class="line">        </span><br><span class="line">  methodChannel.setMethodCallHandler(&#123;</span><br><span class="line">    (call: FlutterMethodCall, result: @escaping FlutterResult) -&gt; Void in</span><br><span class="line">    // 處理 shared 的 method       </span><br><span class="line">    if (call.method == &quot;shared&quot;) &#123;</span><br><span class="line">      // 呼叫自訂的 UIActivity </span><br><span class="line">      self.showSharedActivityViewController(arguments: call.arguments)</span><br><span class="line">        result(&quot;OK&quot;)</span><br><span class="line">        return</span><br><span class="line">    &#125;</span><br><span class="line">             </span><br><span class="line">    result(FlutterMethodNotImplemented)</span><br><span class="line">  &#125;)</span><br><span class="line">        </span><br><span class="line">  GeneratedPluginRegistrant.register(with: self)</span><br><span class="line">  return super.application(application, didFinishLaunchingWithOptions: launchOptions)        </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>詳細介紹整合 method channel 的說明可以參考：<a href="https://flutter.dev/docs/development/platform-integration/platform-channels">Writing custom platform-specific code</a>。</p>
+</li>
+<li><p>在 AppDelegate.swift 實現 showSharedActivityViewController method 來呼叫 <a href="https://developer.apple.com/documentation/uikit/uiactivityviewcontroller">UIActivityViewController</a>，並加入自訂的 <a href="https://developer.apple.com/documentation/uikit/uiactivity">UIActivity</a>。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 要實現 EKEventEditViewDelegate 接受關閉 EKEventEditViewController 的事件</span><br><span class="line">@objc class AppDelegate: FlutterAppDelegate, EKEventEditViewDelegate  &#123;</span><br><span class="line"></span><br><span class="line">  func eventEditViewController(_ controller: EKEventEditViewController, didCompleteWith action: EKEventEditViewAction)</span><br><span class="line">  &#123;</span><br><span class="line">      print(action)</span><br><span class="line">      controller.dismiss(animated: true, completion: nil)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  private func showSharedActivityViewController(arguments: Any?) &#123;</span><br><span class="line">    if let args = arguments as? Dictionary&lt;String, Any?&gt; , !args.isEmpty &#123;</span><br><span class="line">            </span><br><span class="line">      guard let url = args[&quot;url&quot;] as? String, !url.isEmpty else &#123;</span><br><span class="line">        print(&quot;no any be shared data&quot;)</span><br><span class="line">        return</span><br><span class="line">      &#125;</span><br><span class="line">            </span><br><span class="line">      // 把傳入的資料裝到一個自訂的 Event 資料結構</span><br><span class="line">      let event = Event.init(title: args[&quot;title&quot;] as? String,</span><br><span class="line">                             location: args[&quot;location&quot;] as? String,</span><br><span class="line">                             url: args[&quot;url&quot;] as? String,</span><br><span class="line">                             startDate: args[&quot;startDate&quot;] as? Double,</span><br><span class="line">                             endDate: args[&quot;endDate&quot;] as? Double)</span><br><span class="line">            </span><br><span class="line">      let items: [Any]</span><br><span class="line">      let activities: [UIActivity]?</span><br><span class="line">      // 判斷如果是 Event 類型才呼叫自訂的 EventActivity，不然視為一般的分享</span><br><span class="line">      if (event.isValidated()) &#123;</span><br><span class="line">        items = [ url, event ]</span><br><span class="line">        activities = [ EventActivity() ]</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        items = [ url ]</span><br><span class="line">        activities = nil</span><br><span class="line">      &#125;</span><br><span class="line">            </span><br><span class="line">      let activityVC = UIActivityViewController(activityItems: items, applicationActivities: activities)</span><br><span class="line">      self.window.rootViewController?.present(activityVC, animated: true, completion:  nil)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>從 Flutter 使用 method channel 送出資料</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Future&lt;void&gt; _sharedEvent() async &#123;</span><br><span class="line">  // 建立相同 name 的 method channel</span><br><span class="line">  final platform = const MethodChannel(&#x27;sample.poumason.dev/channels&#x27;);</span><br><span class="line">  try &#123;</span><br><span class="line">    // 呼叫定義好的 shared method name</span><br><span class="line">    var result = await platform.invokeMethod(&#x27;shared&#x27;, &#123;</span><br><span class="line">      &#x27;url&#x27;: _urlKey.currentState.value,</span><br><span class="line">      &#x27;title&#x27;: _titleKey.currentState.value,</span><br><span class="line">      &#x27;location&#x27;: _addressKey.currentState.value,</span><br><span class="line">      &#x27;startDate&#x27;:</span><br><span class="line">         (_startKey.currentState.value.millisecondsSinceEpoch / 1000).roundToDouble(),</span><br><span class="line">      &#x27;endDate&#x27;: (_endKey.currentState.value.millisecondsSinceEpoch / 1000).roundToDouble(),</span><br><span class="line">      &#125;);</span><br><span class="line">    print(result);</span><br><span class="line">  &#125; on PlatformException catch (e) &#123;</span><br><span class="line">    print(e.message);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>method channel 傳遞參數的類型是有限制的，可以參考 <a href="https://flutter.dev/docs/development/platform-integration/platform-channels">Platform channel data types support and codecs</a> 的定義。</p>
+</li>
+<li><p>範例結果 </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><img src="/2020/08/16/Flutter/flutter-ios-uiactivityviewcontroller-calendar/1597566128.png"></td>
+<td><img src="/2020/08/16/Flutter/flutter-ios-uiactivityviewcontroller-calendar/1597566139.png"></td>
+<td><img src="/2020/08/16/Flutter/flutter-ios-uiactivityviewcontroller-calendar/1597566151.png"></td>
+</tr>
+</tbody></table>
+</li>
+</ol>
+<h2 id="範例程式：share-calednar。"><a href="#範例程式：share-calednar。" class="headerlink" title="範例程式：share_calednar。"></a>範例程式：<a href="https://github.com/poumason/flutter_samples/tree/master/share_calendar">share_calednar</a>。</h2><p>以上是介紹如何從 Flutter 加入活動資料到 iOS 的行事曆。希望對大家有所幫助，謝謝。</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><ul>
+<li><a href="https://www.itread01.com/content/1545857656.html">[iOS] Get the name of the running application</a></li>
+<li><a href="https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundledisplayname">CFBundleDisplayName</a></li>
+<li><a href="https://stackoverflow.max-everyday.com/2018/01/ios-swift-use-of-s-in-stringformat/">[iOS] swift : use of %s in String(format: …)</a></li>
+<li><a href="https://stackoverflow.com/questions/51593790/remove-html-tags-from-a-string-in-dart">Remove HTML tags from a String in Dart</a></li>
+<li><a href="https://medium.com/@fede_nieto/manage-calendar-events-with-eventkit-and-eventkitui-with-swift-74e1ecbe2524">Manage calendar events with EventKit and EventKitUI with Swift</a></li>
+<li><a href="https://medium.com/@zhongwei0717/ios-%E7%9A%84%E5%8E%9F%E7%94%9F%E5%88%86%E4%BA%AB-uiactivityviewcontroller-f73d272dc2a3">iOS 的原生分享， UIActivityViewController</a></li>
+<li><a href="https://dev.to/nemecek_f/how-to-use-ekeventeditviewcontroller-in-swift-to-let-user-save-event-to-ios-calendar-d8">How to use EKEventEditViewController in Swift to let user save event to iOS calendar</a></li>
+<li><a href="https://medium.com/@JJeremy.XUE/swift-%E7%8E%A9%E7%8E%A9-uiactivityviewcontroller-5995bb80ff68">Swift — 玩玩 UIActivityViewController</a></li>
+<li><a href="https://www.simpleswiftguide.com/how-to-use-sf-symbols-in-swiftui/">How to use SF Symbols in SwiftUI</a></li>
+<li><a href="https://www.hackingwithswift.com/articles/118/uiactivityviewcontroller-by-example">UIActivityViewController by example</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10223393">【Flutter基礎概念與實作】 Day18–Flutter測試框架以及Mockito Package使用範例介紹</a></li>
+<li><a href="https://medium.com/@craiggrummitt/sf-symbols-in-ios-13-55e5febf6db6">SF Symbols in iOS 13</a></li>
+<li><a href="https://www.appcoda.com.tw/social-framework-introduction/">初學者指南：使用社交框架與 UIActivityViewController</a></li>
+<li><a href="https://medium.com/flutterpub/sample-form-part-1-flutter-35664d57b0e5">Sample Form — Part 1— Flutter</a></li>
+<li><a href="https://pub.dev/packages/datetime_picker_formfield">datetime_picker_formfield</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Flutter</category>
+      </categories>
+      <tags>
+        <tag>Flutter</tag>
+        <tag>iOS</tag>
+      </tags>
+  </entry>
 </search>
