@@ -364,4 +364,55 @@ EventActivity.swift<figure class="highlight plaintext"><table><tr><td class="cod
         <tag>iOS</tag>
       </tags>
   </entry>
+  <entry>
+    <title>using-jinja2-generate-gitlab-ci-yaml</title>
+    <url>/2024/09/07/DevOps/using-jinja2-generate-gitlab-ci-yaml/</url>
+    <content><![CDATA[<p>介紹如何透過 Jinja2 套件動態產生 gitlab-ci.yml 檔。</p>
+<span id="more"></span>
+<p>Jinia2 是一種 python package，可以用來動態產生程式碼。</p>
+<h1 id="基本語法介紹"><a href="#基本語法介紹" class="headerlink" title="基本語法介紹"></a>基本語法介紹</h1><ul>
+<li><code>&#123;% %&#125;</code>: 表示 Jinia2 的開始與結束，內容會被視為程式碼執行</li>
+<li><code>&#123;&#123; &#125;&#125;</code>: 代表一個變數或字串</li>
+<li><code>&#123;% %&#125;</code>: 代表一段程式碼</li>
+<li><code>&#123;% if %&#125;</code>: 判斷式</li>
+<li><code>&#123;% for %&#125;</code>: 迴圈</li>
+<li><code>&#123;% set %&#125;</code>: 設定變數</li>
+<li><code>&#123;% include %&#125;</code>: 引入檔案</li>
+<li><code>&#123;% extends %&#125;</code>: 繼承</li>
+<li><code>&#123;% block %&#125;</code>: 覆蓋父模板的區塊</li>
+<li><code>&#123;% macro %&#125;</code>: 定義宏</li>
+<li><code>&#123;% call %&#125;</code>: 呼叫宏</li>
+<li><code>&#123;% import %&#125;</code>: 匯入模組</li>
+<li><code>&#123;% from %&#125;</code>: 從模組中引入變數</li>
+<li><code>&#123;% with %&#125;</code>: 設定變數</li>
+<li><code>&#123;% set %&#125;</code>: 設定變數</li>
+</ul>
+<h2 id="常用的-filter"><a href="#常用的-filter" class="headerlink" title="常用的 filter"></a>常用的 filter</h2><ul>
+<li><code>&#123;&#123;  | safe &#125;&#125;</code>: 將 HTML 標籤轉換為安全的 HTML 標籤</li>
+<li><code>&#123;&#123; | striptags  &#125;&#125;</code> : 去除 HTML 標籤 </li>
+<li><code>&#123;&#123;  | replace('a', 'b') &#125;&#125;</code> : 替換字串</li>
+<li><code>&#123;&#123;   | replace('a', 'b', count=n) &#125;&#125;</code>  : 替換字串，限制 n 次</li>
+<li><code>&#123;&#123; | int &#125;&#125;</code>: 轉換為整數</li>
+<li><code>&#123;&#123;   | float  &#125;&#125;</code>: 轉換為浮點數</li>
+<li><code>&#123;&#123; | trim &#125;&#125;</code>: 去除前後空白</li>
+</ul>
+<h1 id="如何-redner-內容"><a href="#如何-redner-內容" class="headerlink" title="如何 redner 內容"></a>如何 redner 內容</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">from jinja2 import PackageLoader, Environment</span><br><span class="line"></span><br><span class="line">env = Environment(loader=PackageLoader(&#x27;app&#x27;, &#x27;templates&#x27;))</span><br><span class="line">template = env.get_template(&#x27;index.html&#x27;)</span><br><span class="line">template = template.render()</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://jinja.palletsprojects.com/en/3.1/">Jinja2</a></li>
+<li><a href="https://docs.gitlab.com/ee/ci/yaml/#include">GitLab CI&#x2F;CD - GitLab Documentation</a></li>
+<li><a href="https://segmentfault.com/a/1190000018002480">一篇文章搞懂Jinja2 Template Engine 模版引擎</a></li>
+<li><a href="https://jones-coding-room.medium.com/python-%E7%B6%B2%E9%A0%81%E6%A8%A1%E6%9D%BF-jinja2-4081675adc12">Python — Jinja2 網頁模板</a></li>
+<li><a href="https://jinja.palletsprojects.com/en/3.1/templates/#include">Jinja2 Template Designer Documentation</a></li>
+<li><a href="https://blog.csdn.net/weixin_48419914/article/details/123579571">jinja2的基本介绍和使用</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>DevOps</category>
+      </categories>
+      <tags>
+        <tag>DevOps</tag>
+      </tags>
+  </entry>
 </search>

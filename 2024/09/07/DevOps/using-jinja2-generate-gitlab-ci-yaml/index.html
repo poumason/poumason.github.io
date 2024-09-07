@@ -19,24 +19,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"poumason.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"style":null,"show_result":false},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta property="og:type" content="website">
-<meta property="og:title" content="Pou&#39;s Life">
-<meta property="og:url" content="https://poumason.github.io/tags/iOS/index.html">
+    <meta name="description" content="介紹如何透過 Jinja2 套件動態產生 gitlab-ci.yml 檔。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="using-jinja2-generate-gitlab-ci-yaml">
+<meta property="og:url" content="https://poumason.github.io/2024/09/07/DevOps/using-jinja2-generate-gitlab-ci-yaml/index.html">
 <meta property="og:site_name" content="Pou&#39;s Life">
+<meta property="og:description" content="介紹如何透過 Jinja2 套件動態產生 gitlab-ci.yml 檔。">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-09-07T06:37:41.000Z">
+<meta property="article:modified_time" content="2024-09-07T07:06:16.594Z">
 <meta property="article:author" content="Pou Lin">
-<meta property="article:tag" content="C#,DevOps,Python,K8s,Swift,Pou">
+<meta property="article:tag" content="DevOps">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://poumason.github.io/tags/iOS/">
+<link rel="canonical" href="https://poumason.github.io/2024/09/07/DevOps/using-jinja2-generate-gitlab-ci-yaml/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"en","comments":"","permalink":"","path":"tags/iOS/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://poumason.github.io/2024/09/07/DevOps/using-jinja2-generate-gitlab-ci-yaml/","path":"2024/09/07/DevOps/using-jinja2-generate-gitlab-ci-yaml/","title":"using-jinja2-generate-gitlab-ci-yaml"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Tag: iOS | Pou's Life</title>
+<title>using-jinja2-generate-gitlab-ci-yaml | Pou's Life</title>
   
 
 
@@ -123,7 +127,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           Table of Contents
@@ -136,6 +140,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E8%AA%9E%E6%B3%95%E4%BB%8B%E7%B4%B9"><span class="nav-number">1.</span> <span class="nav-text">基本語法介紹</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84-filter"><span class="nav-number">1.1.</span> <span class="nav-text">常用的 filter</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A6%82%E4%BD%95-redner-%E5%85%A7%E5%AE%B9"><span class="nav-number">2.</span> <span class="nav-text">如何 redner 內容</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">3.</span> <span class="nav-text">References</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -185,50 +190,146 @@
 
     </div>
 
-    <div class="main-inner tag posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
+
+
+<div class="post-block">
   
   
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <h1 class="collection-header">iOS
-          <small>Tag</small>
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://poumason.github.io/2024/09/07/DevOps/using-jinja2-generate-gitlab-ci-yaml/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/pou.jpg">
+      <meta itemprop="name" content="Pou Lin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Pou's Life">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="using-jinja2-generate-gitlab-ci-yaml | Pou's Life">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          using-jinja2-generate-gitlab-ci-yaml
         </h1>
-      </div>
 
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
       
-    <div class="collection-year">
-      <span class="collection-header">2020</span>
+
+      <time title="Created: 2024-09-07 14:37:41 / Modified: 15:06:16" itemprop="dateCreated datePublished" datetime="2024-09-07T14:37:41+08:00">2024-09-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/DevOps/" itemprop="url" rel="index"><span itemprop="name">DevOps</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>介紹如何透過 Jinja2 套件動態產生 gitlab-ci.yml 檔。</p>
+<span id="more"></span>
+<p>Jinia2 是一種 python package，可以用來動態產生程式碼。</p>
+<h1 id="基本語法介紹"><a href="#基本語法介紹" class="headerlink" title="基本語法介紹"></a>基本語法介紹</h1><ul>
+<li><code>&#123;% %&#125;</code>: 表示 Jinia2 的開始與結束，內容會被視為程式碼執行</li>
+<li><code>&#123;&#123; &#125;&#125;</code>: 代表一個變數或字串</li>
+<li><code>&#123;% %&#125;</code>: 代表一段程式碼</li>
+<li><code>&#123;% if %&#125;</code>: 判斷式</li>
+<li><code>&#123;% for %&#125;</code>: 迴圈</li>
+<li><code>&#123;% set %&#125;</code>: 設定變數</li>
+<li><code>&#123;% include %&#125;</code>: 引入檔案</li>
+<li><code>&#123;% extends %&#125;</code>: 繼承</li>
+<li><code>&#123;% block %&#125;</code>: 覆蓋父模板的區塊</li>
+<li><code>&#123;% macro %&#125;</code>: 定義宏</li>
+<li><code>&#123;% call %&#125;</code>: 呼叫宏</li>
+<li><code>&#123;% import %&#125;</code>: 匯入模組</li>
+<li><code>&#123;% from %&#125;</code>: 從模組中引入變數</li>
+<li><code>&#123;% with %&#125;</code>: 設定變數</li>
+<li><code>&#123;% set %&#125;</code>: 設定變數</li>
+</ul>
+<h2 id="常用的-filter"><a href="#常用的-filter" class="headerlink" title="常用的 filter"></a>常用的 filter</h2><ul>
+<li><code>&#123;&#123;  | safe &#125;&#125;</code>: 將 HTML 標籤轉換為安全的 HTML 標籤</li>
+<li><code>&#123;&#123; | striptags  &#125;&#125;</code> : 去除 HTML 標籤 </li>
+<li><code>&#123;&#123;  | replace('a', 'b') &#125;&#125;</code> : 替換字串</li>
+<li><code>&#123;&#123;   | replace('a', 'b', count=n) &#125;&#125;</code>  : 替換字串，限制 n 次</li>
+<li><code>&#123;&#123; | int &#125;&#125;</code>: 轉換為整數</li>
+<li><code>&#123;&#123;   | float  &#125;&#125;</code>: 轉換為浮點數</li>
+<li><code>&#123;&#123; | trim &#125;&#125;</code>: 去除前後空白</li>
+</ul>
+<h1 id="如何-redner-內容"><a href="#如何-redner-內容" class="headerlink" title="如何 redner 內容"></a>如何 redner 內容</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from jinja2 import PackageLoader, Environment</span><br><span class="line"></span><br><span class="line">env = Environment(loader=PackageLoader(&#x27;app&#x27;, &#x27;templates&#x27;))</span><br><span class="line">template = env.get_template(&#x27;index.html&#x27;)</span><br><span class="line">template = template.render()</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.1/">Jinja2</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.gitlab.com/ee/ci/yaml/#include">GitLab CI&#x2F;CD - GitLab Documentation</a></li>
+<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000018002480">一篇文章搞懂Jinja2 Template Engine 模版引擎</a></li>
+<li><a target="_blank" rel="noopener" href="https://jones-coding-room.medium.com/python-%E7%B6%B2%E9%A0%81%E6%A8%A1%E6%9D%BF-jinja2-4081675adc12">Python — Jinja2 網頁模板</a></li>
+<li><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.1/templates/#include">Jinja2 Template Designer Documentation</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_48419914/article/details/123579571">jinja2的基本介绍和使用</a></li>
+</ul>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2020-08-16T22:26:19+08:00"
-              content="2020-08-16">
-          08-16
-        </time>
-      </div>
+    
+    
+    
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/08/16/Flutter/flutter-ios-uiactivityviewcontroller-calendar/" itemprop="url">
-            <span itemprop="name">實現 iOS 在 UIActivityViewController 加入行事曆</span>
-          </a>
-      </div>
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/DevOps/" rel="tag"># DevOps</a>
+          </div>
 
-      
-    </header>
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/06/13/DevOps/using-variable-with-rules-ctl-pipeline/" rel="prev" title="如何利用 variables 切換不同的 CI template">
+                  <i class="fa fa-angle-left"></i> 如何利用 variables 切換不同的 CI template
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
   </article>
+</div>
 
-    </div>
-  </div>
-  
-  
-  
+
+
+
+
 
 </div>
   </main>
