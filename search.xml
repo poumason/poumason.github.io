@@ -376,10 +376,13 @@ EventActivity.swift<figure class="highlight plaintext"><table><tr><td class="cod
 <h1 id="如何串接在-repo-的-gitlab-ci-yaml-讓產生的內容能被-trigger"><a href="#如何串接在-repo-的-gitlab-ci-yaml-讓產生的內容能被-trigger" class="headerlink" title="如何串接在 repo 的 gitlab-ci.yaml 讓產生的內容能被 trigger"></a>如何串接在 repo 的 gitlab-ci.yaml 讓產生的內容能被 trigger</h1><p>從上述了解如何使用 jinjia2 動態產生一份 yaml 後，那我們嘗試將它串回到原有的 repo 的 gitlab-ci.yaml 裡。</p>
 <p>舉例來說目前的 gitlab-ci.yaml 有以下的內容：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">stages:</span><br><span class="line">  - generate</span><br><span class="line"></span><br><span class="line">generate-deploy-env:</span><br><span class="line">  stage: generate</span><br><span class="line">  image:</span><br><span class="line">    name: python:3.9-alpine</span><br><span class="line">  script:</span><br><span class="line">    - ls</span><br><span class="line">    - pip install -r ./requirements.txt</span><br><span class="line">    - python3 main.py</span><br><span class="line">  artifacts:</span><br><span class="line">    paths:</span><br><span class="line">      - output.yaml</span><br></pre></td></tr></table></figure>
-<p>加入利用上一個 job 所建立的 output.yaml 來觸發 trigger pipeline：</p>
+<p>內容有負責利用 jinjia2 產生的 output.yaml，接著把 output.yaml 放入 artifacts 裡，提供給下一個 job 使用。</p>
+<p>接著加入一個新的 job，並使用上一個 job 所建立的 output.yaml 來觸發 trigger pipeline：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">deploy-trigger:</span><br><span class="line">  stage: deploy</span><br><span class="line">  trigger:</span><br><span class="line">    include:</span><br><span class="line">      - artifact: output.yaml</span><br><span class="line">        job: generate-deploy-env</span><br></pre></td></tr></table></figure>
-<p><img src="/2024/09/07/DevOps/using-jinja2-generate-gitlab-ci-yaml/Screenshot-0.png"></p>
-<p>下面是紀錄一下使用到 Jinja2 的一些常用寫法。</p>
+
+<p>最後的結果就會產生如下的 pipeline 結果：<br><img src="/2024/09/07/DevOps/using-jinja2-generate-gitlab-ci-yaml/Screenshot-0.png"></p>
+<p>以上是分享如何使用 jinjia2 動態產生 yaml 最後再串接至既有的 gitlab-ci.yaml 之間的流程。</p>
+<p>最後備註 Jinja2 的一些常用寫法。</p>
 <h2 id="基本語法介紹"><a href="#基本語法介紹" class="headerlink" title="基本語法介紹"></a>基本語法介紹</h2><ul>
 <li><code>&#123;% %&#125;</code>: 表示 Jinia2 的開始與結束，內容會被視為程式碼執行</li>
 <li><code>&#123;&#123; &#125;&#125;</code>: 代表一個變數或字串</li>
