@@ -175,6 +175,40 @@
       </tags>
   </entry>
   <entry>
+    <title>如何利用 variables 切換不同的 CI template</title>
+    <url>/2024/06/13/DevOps/using-variable-with-rules-ctl-pipeline/</url>
+    <content><![CDATA[<p>.gitlab-ci.yml 是一份事先定義好的執行腳本，讓 Gitlab 根據裡面的設定產生對應的 pipeline。<br>那如何需要按不同的執行參數來切換不同的腳本內容，又要怎麼定義呢？</p>
+<span id="more"></span>
+
+<h1 id="定義變數來切換不同的-yml"><a href="#定義變數來切換不同的-yml" class="headerlink" title="定義變數來切換不同的 yml"></a>定義變數來切換不同的 yml</h1><p>repo 檔案結構如下:</p>
+<ul>
+<li>.gitlab-ci.yml</li>
+<li>HOME&#x2F;deploy.yml</li>
+<li>SCHOOL&#x2F;deploy.yml</li>
+</ul>
+<p>在 .gitlab-ci.yml 利用特定變數(ex: $ENV)與 rules 來判斷該讀取哪一份 yml 進來，如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">include:</span><br><span class="line">  - local: HOME/deploy.yml</span><br><span class="line">    rules:</span><br><span class="line">      - if: $ENV == &quot;home&quot;</span><br><span class="line">  - local: SCHOOL/deploy.yml</span><br><span class="line">    rules:</span><br><span class="line">      - if: $ENV == &quot;school&quot;</span><br><span class="line">stages:</span><br><span class="line">  - test</span><br><span class="line"></span><br><span class="line">test:</span><br><span class="line">  stage: test</span><br><span class="line">  script:</span><br><span class="line">    - echo $ENV</span><br><span class="line">    # 來自 deploy.yml 內有的變數</span><br><span class="line">    - echo $LOCATION</span><br><span class="line">  rules:</span><br><span class="line">    - if: $ENV != null</span><br></pre></td></tr></table></figure>
+<p>那 deploy.yml 要放什麼呢？</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">variables:</span><br><span class="line">  LOCATION: &quot;HOME&quot;</span><br></pre></td></tr></table></figure>
+
+<p>透過 $ENV 的變數來控制 .gitlab-ci.yml 應該 include 哪一份 yaml 進來。</p>
+<h1 id="如何讓-downstream-取得-upstream-的-artificat"><a href="#如何讓-downstream-取得-upstream-的-artificat" class="headerlink" title="如何讓 downstream 取得 upstream 的 artificat"></a>如何讓 downstream 取得 upstream 的 artificat</h1><h2 id="upstream-的-ci-yaml"><a href="#upstream-的-ci-yaml" class="headerlink" title="upstream 的 ci yaml"></a>upstream 的 ci yaml</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">stages:</span><br><span class="line">  - build</span><br><span class="line">  - trigger</span><br><span class="line"></span><br><span class="line">build-job:</span><br><span class="line">  stage: build</span><br><span class="line">  script:</span><br><span class="line">    - echo &quot;Building the project...&quot;</span><br><span class="line">    - mkdir -p output</span><br><span class="line">    - echo &quot;artifact content&quot; &gt; output/artifact.txt</span><br><span class="line">  artifacts:</span><br><span class="line">    paths:</span><br><span class="line">      - output/artifact.txt</span><br><span class="line">    expire_in: 1 day</span><br><span class="line"></span><br><span class="line">trigger_job:</span><br><span class="line">  stage: trigger</span><br><span class="line">  trigger:</span><br><span class="line">    project: poulin/cd-template</span><br><span class="line">    branch: main</span><br><span class="line">    #wait for pipeline to run</span><br><span class="line">    strategy: depend </span><br><span class="line">  variables:</span><br><span class="line">    UPSTREAM_PROJECT_ID: $CI_PROJECT_ID</span><br><span class="line">    UPSTREAM_PIPELINE_ID: $CI_PIPELINE_ID</span><br><span class="line">  when: manual</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="downstream-的-ci-yaml"><a href="#downstream-的-ci-yaml" class="headerlink" title="downstream 的 ci yaml"></a>downstream 的 ci yaml</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">stages:</span><br><span class="line">  - download</span><br><span class="line"></span><br><span class="line">download-upstream-artifacts:</span><br><span class="line">  stage: download</span><br><span class="line">  variables:</span><br><span class="line">    DEPLOY_TOKEN_PASSWORD: $TOKEN</span><br><span class="line">  image:</span><br><span class="line">    name: amazon/aws-cli:latest</span><br><span class="line">    entrypoint:</span><br><span class="line">      - &quot;&quot;</span><br><span class="line">  script:</span><br><span class="line">    - yum install jq unzip -y</span><br><span class="line">    - echo &quot;Downloading artifacts from upstream...&quot;</span><br><span class="line">    - |</span><br><span class="line">      job_id=$(curl --silent --header &quot;PRIVATE-TOKEN: $&#123;DEPLOY_TOKEN_PASSWORD&#125;&quot; \</span><br><span class="line">        &quot;https://gitlab.com/api/v4/projects/$&#123;UPSTREAM_PROJECT_ID&#125;/pipelines/$&#123;UPSTREAM_PIPELINE_ID&#125;/jobs&quot; \</span><br><span class="line">        | jq -r &#x27;.[] | select(.name==&quot;build-job&quot;) | .id&#x27;)</span><br><span class="line">      curl --location --header &quot;PRIVATE-TOKEN: $&#123;DEPLOY_TOKEN_PASSWORD&#125;&quot; \</span><br><span class="line">        &quot;https://gitlab.com/api/v4/projects/$&#123;UPSTREAM_PROJECT_ID&#125;/jobs/$&#123;job_id&#125;/artifacts&quot; --output artifacts.zip</span><br><span class="line">    - echo &quot;Unzipping the artifacts&quot;</span><br><span class="line">    - unzip artifacts.zip</span><br><span class="line">    - cat output/artifact.txt</span><br><span class="line">  needs:</span><br><span class="line">    - pipeline: $UPSTREAM_PIPELINE_ID</span><br><span class="line">      job: build-job</span><br><span class="line">      artifacts: false</span><br><span class="line">  dependencies: []</span><br><span class="line">  only:</span><br><span class="line">    - pipelines</span><br></pre></td></tr></table></figure>
+<ul>
+<li>需要設定一組 access token 放在 downstream 的 repo 中</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://blog.devops.dev/accessing-artifacts-created-in-a-gitlab-upstream-pipeline-from-a-downstream-pipeline-e50c16ab6f87">Accessing Artifacts Created in a GitLab Upstream Pipeline From A Downstream Pipeline</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>DevOps</category>
+      </categories>
+      <tags>
+        <tag>DevOps</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>如何取得 GitLab 另一個 Pipeline 的 artifacts</title>
     <url>/2022/05/28/DevOps/gitlab-integrated-pipelines/</url>
     <content><![CDATA[<p>介紹如何透過 GitLab API 在 Upstream 取得 Downstream 的 artifact。</p>
@@ -209,40 +243,6 @@
 <h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
 <li><a href="https://gitlab.com/gitlab-org/gitlab/-/issues/285100">List pipeline bridges</a></li>
 <li><a href="https://docs.gitlab.com/ee/api/job_artifacts.html#get-job-artifacts">Get job artifacts</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>DevOps</category>
-      </categories>
-      <tags>
-        <tag>DevOps</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>如何利用 variables 切換不同的 CI template</title>
-    <url>/2024/06/13/DevOps/using-variable-with-rules-ctl-pipeline/</url>
-    <content><![CDATA[<p>.gitlab-ci.yml 是一份事先定義好的執行腳本，讓 Gitlab 根據裡面的設定產生對應的 pipeline。<br>那如何需要按不同的執行參數來切換不同的腳本內容，又要怎麼定義呢？</p>
-<span id="more"></span>
-
-<h1 id="定義變數來切換不同的-yml"><a href="#定義變數來切換不同的-yml" class="headerlink" title="定義變數來切換不同的 yml"></a>定義變數來切換不同的 yml</h1><p>repo 檔案結構如下:</p>
-<ul>
-<li>.gitlab-ci.yml</li>
-<li>HOME&#x2F;deploy.yml</li>
-<li>SCHOOL&#x2F;deploy.yml</li>
-</ul>
-<p>在 .gitlab-ci.yml 利用特定變數(ex: $ENV)與 rules 來判斷該讀取哪一份 yml 進來，如下:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">include:</span><br><span class="line">  - local: HOME/deploy.yml</span><br><span class="line">    rules:</span><br><span class="line">      - if: $ENV == &quot;home&quot;</span><br><span class="line">  - local: SCHOOL/deploy.yml</span><br><span class="line">    rules:</span><br><span class="line">      - if: $ENV == &quot;school&quot;</span><br><span class="line">stages:</span><br><span class="line">  - test</span><br><span class="line"></span><br><span class="line">test:</span><br><span class="line">  stage: test</span><br><span class="line">  script:</span><br><span class="line">    - echo $ENV</span><br><span class="line">    # 來自 deploy.yml 內有的變數</span><br><span class="line">    - echo $LOCATION</span><br><span class="line">  rules:</span><br><span class="line">    - if: $ENV != null</span><br></pre></td></tr></table></figure>
-<p>那 deploy.yml 要放什麼呢？</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">variables:</span><br><span class="line">  LOCATION: &quot;HOME&quot;</span><br></pre></td></tr></table></figure>
-
-<p>透過 $ENV 的變數來控制 .gitlab-ci.yml 應該 include 哪一份 yaml 進來。</p>
-<h1 id="如何讓-downstream-取得-upstream-的-artificat"><a href="#如何讓-downstream-取得-upstream-的-artificat" class="headerlink" title="如何讓 downstream 取得 upstream 的 artificat"></a>如何讓 downstream 取得 upstream 的 artificat</h1><h2 id="upstream-的-ci-yaml"><a href="#upstream-的-ci-yaml" class="headerlink" title="upstream 的 ci yaml"></a>upstream 的 ci yaml</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">stages:</span><br><span class="line">  - build</span><br><span class="line">  - trigger</span><br><span class="line"></span><br><span class="line">build-job:</span><br><span class="line">  stage: build</span><br><span class="line">  script:</span><br><span class="line">    - echo &quot;Building the project...&quot;</span><br><span class="line">    - mkdir -p output</span><br><span class="line">    - echo &quot;artifact content&quot; &gt; output/artifact.txt</span><br><span class="line">  artifacts:</span><br><span class="line">    paths:</span><br><span class="line">      - output/artifact.txt</span><br><span class="line">    expire_in: 1 day</span><br><span class="line"></span><br><span class="line">trigger_job:</span><br><span class="line">  stage: trigger</span><br><span class="line">  trigger:</span><br><span class="line">    project: poulin/cd-template</span><br><span class="line">    branch: main</span><br><span class="line">    #wait for pipeline to run</span><br><span class="line">    strategy: depend </span><br><span class="line">  variables:</span><br><span class="line">    UPSTREAM_PROJECT_ID: $CI_PROJECT_ID</span><br><span class="line">    UPSTREAM_PIPELINE_ID: $CI_PIPELINE_ID</span><br><span class="line">  when: manual</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="downstream-的-ci-yaml"><a href="#downstream-的-ci-yaml" class="headerlink" title="downstream 的 ci yaml"></a>downstream 的 ci yaml</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">stages:</span><br><span class="line">  - download</span><br><span class="line"></span><br><span class="line">download-upstream-artifacts:</span><br><span class="line">  stage: download</span><br><span class="line">  variables:</span><br><span class="line">    DEPLOY_TOKEN_PASSWORD: $TOKEN</span><br><span class="line">  image:</span><br><span class="line">    name: amazon/aws-cli:latest</span><br><span class="line">    entrypoint:</span><br><span class="line">      - &quot;&quot;</span><br><span class="line">  script:</span><br><span class="line">    - yum install jq unzip -y</span><br><span class="line">    - echo &quot;Downloading artifacts from upstream...&quot;</span><br><span class="line">    - |</span><br><span class="line">      job_id=$(curl --silent --header &quot;PRIVATE-TOKEN: $&#123;DEPLOY_TOKEN_PASSWORD&#125;&quot; \</span><br><span class="line">        &quot;https://gitlab.com/api/v4/projects/$&#123;UPSTREAM_PROJECT_ID&#125;/pipelines/$&#123;UPSTREAM_PIPELINE_ID&#125;/jobs&quot; \</span><br><span class="line">        | jq -r &#x27;.[] | select(.name==&quot;build-job&quot;) | .id&#x27;)</span><br><span class="line">      curl --location --header &quot;PRIVATE-TOKEN: $&#123;DEPLOY_TOKEN_PASSWORD&#125;&quot; \</span><br><span class="line">        &quot;https://gitlab.com/api/v4/projects/$&#123;UPSTREAM_PROJECT_ID&#125;/jobs/$&#123;job_id&#125;/artifacts&quot; --output artifacts.zip</span><br><span class="line">    - echo &quot;Unzipping the artifacts&quot;</span><br><span class="line">    - unzip artifacts.zip</span><br><span class="line">    - cat output/artifact.txt</span><br><span class="line">  needs:</span><br><span class="line">    - pipeline: $UPSTREAM_PIPELINE_ID</span><br><span class="line">      job: build-job</span><br><span class="line">      artifacts: false</span><br><span class="line">  dependencies: []</span><br><span class="line">  only:</span><br><span class="line">    - pipelines</span><br></pre></td></tr></table></figure>
-<ul>
-<li>需要設定一組 access token 放在 downstream 的 repo 中</li>
-</ul>
-<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
-<li><a href="https://blog.devops.dev/accessing-artifacts-created-in-a-gitlab-upstream-pipeline-from-a-downstream-pipeline-e50c16ab6f87">Accessing Artifacts Created in a GitLab Upstream Pipeline From A Downstream Pipeline</a></li>
 </ul>
 ]]></content>
       <categories>
@@ -346,12 +346,41 @@ EventActivity.swift<figure class="highlight plaintext"><table><tr><td class="cod
       </tags>
   </entry>
   <entry>
-    <title>using-jinja2-generate-gitlab-ci-yaml</title>
+    <title>利用 Jinja2 產生 gitlab-ci-yaml 並自動化 trigger pipeline</title>
     <url>/2024/09/07/DevOps/using-jinja2-generate-gitlab-ci-yaml/</url>
-    <content><![CDATA[<p>介紹如何透過 Jinja2 套件動態產生 gitlab-ci.yml 檔。</p>
+    <content><![CDATA[<p>介紹如何透過 Jinja2 套件動態產生 gitlab-ci.yml 檔，並透過 gitlab-ci.yml 來自動化 trigger 下一個 pipeline。</p>
 <span id="more"></span>
-<p>Jinia2 是一種 python package，可以用來動態產生程式碼。</p>
-<h1 id="基本語法介紹"><a href="#基本語法介紹" class="headerlink" title="基本語法介紹"></a>基本語法介紹</h1><ul>
+<p>Jinja2 是一種 python package 可以用來動態產生程式碼，僅需先寫好要產生內容的 template 檔，再透過 Jinia2 的 render() 方法來產生想要的內容。</p>
+<p>為什麼我會需要動態產生 gitlab-ci.yml 檔？主因是 CD 過程需要分不同的環境佈署(ex: DEV&#x2F;STAGING&#x2F;PROD)，我希望可以一次產生不同的環境的 gitlab-ci.yaml 檔案，讓使用者自行選擇要佈署的環境。</p>
+<p>我知道，也許您會想到另一種方式，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">variables:</span><br><span class="line">  DEPLOY_ENVIRONMENT:</span><br><span class="line">    value: &quot;staging&quot;</span><br><span class="line">    description: &quot;The deployment target. Change this variable to &#x27;canary&#x27; or &#x27;production&#x27; if needed.&quot;</span><br><span class="line"></span><br><span class="line">stages:</span><br><span class="line">  - deploy</span><br><span class="line"></span><br><span class="line">deploy_$&#123;DEPLOY_ENVIRONMENT&#125;:</span><br><span class="line">  stage: deploy</span><br><span class="line">  script:</span><br><span class="line">    - echo $&#123;DEPLOY_ENVIRONMENT&#125;</span><br><span class="line">  rules:</span><br><span class="line">    - if $DEPLOY_ENVIRONMENT == &quot;staging&quot;</span><br></pre></td></tr></table></figure>
+<p>讓使用者在觸發 pipeline 的時候，自己再給值就好了。</p>
+<p>確實上述的方式是我一開始的作法，但考量到未來我的環境愈來愈多或是 gitlab runner 有不同環境時，不斷地用 rules 去判斷並不是一個好的維讀方式。</p>
+<p>因此，我需要 Jinja2 來幫助我完成這個需求。</p>
+<p>舉例來說：我準備一份 gitlab-ci.yaml 的 template 將基本的任務寫上，並將會動態切換的內容用 jinja2 語法保留起來。</p>
+<h1 id="定義-template"><a href="#定義-template" class="headerlink" title="定義 template"></a>定義 template</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">variables:</span><br><span class="line">  - RELEASE_NAME: &#123;&#123; data.release_name &#125;&#125;</span><br><span class="line"></span><br><span class="line">stages:</span><br><span class="line">  - deploy</span><br><span class="line"></span><br><span class="line">&#123;% for item in data.deploy_env %&#125;</span><br><span class="line">&#123;&#123; item.env &#125;&#125;_deploy_package:</span><br><span class="line">    stage: deploy</span><br><span class="line">    script:</span><br><span class="line">        - echo &quot;$RELEASE_NAME&quot;</span><br><span class="line">        - echo &quot;Deploying &#123;&#123; item.date &#125;&#125; to &#123;&#123; item.target &#125;&#125;&quot;</span><br><span class="line">    when: manual</span><br><span class="line">    tags:</span><br><span class="line">        - &#123;&#123; item.tag &#125;&#125;</span><br><span class="line">&#123;% endfor %&#125;</span><br></pre></td></tr></table></figure>
+<p>template 定義要使用的 yaml 檔，並且在撰寫的時候要記得它是使用 python dict 的結構來進行(也可以相像成 json)並將需要依不同環境的地方保留下來，例如∶</p>
+<ul>
+<li>job name</li>
+<li>job script</li>
+<li>job tag</li>
+</ul>
+<p>其中用了 <code>&#123;% for %&#125;</code> 迴圈，將 <code>data.deploy_env</code> 的每一項目依序渲染出來。</p>
+<h1 id="如何-redner-內容"><a href="#如何-redner-內容" class="headerlink" title="如何 redner 內容"></a>如何 redner 內容</h1><p>有了 template 之後，我們需要定義 data 內容與要如何使用 jijia2 python library 將需要的內容組合出來。</p>
+<h3 id="data-內容"><a href="#data-內容" class="headerlink" title="data 內容"></a>data 內容</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;release_name&quot;: &quot;APP&quot;,</span><br><span class="line">    &quot;deploy_env&quot;: [</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;env&quot;: &quot;dev&quot;,</span><br><span class="line">            &quot;date&quot;: &quot;2024/09/12&quot;,</span><br><span class="line">            &quot;target&quot;: &quot;taipei&quot;,</span><br><span class="line">            &quot;tag&quot;: &quot;runner-taipei&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;env&quot;: &quot;stage&quot;,</span><br><span class="line">            &quot;date&quot;: &quot;2024/09/13&quot;,</span><br><span class="line">            &quot;target&quot;: &quot;taichung&quot;,</span><br><span class="line">            &quot;tag&quot;: &quot;runner-taichung&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>嘗試把實際的 data 先寫成一份 json，然後在經過 python 把它讀進來。如果要動態產生這份 data 的結構也沒有問題的。</p>
+<h3 id="python-code"><a href="#python-code" class="headerlink" title="python code"></a>python code</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">import jinja2</span><br><span class="line">import json</span><br><span class="line"></span><br><span class="line"># Load JSON data</span><br><span class="line">with open(&#x27;./templates/pipeline.json&#x27;) as f:</span><br><span class="line">    data = json.load(f)</span><br><span class="line"></span><br><span class="line"># Jinja2 template</span><br><span class="line">with open(&#x27;./templates/deploy-ci.j2&#x27;, &#x27;r&#x27;) as template_file:</span><br><span class="line">    template = template_file.read()</span><br><span class="line"></span><br><span class="line"># Render the template</span><br><span class="line">jinja_env = jinja2.Environment()</span><br><span class="line">rendered_template = jinja_env.from_string(template).render(data=data)</span><br><span class="line"></span><br><span class="line"># Save the rendered template to a file</span><br><span class="line">with open(&#x27;output.yaml&#x27;, &#x27;w&#x27;) as f:</span><br><span class="line">    f.write(rendered_template)</span><br></pre></td></tr></table></figure>
+<p>程式碼裡最重要的是先準備 <code>jinja2.Environment()</code> 再將寫好的 template 與 data 傳給它請它進行渲染。最後將渲染的結果寫到 output.yaml 如下的內容：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">variables:</span><br><span class="line">  - RELEASE_NAME: APP</span><br><span class="line"></span><br><span class="line">stages:</span><br><span class="line">  - deploy</span><br><span class="line"></span><br><span class="line">dev_deploy_package:</span><br><span class="line">    stage: deploy</span><br><span class="line">    script:</span><br><span class="line">        - echo &quot;Deploying 2024/09/12 to taipei&quot;</span><br><span class="line">    tags:</span><br><span class="line">        - runner-taipei</span><br><span class="line"></span><br><span class="line">stage_deploy_package:</span><br><span class="line">    stage: deploy</span><br><span class="line">    script:</span><br><span class="line">        - echo &quot;Deploying 2024/09/13 to taichung&quot;</span><br><span class="line">    tags:</span><br><span class="line">        - runner-taichung</span><br></pre></td></tr></table></figure>
+
+<h1 id="如何串接在-repo-的-gitlab-ci-yaml-讓產生的內容能被-trigger"><a href="#如何串接在-repo-的-gitlab-ci-yaml-讓產生的內容能被-trigger" class="headerlink" title="如何串接在 repo 的 gitlab-ci.yaml 讓產生的內容能被 trigger"></a>如何串接在 repo 的 gitlab-ci.yaml 讓產生的內容能被 trigger</h1><p>從上述了解如何使用 jinjia2 動態產生一份 yaml 後，那我們嘗試將它串回到原有的 repo 的 gitlab-ci.yaml 裡。</p>
+<p>舉例來說目前的 gitlab-ci.yaml 有以下的內容：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">stages:</span><br><span class="line">  - generate</span><br><span class="line"></span><br><span class="line">generate-deploy-env:</span><br><span class="line">  stage: generate</span><br><span class="line">  image:</span><br><span class="line">    name: python:3.9-alpine</span><br><span class="line">  script:</span><br><span class="line">    - ls</span><br><span class="line">    - pip install -r ./requirements.txt</span><br><span class="line">    - python3 main.py</span><br><span class="line">  artifacts:</span><br><span class="line">    paths:</span><br><span class="line">      - output.yaml</span><br></pre></td></tr></table></figure>
+<p>加入利用上一個 job 所建立的 output.yaml 來觸發 trigger pipeline：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">deploy-trigger:</span><br><span class="line">  stage: deploy</span><br><span class="line">  trigger:</span><br><span class="line">    include:</span><br><span class="line">      - artifact: output.yaml</span><br><span class="line">        job: generate-deploy-env</span><br></pre></td></tr></table></figure>
+<p><img src="/2024/09/07/DevOps/using-jinja2-generate-gitlab-ci-yaml/Screenshot-0.png"></p>
+<p>下面是紀錄一下使用到 Jinja2 的一些常用寫法。</p>
+<h2 id="基本語法介紹"><a href="#基本語法介紹" class="headerlink" title="基本語法介紹"></a>基本語法介紹</h2><ul>
 <li><code>&#123;% %&#125;</code>: 表示 Jinia2 的開始與結束，內容會被視為程式碼執行</li>
 <li><code>&#123;&#123; &#125;&#125;</code>: 代表一個變數或字串</li>
 <li><code>&#123;% %&#125;</code>: 代表一段程式碼</li>
@@ -362,7 +391,7 @@ EventActivity.swift<figure class="highlight plaintext"><table><tr><td class="cod
 <li><code>&#123;% extends %&#125;</code>: 繼承</li>
 <li><code>&#123;% block %&#125;</code>: 覆蓋父模板的區塊</li>
 <li><code>&#123;% macro %&#125;</code>: 定義宏</li>
-<li><code>&#123;% call %&#125;</code>: 呼叫宏</li>
+<li><code>&#123;% call %&#125;</code>: 呼叫</li>
 <li><code>&#123;% import %&#125;</code>: 匯入模組</li>
 <li><code>&#123;% from %&#125;</code>: 從模組中引入變數</li>
 <li><code>&#123;% with %&#125;</code>: 設定變數</li>
@@ -370,16 +399,13 @@ EventActivity.swift<figure class="highlight plaintext"><table><tr><td class="cod
 </ul>
 <h2 id="常用的-filter"><a href="#常用的-filter" class="headerlink" title="常用的 filter"></a>常用的 filter</h2><ul>
 <li><code>&#123;&#123;  | safe &#125;&#125;</code>: 將 HTML 標籤轉換為安全的 HTML 標籤</li>
-<li><code>&#123;&#123; | striptags  &#125;&#125;</code> : 去除 HTML 標籤 </li>
+<li><code>&#123;&#123; | striptags  &#125;&#125;</code> : 去除 HTML 標籤</li>
 <li><code>&#123;&#123;  | replace('a', 'b') &#125;&#125;</code> : 替換字串</li>
 <li><code>&#123;&#123;   | replace('a', 'b', count=n) &#125;&#125;</code>  : 替換字串，限制 n 次</li>
 <li><code>&#123;&#123; | int &#125;&#125;</code>: 轉換為整數</li>
 <li><code>&#123;&#123;   | float  &#125;&#125;</code>: 轉換為浮點數</li>
 <li><code>&#123;&#123; | trim &#125;&#125;</code>: 去除前後空白</li>
 </ul>
-<h1 id="如何-redner-內容"><a href="#如何-redner-內容" class="headerlink" title="如何 redner 內容"></a>如何 redner 內容</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">from jinja2 import PackageLoader, Environment</span><br><span class="line"></span><br><span class="line">env = Environment(loader=PackageLoader(&#x27;app&#x27;, &#x27;templates&#x27;))</span><br><span class="line">template = env.get_template(&#x27;index.html&#x27;)</span><br><span class="line">template = template.render()</span><br></pre></td></tr></table></figure>
-
-
 <h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
 <li><a href="https://jinja.palletsprojects.com/en/3.1/">Jinja2</a></li>
 <li><a href="https://docs.gitlab.com/ee/ci/yaml/#include">GitLab CI&#x2F;CD - GitLab Documentation</a></li>
@@ -387,6 +413,8 @@ EventActivity.swift<figure class="highlight plaintext"><table><tr><td class="cod
 <li><a href="https://jones-coding-room.medium.com/python-%E7%B6%B2%E9%A0%81%E6%A8%A1%E6%9D%BF-jinja2-4081675adc12">Python — Jinja2 網頁模板</a></li>
 <li><a href="https://jinja.palletsprojects.com/en/3.1/templates/#include">Jinja2 Template Designer Documentation</a></li>
 <li><a href="https://blog.csdn.net/weixin_48419914/article/details/123579571">jinja2的基本介绍和使用</a></li>
+<li><a href="https://gitlab-book.tw/ithelp/gitlab-ci/chatops/">和艦長一起 30 天玩轉 GitLab</a></li>
+<li><a href="https://www.osgeo.cn/python-tutorial/webpub-jinja2.html">Jinja2模板引擎的用法</a></li>
 </ul>
 ]]></content>
       <categories>
