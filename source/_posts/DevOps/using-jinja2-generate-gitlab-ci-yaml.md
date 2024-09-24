@@ -66,7 +66,7 @@ template 定義要使用的 yaml 檔，並且在撰寫的時候要記得它是�
 # 如何 redner 內容
 有了 template 之後，我們需要定義 data 內容與要如何使用 jijia2 python library 將需要的內容組合出來。
 
-### data 內容
+## data 內容
 ```
 {
     "release_name": "APP",
@@ -88,7 +88,7 @@ template 定義要使用的 yaml 檔，並且在撰寫的時候要記得它是�
 ```
 嘗試把實際的 data 先寫成一份 json，然後在經過 python 把它讀進來。如果要動態產生這份 data 的結構也沒有問題的。
 
-### python code
+## python code
 ```
 import jinja2
 import json
@@ -196,6 +196,7 @@ deploy-trigger:
 - `{{ | int }}`: 轉換為整數
 - `{{   | float  }}`: 轉換為浮點數
 - `{{ | trim }}`: 去除前後空白
+
 
 
 # References
