@@ -419,7 +419,20 @@ EventActivity.swift<figure class="highlight plaintext"><table><tr><td class="cod
 <li><a href="https://gitlab-book.tw/ithelp/gitlab-ci/chatops/">和艦長一起 30 天玩轉 GitLab</a></li>
 <li><a href="https://www.osgeo.cn/python-tutorial/webpub-jinja2.html">Jinja2模板引擎的用法</a></li>
 </ul>
-]]></content>
+<div id="container"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+  owner: 'poumason',
+  repo: 'https://github.com/poumason/poumason.github.io',
+  oauth: {
+    client_id: 'Ov23liyfHFrddvdcvKZJ',
+    client_secret: '6698a2b48b4097dd6539d6a61ed383b726253895',
+  },
+})
+gitment.render('container')
+</script>]]></content>
       <categories>
         <category>DevOps</category>
       </categories>
