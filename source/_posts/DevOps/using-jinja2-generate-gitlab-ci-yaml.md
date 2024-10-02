@@ -7,7 +7,7 @@ tags: DevOps
 ---
 介紹如何透過 Jinja2 套件動態產生 gitlab-ci.yml 檔，並透過 gitlab-ci.yml 來自動化 trigger 下一個 pipeline。
 <!-- more -->
-Jinja2 是一種 python package 可以用來動態產生程式碼，僅需先寫好要產生內容的 template 檔，再透過 Jinia2 的 render() 方法來產生想要的內容。
+Jinja2 是一種 python package 可以用來動態產生程式碼，僅需先寫好要產生內容的 template 檔，再透過 Jinja2 的 render() 方法來產生想要的內容。
 
 為什麼我會需要動態產生 gitlab-ci.yml 檔？主因是 CD 過程需要分不同的環境佈署(ex: DEV/STAGING/PROD)，我希望可以一次產生不同的環境的 gitlab-ci.yaml 檔案，讓使用者自行選擇要佈署的環境。
 
@@ -30,11 +30,11 @@ deploy_${DEPLOY_ENVIRONMENT}:
 ```
 讓使用者在觸發 pipeline 的時候，自己再給值就好了。
 
-確實上述的方式是我一開始的作法，但考量到未來我的環境愈來愈多或是 gitlab runner 有不同環境時，不斷地用 rules 去判斷並不是一個好的維讀方式。
+確實上述的方式是我一開始的作法，但考量到未來環境愈來愈多或是 gitlab runner 有不同環境時，不斷地用 rules 去判斷並不是一個好的維讀方式。
 
 因此，我需要 Jinja2 來幫助我完成這個需求。
 
-舉例來說：我準備一份 gitlab-ci.yaml 的 template 將基本的任務寫上，並將會動態切換的內容用 jinja2 語法保留起來。
+舉例來說：準備 gitlab-ci.yaml 的 template 將基本的任務寫上，並將會動態切換的內容用 Jinja2 語法保留起來。
 
 # 定義 template
 ```
@@ -55,7 +55,7 @@ stages:
         - {{ item.tag }}
 {% endfor %}
 ```
-template 定義要使用的 yaml 檔，並且在撰寫的時候要記得它是使用 python dict 的結構來進行(也可以相像成 json)並將需要依不同環境的地方保留下來，例如∶
+template 定義要使用的 yaml 檔，並且在撰寫的時候要記得它是使用 python dict 的結構來進行(也可以想像成 json)並將需要依不同環境的地方保留下來，例如∶
 - job name
 - job script
 - job tag
@@ -64,7 +64,7 @@ template 定義要使用的 yaml 檔，並且在撰寫的時候要記得它是�
 
 
 # 如何 redner 內容
-有了 template 之後，我們需要定義 data 內容與要如何使用 jijia2 python library 將需要的內容組合出來。
+有了 template 之後，我們需要定義 data 內容與要如何使用 Jinja2 python library 將需要的內容組合出來。
 
 ## data 內容
 ```
@@ -133,7 +133,7 @@ stage_deploy_package:
 ```
 
 # 如何串接在 repo 的 gitlab-ci.yaml 讓產生的內容能被 trigger
-從上述了解如何使用 jinjia2 動態產生一份 yaml 後，那我們嘗試將它串回到原有的 repo 的 gitlab-ci.yaml 裡。
+從上述了解如何使用 Jinja2 動態產生一份 yaml 後，那我們嘗試將它串回到原有的 repo 的 gitlab-ci.yaml 裡。
 
 舉例來說目前的 gitlab-ci.yaml 有以下的內容：
 ```
@@ -152,7 +152,7 @@ generate-deploy-env:
     paths:
       - output.yaml
 ```
-內容有負責利用 jinjia2 產生的 output.yaml，接著把 output.yaml 放入 artifacts 裡，提供給下一個 job 使用。
+內容有負責利用 Jinja2 產生的 output.yaml，接著把 output.yaml 放入 artifacts 裡，提供給下一個 job 使用。
 
 接著加入一個新的 job，並使用上一個 job 所建立的 output.yaml 來觸發 trigger pipeline：
 ```
@@ -167,12 +167,12 @@ deploy-trigger:
 最後的結果就會產生如下的 pipeline 結果：
 ![](Screenshot-0.png)
 
-以上是分享如何使用 jinjia2 動態產生 yaml 最後再串接至既有的 gitlab-ci.yaml 之間的流程。
+以上是分享如何使用 Jinja2 動態產生 yaml 最後再串接至既有的 gitlab-ci.yaml 之間的流程。
 
 最後備註 Jinja2 的一些常用寫法。
 
 ## 基本語法介紹
-- `{% %}`: 表示 Jinia2 的開始與結束，內容會被視為程式碼執行
+- `{% %}`: 表示 Jinja2 的開始與結束，內容會被視為程式碼執行
 - `{{ }}`: 代表一個變數或字串
 - `{% %}`: 代表一段程式碼
 - `{% if %}`: 判斷式
