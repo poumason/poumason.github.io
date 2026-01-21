@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"poumason.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"style":null,"show_result":false},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="介紹如何透過 GitLab API 在 Upstream 取得 Downstream 的 artifact。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何取得 GitLab 另一個 Pipeline 的 artifacts">
+<meta property="og:url" content="https://poumason.github.io/2022/05/28/DevOps/gitlab-integrated-pipelines/index.html">
+<meta property="og:site_name" content="Pou&#39;s Life">
+<meta property="og:description" content="介紹如何透過 GitLab API 在 Upstream 取得 Downstream 的 artifact。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://poumason.github.io/2022/05/28/DevOps/gitlab-integrated-pipelines/0_N35pBzNuBNRg5K1b.png">
+<meta property="og:image" content="https://poumason.github.io/2022/05/28/DevOps/gitlab-integrated-pipelines/0_nKLsfI8gNXjYY0W6.png">
+<meta property="og:image" content="https://poumason.github.io/2022/05/28/DevOps/gitlab-integrated-pipelines/0_QGpkFooLNK8YGmJU.png">
+<meta property="article:published_time" content="2022-05-28T05:42:17.000Z">
+<meta property="article:modified_time" content="2025-02-20T19:56:14.058Z">
+<meta property="article:author" content="Pou Lin">
+<meta property="article:tag" content="DevOps">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://poumason.github.io/2022/05/28/DevOps/gitlab-integrated-pipelines/0_N35pBzNuBNRg5K1b.png">
+
+
+<link rel="canonical" href="https://poumason.github.io/2022/05/28/DevOps/gitlab-integrated-pipelines/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://poumason.github.io/2022/05/28/DevOps/gitlab-integrated-pipelines/","path":"2022/05/28/DevOps/gitlab-integrated-pipelines/","title":"如何取得 GitLab 另一個 Pipeline 的 artifacts"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>如何取得 GitLab 另一個 Pipeline 的 artifacts | Pou's Life</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Pou's Life</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">abort software development and DevOps.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%B4%B9-multiple-project-pipeline"><span class="nav-number">1.</span> <span class="nav-text">基本介紹 multiple-project pipeline</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">2.</span> <span class="nav-text">References</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Pou Lin"
+      src="/images/pou.jpg">
+  <p class="site-author-name" itemprop="name">Pou Lin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/poumason" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;poumason" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/pou-lin-06483955/" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;pou-lin-06483955&#x2F;" rel="noopener me" target="_blank"><i class="fab fa-linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://poumason.github.io/2022/05/28/DevOps/gitlab-integrated-pipelines/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/pou.jpg">
+      <meta itemprop="name" content="Pou Lin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Pou's Life">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="如何取得 GitLab 另一個 Pipeline 的 artifacts | Pou's Life">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          如何取得 GitLab 另一個 Pipeline 的 artifacts
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-05-28 13:42:17" itemprop="dateCreated datePublished" datetime="2022-05-28T13:42:17+08:00">2022-05-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2025-02-21 03:56:14" itemprop="dateModified" datetime="2025-02-21T03:56:14+08:00">2025-02-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/DevOps/" itemprop="url" rel="index"><span itemprop="name">DevOps</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>介紹如何透過 GitLab API 在 Upstream 取得 Downstream 的 artifact。</p>
+<span id="more"></span>
+<p>大家都熟悉在 repo 裏面建立自己的 GitLab CI&#x2F;CD，一個 repo 每次產生一組 pipeline 裏面帶有多個 jobs，如下圖：</p>
+<p><img src="/2022/05/28/DevOps/gitlab-integrated-pipelines/0_N35pBzNuBNRg5K1b.png"></p>
+<p>那如果需要在 A repo 的 pipeline 通知 repo B 一起進行編譯，並把 repo B 的 artifact 放進 A repo 的 artifact 時，我們能怎麽做？</p>
+<p>option 1: 把 repo B 加入 repo A 的 sub module 一起編譯</p>
+<p>option 2: 利用 GitLab 的 multiple-project pipeline 機制觸發另一個 pipeline</p>
+<p>本篇將介紹 option 2 的 multiple-project pipeline 機制。</p>
+<h1 id="基本介紹-multiple-project-pipeline"><a href="#基本介紹-multiple-project-pipeline" class="headerlink" title="基本介紹 multiple-project pipeline"></a>基本介紹 multiple-project pipeline</h1><p>GitLab CI&#x2F;CD 支援跨 project 的特性，由一個 pipeline 觸發另一個 pipeline。</p>
+<p>觸發者被稱爲 upstream，接受被觸發的稱爲 downstream (它可以多個)。</p>
+<p>如何觸發另一個 repo 的 pipeline 呢？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">stages:</span><br><span class="line">  - trigger_repob</span><br><span class="line">  - buildTrigger-Repo-B:</span><br><span class="line"> </span><br><span class="line">stage: trigger_repob</span><br><span class="line">  variables:</span><br><span class="line">    ENVIRONMENT: staging</span><br><span class="line">  trigger: </span><br><span class="line">    project: my_group/repoB</span><br><span class="line">    branc: dev</span><br><span class="line">    strategy: dependBuild-Repo-A:</span><br><span class="line">  stage: build</span><br><span class="line">  script:</span><br><span class="line">    - echo &quot;upstream&quot;</span><br></pre></td></tr></table></figure>
+<p>關鍵字：<strong>trigger</strong>，它可指定變數從到 downstream，或是要觸發的 project 與 branch，以及是否要等待 pipeline 執行狀態再接著往下。</p>
+<p>trigger 下可以用的 keywords 可以參考 Trigger job configuration keywords。</p>
+<p>觸發其他 project 的 pipeline 的畫面如下，可以看到 Downstream 可有多個，而且各自 Downstream 的 pipeline 可同時進行：</p>
+<p><img src="/2022/05/28/DevOps/gitlab-integrated-pipelines/0_nKLsfI8gNXjYY0W6.png"></p>
+<p>更多詳細的介紹請參考 Multiple-project pipelines。</p>
+<p>取得 Downstream 的 artifact</p>
+<p>熟悉 Multiple-project pipelines 後，接下來是重點，我怎麽能從 upstream 取得 downstream 裏面 Job 的 artifact 呢？</p>
+<p>從 GitLab issues 可以找到很多人許願這樣的功能：<a target="_blank" rel="noopener" href="https://gitlab.com/gitlab-org/gitlab/-/issues/285100">Allow job in upstream pipeline to reference artifacts from a downstream pipeline</a>，但目前還沒有被支援，不過這篇裏面有人介紹了 workaround 做法，我們來看看吧。</p>
+<p>以下 GitLab API 是我們下手的機會：</p>
+<p><a target="_blank" rel="noopener" href="https://docs.gitlab.com/ee/api/jobs.html#list-pipeline-trigger-jobs">List pipeline bridges</a>：取得 upstream 下擁有的 downstream pipeline<br><a target="_blank" rel="noopener" href="https://docs.gitlab.com/ee/api/jobs.html#list-pipeline-jobs">List pipeline jobs</a>：取得 pipeline 的 jobs<br><a target="_blank" rel="noopener" href="https://docs.gitlab.com/ee/api/job_artifacts.html#get-job-artifacts">Get job artifacts</a>：取得 job 的 artifacts</p>
+<p>API 的使用流程(記得要申請 GitLab API Token)如下：<br><img src="/2022/05/28/DevOps/gitlab-integrated-pipelines/0_QGpkFooLNK8YGmJU.png"></p>
+<p>使用 API 的流程，我不建議寫在 .gitlab-ci.yml，因爲非常難 debug，因此，如果您是熟悉 shell 或 powershell 的人可以直接包裝成執行檔來進行。</p>
+<p>以下是我用 powershell 寫的範例(rebuild.ps1: 假設 repoB 有一個 job: build-repo 是我想要的 artifact)：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># use Bridge API to get downstream project id</span><br><span class="line">$BRIDGE_API = &quot;$CI_API/$PROJECT_ID/pipelines/$PIPELINE_ID/bridges&quot;</span><br><span class="line">$response = Invoke-RestMethod -URI $BRIDGE_API -HEADERS @&#123;&#x27;PRIVATE-TKEN&#x27; = $TOKEN &#125;</span><br><span class="line">$downstream_project_id = $response.downstream_pipleline.project_id</span><br><span class="line"></span><br><span class="line"># use Job API to get job content by downstream pipeline id</span><br><span class="line">$JOB_API = &quot;$CI_API/$downstream_project_id/pipelines/jobs&quot;</span><br><span class="line">$response = Invoke-RestMethod -URI $JOB_API -HEADERS @&#123;&#x27;PRIVATE-TKEN&#x27; = $TOKEN &#125;</span><br><span class="line"></span><br><span class="line"># find target job to get id and artifact</span><br><span class="line">$job_id = &quot;&quot;</span><br><span class="line">$artifact = &quot;&quot;foreach ($job in $response) &#123;</span><br><span class="line">  if ($job.name -eq &quot;build-repo&quot;) &#123;</span><br><span class="line">     $artifact = $job.artifacts_file</span><br><span class="line">     $job_id = $job.id  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># download artifact</span><br><span class="line">$ARTIFACTS_API = &quot;$CI_API/$downstream_project_id/jobs/$job_id/artifacts&quot;</span><br><span class="line">Invoke-RestMethod -URI $ARTIFACTS_API -HEADERS @&#123;&#x27;PRIVATE-TKEN&#x27; = $TOKEN &#125; -OutFile &quot;./$($artifact.filename)&quot;</span><br></pre></td></tr></table></figure>
+<p>最終合并到 .gitlab-ci.yml 的内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">stages:</span><br><span class="line">  - build</span><br><span class="line">  - deploybuild-sharecode:</span><br><span class="line">  </span><br><span class="line">stage: build</span><br><span class="line">  trigger:</span><br><span class="line">    project: poulin/shopping-radar-sharecode</span><br><span class="line">    branch: master</span><br><span class="line">    strategy: depend</span><br><span class="line">    </span><br><span class="line">deploy-linbot:</span><br><span class="line">  stage: delpoy</span><br><span class="line">  script:</span><br><span class="line">    - echo &quot;start build&quot;</span><br><span class="line">    - powershell &quot;./rebuild.ps1&quot; &quot;$CI_API_V4_URL/projects&quot; $CI_PROJECT_ID $CI_PIPELINE_ID $env:GITLAB_TOKEN</span><br><span class="line">    - cp ./sharecode ./bin</span><br><span class="line">  needs:</span><br><span class="line">    - build-sharecode</span><br><span class="line">  only:</span><br><span class="line">    - master</span><br><span class="line">  tags:</span><br><span class="line">    - windows</span><br><span class="line"></span><br><span class="line">做法確實很 workaround，但很實用。上面的範例是針對 downstream 下的其中一個 job，如果您有多個 job 的 artifacts 要存取也可以修改裏面的程式碼進行使用哦。</span><br></pre></td></tr></table></figure>
+
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://gitlab.com/gitlab-org/gitlab/-/issues/285100">List pipeline bridges</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.gitlab.com/ee/api/job_artifacts.html#get-job-artifacts">Get job artifacts</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/DevOps/" rel="tag"># DevOps</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/01/28/DevOps/custom-image-on-azure-functions/" rel="prev" title="在 Azure functions 使用自定義的 Docker Image">
+                  <i class="fa fa-angle-left"></i> 在 Azure functions 使用自定義的 Docker Image
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/06/03/CSharp/csharp-copy-properties-the-same-base-class/" rel="next" title="如何讓不同的子類別同步父類別屬性值">
+                  如何讓不同的子類別同步父類別屬性值 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Pou Lin</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"poumason/poumason.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

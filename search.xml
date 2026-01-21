@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>學習 Ansys RSM 執行 fluent 模擬流體與力學</title>
+    <url>/2025/11/28/AI/ansys-simluation/</url>
+    <content><![CDATA[<p>過去使用 Ansys 在跑專案的時候都是靠 CPU，隨著 GPU 越來越越多的討論，開始思考要怎麼使用它。加上專案參與的人越多，是時候研究一下 Ansys RSM(remote solve managment) 的機制了。</p>
+<span id="more"></span>
+<h2 id="Remote-Solve-Management"><a href="#Remote-Solve-Management" class="headerlink" title="Remote Solve Management"></a>Remote Solve Management</h2><h3 id="如何使用-Python-執行-Fluent-的專案"><a href="#如何使用-Python-執行-Fluent-的專案" class="headerlink" title="如何使用 Python 執行 Fluent 的專案"></a>如何使用 Python 執行 Fluent 的專案</h3><p>請先安裝 <a href="https://pypi.org/project/ansys-fluent-core/">ansys-fluent-core</a></p>
+<h2 id="如何搭建-Slurm"><a href="#如何搭建-Slurm" class="headerlink" title="如何搭建 Slurm"></a>如何搭建 Slurm</h2><p><a href="https://slurm.schedmd.com/documentation.html">Slurm</a></p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/v251/en/flu_ug/flu_ug_startramp.html">Starting Ansys Fluent</a></li>
+<li><a href="https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/v251/en/flu_ug/flu_ug_sec_gpu_solver_starting.html%23flu_ug_sec_gpu_solver_comnd_line">Starting the Fluent GPU Solver</a></li>
+<li><a href="https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/v251/en/wb_rsm/rsm_comm_basic.html">Commands for ARC Job Management</a></li>
+<li><a href="https://ansyshelp.ansys.com/public//Views/Secured/corp/v252/en/pdf/Remote_Solve_Manager_Tutorials_2025_R2.pdf">Remote Solve Manager R2025 R2 Tutorials</a></li>
+<li><a href="https://ansyshelp.ansys.com/public/Views/Secured/corp/v252/en/pdf/Ansys_Remote_Solve_Manager_Users_Guide.pdf">Ansys Remote Solve Manager User’s Guide</a></li>
+<li><a href="https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/v251/en/wb2_help/wb2h_submit_solutions_rsm.html">Submitting Solutions to Remote Solve Manager</a></li>
+<li><a href="https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/v251/en/act_cust_wb/ch05s03s03.html">Using RSM Job Submission Capabilities</a></li>
+<li><a href="https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/v252/en/flu_lm/slurm_sec_overview.html">Running Fluent Under Slurm</a></li>
+<li><a href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v242/en/flu_lm/flu_lsf_parallel_lsf_sumbit_fluent.html">Submitting a Fluent Job from the Command Line</a></li>
+<li><a href="https://fluent.docs.pyansys.com/version/stable/_static/cheat_sheet.pdf">PyFluent cheat sheet</a></li>
+<li><a href="https://hackmd.io/@stargazerwang/S1t60i6lF">Slurm 安裝流程</a></li>
+<li><a href="https://medium.com/jacky-life/deploy-slurm-on-ubuntu-18-04-33abb6e902c4">Deploy slurm on ubuntu 18.04</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>3D</category>
+      </categories>
+      <tags>
+        <tag>Fluent</tag>
+        <tag>Ansys</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>學習使用 Streamlit 串接 RAG 做一個簡單的 AI 對話</title>
+    <url>/2025/10/14/AI/learn-streamlit-with-rag/</url>
+    <content><![CDATA[<p>人都是想偷懶的，本篇介紹怎麼程式化發 Pull Reqeust，解決手動上新的版本到 <a href="https://docs.microsoft.com/zh-tw/windows/package-manager/winget/">winget</a> 的流程。</p>
+<span id="more"></span>]]></content>
+      <categories>
+        <category>AI</category>
+      </categories>
+      <tags>
+        <tag>AI</tag>
+        <tag>LLM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>如何讓不同的子類別同步父類別屬性值</title>
+    <url>/2024/06/03/CSharp/csharp-copy-properties-the-same-base-class/</url>
+    <content><![CDATA[<p>在開發程式時，習慣為 data model 建立個 base class 方便把常用的 properties 包裝起來，或是做一些客製的處理。隨著繼續的子類別變多時，有遇過幾次 <code>需要將某個子類別 copy 屬性至不同子類別</code>。<br>按照物件導向原理∶ <strong>子類別無法互轉，或是先轉父類別再轉子類別</strong>。如果要做到複雜屬性的目的，只能經過 Relction 的方式了，以下將介紹如何使用。</p>
+<span id="more"></span>
+
+<h1 id="作法說明"><a href="#作法說明" class="headerlink" title="作法說明"></a>作法說明</h1><ol>
+<li>確認二個子類別均繼承相同的父類別</li>
+<li>建立一個 Extension 並且定義使用的物件必須是父類別家族的人</li>
+<li>利用 Reflection 的方式將 Properties 取出 (由於二者均是相同的父類別，所以該有的屬性均會存在)</li>
+<li>範例程式</li>
+</ol>
+<ul>
+<li>先定義範例用的父類別&#x2F;子類別  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">namespace TodoApi.Models</span><br><span class="line">&#123;</span><br><span class="line">    public abstract class BaseInfo</span><br><span class="line">    &#123;</span><br><span class="line">        public string UserName &#123; get; set; &#125;  </span><br><span class="line">        public string Old &#123; get; set; &#125;</span><br><span class="line">    &#125;  </span><br><span class="line">    public class Student : BaseInfo</span><br><span class="line">    &#123;</span><br><span class="line">        public string School &#123; get; set; &#125;  </span><br><span class="line">        public string Dept &#123; get; set; &#125;</span><br><span class="line">    &#125;  </span><br><span class="line">    public class Employee : BaseInfo</span><br><span class="line">    &#123;</span><br><span class="line">        public string Company &#123; get; set; &#125;</span><br><span class="line">        public string Salary &#123; get; set; &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>Extension 寫法  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public static class ObjectExtensions</span><br><span class="line">&#123;</span><br><span class="line">    public static void CopyProperiesFromBaseClass&lt;T, Y&gt;(this T self, Y from)</span><br><span class="line">    where T : BaseInfo</span><br><span class="line">    where Y : BaseInfo</span><br><span class="line">    &#123;</span><br><span class="line">        var selfProperties = self.GetType().GetProperties();</span><br><span class="line">        var fromProperties = from.GetType().GetProperties();</span><br><span class="line">        foreach (var item in fromProperties)</span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine($&quot;feed proprerty &#123;item.Name&#125;=&#123;item.GetValue(from)&#125;&quot;);</span><br><span class="line">            selfProperties.Where(x =&gt; x.Name == item.Name).FirstOrDefault()?.SetValue(self, item.GetValue(from));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>用法(以 ASP.NET 為例)  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[HttpPost]</span><br><span class="line"> public Employee ConvertData(Student student) &#123;</span><br><span class="line">     var sBaseInfo = student as BaseInfo;</span><br><span class="line">     var employee = new Employee();   </span><br><span class="line">     employee.CopyProperiesFromBaseClass(sBaseInfo);   </span><br><span class="line">     return employee;</span><br><span class="line"> &#125; </span><br></pre></td></tr></table></figure></li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://www.pluralsight.com/resources/blog/guides/property-copying-between-two-objects-using-reflection">Property Copying Between Two Objects using Reflection</a></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>C#</tag>
+        <tag>.NET</tag>
+        <tag>ASP.NET</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>程式化發送 GitHub 的 PullRequest，解決手動 winget 上架</title>
+    <url>/2020/06/20/DevOps/auto-deploy-winget-by-github/</url>
+    <content><![CDATA[<p>人都是想偷懶的，本篇介紹怎麼程式化發 Pull Reqeust，解決手動上新的版本到 <a href="https://docs.microsoft.com/zh-tw/windows/package-manager/winget/">winget</a> 的流程。</p>
+<span id="more"></span>
+
+<p>微軟 <a href="https://www.zdnet.com/article/microsofts-windows-package-manager-this-command-line-tool-can-install-all-your-apps/">&#x2F;&#x2F;build 2020</a> 推出 <a href="https://docs.microsoft.com/zh-tw/windows/package-manager/winget/">winget</a> 可讓開發人員在 Windows 10 電腦上探索、安裝、升級、移除和設定應用程式。</p>
+<p>讓我想要把自己的程式也放到 winget 上，讓其他人也可以直接下載。</p>
+<p>要怎麼送程式到 <a href="https://docs.microsoft.com/zh-tw/windows/package-manager/winget/">winget</a> 呢？</p>
+<p>根據 Submit packages to Windows Packages Manager 介紹，目前 <a href="https://docs.microsoft.com/zh-tw/windows/package-manager/winget/">winget</a> 沒有上架的工具，要上程式到 <a href="https://docs.microsoft.com/zh-tw/windows/package-manager/winget/">winget</a> 有兩個步驟：</p>
+<p>建立一份 manifest，提供程式的說明(作者, 授權, 下載 URL, checksum, … 等)<br>藉由 GitHub 來發 Pull Reqeust 到 winget-pkgs repo</p>
+<h1 id="Create-your-package-manifest"><a href="#Create-your-package-manifest" class="headerlink" title="Create your package manifest"></a>Create your package manifest</h1><p>manifest 是一份 YAML 描述程式的基本資訊，基本必要資訊如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Id: string # Publisher.package format. （必須是唯一的）</span><br><span class="line">Publisher: string # The name of the publisher.</span><br><span class="line">Name: string # The name of the application.</span><br><span class="line">Version: string # Version numbering format.</span><br><span class="line">License: string # The open source license or copyright.</span><br><span class="line">InstallerType: string # Enumeration of supported installer types (exe, msi, msix, inno, wix, nullsoft, appx).</span><br><span class="line">Installers:</span><br><span class="line">  - Arch: string # Enumeration of supported architectures.</span><br><span class="line">  - Url: string # Path to download installation file.</span><br><span class="line">  - Sha256: string # SHA256 calculated from installer.</span><br><span class="line">ManifestVersion: 0.1.0</span><br></pre></td></tr></table></figure>
+<p>範例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Id: microsoft.teams</span><br><span class="line">Publisher: Microsoft Corporation</span><br><span class="line">Name: Microsoft Teams</span><br><span class="line">Version: 1.3.0.4461</span><br><span class="line">License: Copyright (c) Microsoft Corporation. All rights reserved.</span><br><span class="line">InstallerType: exe</span><br><span class="line">Installers:</span><br><span class="line">  - Arch: x64</span><br><span class="line">    Url: https://statics.teams.cdn.office.net/production-windows-x64/1.3.00.4461/Teams_windows_x64.exe</span><br><span class="line">    Sha256: 712f139d71e56bfb306e4a7b739b0e1109abb662dfa164192a5cfd6adb24a4e1</span><br><span class="line">ManifestVersion: 0.1.0</span><br></pre></td></tr></table></figure>
+<p>介紹幾個比較特別的參數：</p>
+<ul>
+<li>Silent：可以強迫在安裝過程沒有出現任何需要人為操作的畫面，在 winget 安裝非常適合</li>
+<li>SilentWithProgress：功能類似 Silent</li>
+<li>Commands：可搭配在安裝時執行特定的指令</li>
+</ul>
+<p>更多詳細的 schema 可以參考：<a href="https://docs.microsoft.com/en-us/windows/package-manager/package/manifest?tabs=minexample,compschema#complete-schema">Complete Shcema</a>。</p>
+<p>了解 manifest 的格式之後，下面介紹怎麼建立 manifest：</p>
+<ol>
+<li>登入 GitHub 帳號</li>
+<li>fork <a href="https://github.com/microsoft/winget-pkgs">winget-pkgs</a> repo 到自己的帳號下</li>
+<li>clone 自己帳號下的 <a href="https://github.com/microsoft/winget-pkgs">winget-pkgs</a> repo 到本機</li>
+<li>進入 clone 下來的 manifest 目錄，建立專屬的 {publisher} 目錄，例如：我是 pou lin。如果未來同一個 {publisher} 發多個 apps 都只能放1. 在這個 {publisher} 目錄</li>
+<li>在 {publisher} 目錄下，建立 {app} 目錄，例如：我的程式叫 just love radio，目錄名稱就是 just love radio。</li>
+<li>在 {app} 目錄下，建立 {version}.yaml。{version}.yaml 每個不同版本都會有一份，例如：1.0.0.0.yaml，1.0.2.0.yaml<ul>
+<li>產生 yaml 檔案，可以 Tool 目錄中找到 YamlCreate.ps1，利用 Powershell 執行它來加以建立 yaml</li>
+<li>目錄結構如圖範例：<br><img src="/2020/06/20/DevOps/auto-deploy-winget-by-github/1592638339.png"></li>
+</ul>
+</li>
+<li>準備好 {version}.yaml 可以發 git push 到自己的 repo</li>
+<li>最後在自己的 winget-pkgs repo 發一個 PullRequest 到 microsoft&#x2F;winget-pkgs 就完成了</li>
+</ol>
+<p>建立 manifest 需要注意的地方，可以參考：<a href="https://docs.microsoft.com/en-us/windows/package-manager/package/manifest?tabs=minexample,compschema#tips-and-best-practices">Tips and best practices</a>。</p>
+<h1 id="Custom-Powershell-script-to-auto-create-YAML-and-send-Pull-Request-to-GitHub"><a href="#Custom-Powershell-script-to-auto-create-YAML-and-send-Pull-Request-to-GitHub" class="headerlink" title="Custom Powershell script to auto create YAML and send Pull Request to GitHub"></a>Custom Powershell script to auto create YAML and send Pull Request to GitHub</h1><p>上面介紹是手動處理方式，雖然步驟不多，但每次有新版本發布都要再做一次。<br>我很懶惰，身為開發人員能減少這種手動的流程是最基本的。<br>分析 {manifest}.yaml 的基本參數跟學習 GitHub 的 GraphQL API 後，<br>我寫出了 Powershell 的 script 來自動化幫我完成手動的流程。</p>
+<p>要自動化處理這些流程有幾個重要的組成元素：</p>
+<h2 id="準備可以檢查是否有新版的地方"><a href="#準備可以檢查是否有新版的地方" class="headerlink" title="準備可以檢查是否有新版的地方"></a>準備可以檢查是否有新版的地方</h2><p>不管是用 Jenkins 或其他 CI，建議準備一個地方紀錄目前最新版本的資訊，讓 script 可以檢查是否有新的版本要發給 winget。<br>例如：我準備一個 json 檔案，再每次 Jenkins 建立新版本時，自動更新該份 json 留下最新的版本資訊。<br>內文如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;packages&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">       &quot;version&quot; : &quot;10.0.2&quot;,</span><br><span class="line">       &quot;code&quot; : 100002,</span><br><span class="line">       &quot;url&quot; : &quot;https://poumason.internal.com/jlr/100002.msi&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    ...</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="自動檢查更新並產生-version-yaml-的內容"><a href="#自動檢查更新並產生-version-yaml-的內容" class="headerlink" title="自動檢查更新並產生 {version}.yaml 的內容"></a>自動檢查更新並產生 {version}.yaml 的內容</h2><p>根據 <a href="https://docs.microsoft.com/en-us/windows/package-manager/package/manifest?tabs=minexample,compschema#minimal-required-schema">Minimal required schema</a> 定義，準備需要的參數，如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Write-Host &quot;1. 從 https://poumason.internal.com/jlr/version.json 檢查是否有新版本&quot;</span><br><span class="line"></span><br><span class="line">$response = Invoke-WebRequest -Uri &quot;https://poumason.internal.com/jlr/version.json&quot;</span><br><span class="line">$jsonObj = ConvertFrom-Json $([String]::new($response.Content))</span><br><span class="line">$lastestVer = $jsonObj.versions[0].version</span><br><span class="line">$lastestUrl = $jsonObj.supports[0].url</span><br><span class="line">$previousVer = $lastestVer</span><br><span class="line"></span><br><span class="line"># 讀取本機的暫存檔，檢查上次抓到的版本跟最新的版本是否一致</span><br><span class="line">$cacheFile = &quot;..\.\winget_ver.txt&quot;</span><br><span class="line">if(![System.IO.File]::Exists($cacheFile))&#123; SET-Content -Path $cacheFile -Value $lastestVer &#125; else &#123; $previousVer = Get-Content -Path $cacheFile &#125;</span><br><span class="line">if ($previousVer -eq $lastestVer) &#123; </span><br><span class="line">   Write-Host &quot;*** The same version ***&quot; -ForeGroundColor Blue </span><br><span class="line">&#125; else &#123;</span><br><span class="line">  # 準備一個新的 branch</span><br><span class="line">  $branchName = &quot;jlr-$&#123;lastestVer&#125;&quot;</span><br><span class="line">  git branch -D $branchName</span><br><span class="line">  git branch $branchName</span><br><span class="line">  git checkout $branchName</span><br><span class="line">  # 準備一個存安裝檔</span><br><span class="line">  $exeFile  = &quot;.\jlr-$&#123;lastestVer&#125;.msi&quot;;</span><br><span class="line"></span><br><span class="line">  Write-Host &quot;2. 下載 url 中的檔案 $&#123;exeFile&#125;&quot;</span><br><span class="line">  Invoke-WebRequest $lastestUrl -OutFile $exeFile</span><br><span class="line"></span><br><span class="line">  Write-Host &quot;3. 取得下載好檔案的 checksum $&#123;exeFile&#125;&quot;</span><br><span class="line">  $checkSum = (Get-FileHash $exeFile -Algorithm sha256).hash</span><br><span class="line">  rm $exeFile</span><br><span class="line"></span><br><span class="line">  Write-Host &quot;4. 產生新版本的 $&#123;lastestVer&#125;.yaml&quot;</span><br><span class="line">  # publisherFolder 可根據自己的名稱與 App 名稱做改變</span><br><span class="line">  $publisherFolder = &quot;poulin\jlr&quot;</span><br><span class="line">  $fileName = &quot;.\manifests\$&#123;publisherFolder&#125;\$&#123;lastestVer&#125;.yaml&quot;</span><br><span class="line">  # 寫入 ID</span><br><span class="line">  $string = &quot;Id: poulin.jlr&quot;</span><br><span class="line">  write-output $string | out-file $filename</span><br><span class="line">  # 寫入 Version</span><br><span class="line">  $string = &quot;Version: &quot; + $lastestVer</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line">  # 寫入 App 名稱</span><br><span class="line">  $string = &quot;Name: Just Love Radio&quot;</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line">  # 寫入 Publisher </span><br><span class="line">  $string = &quot;Publisher: Pou Lin&quot;</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line">  # 寫入 License </span><br><span class="line">  $string = &quot;License: Copyright (c) Pou Lin All Rights Reserved.&quot;</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line">  # 寫入 InstallerType</span><br><span class="line">  $string = &quot;InstallerType: msi&quot;</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line"></span><br><span class="line">  $string = &quot;Installers:&quot;</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line"></span><br><span class="line">  $string = &quot;  - Arch: x86&quot;</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line"></span><br><span class="line">  $string = &quot;    Url: &quot; + $lastestUrl</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line"></span><br><span class="line">  $string = &quot;    Sha256: &quot; + $checkSum</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line">  # 加入 Silent 與 SilentWithProgress</span><br><span class="line">  $string = &quot;    Switches:&quot;</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line"></span><br><span class="line">  $string = &quot;      Silent: /S&quot;</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line"></span><br><span class="line">  $string = &quot;      SilentWithProgress: /S&quot;</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line"></span><br><span class="line">  Write-Host &quot;5. 更新暫存檔案到最新檢查的版本 $&#123;cacheFile&#125;&quot;</span><br><span class="line">  SET-Content -Path $cacheFile -Value $lastestVer </span><br><span class="line">  Write-host GET-Content -Path $cacheFile</span><br><span class="line"></span><br><span class="line">  Write-Host &quot;6. 寫入 git commit 並送到自己的 winget-pkgs repo&quot;</span><br><span class="line">  git add $fileName</span><br><span class="line">  $comment = &quot;Add JLR new version $&#123;lastestVer&#125;&quot;</span><br><span class="line">  git commit -m $comment</span><br><span class="line"></span><br><span class="line">  git push --set-upstream origin $branchName</span><br><span class="line">  git push</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p><strong>這個 script 需要被放在自己 GitHub 帳號下 clone 到本機的 winget-pkgs 根目錄</strong>中，如下圖：<br><img src="/2020/06/20/DevOps/auto-deploy-winget-by-github/1592646366.png"><br>因為裡面會產生新的 {version}.yaml，它需要被 push 到自己的 repo 中，才能發 pull request 給 microsoft:winget-pkgs repo。</p>
+<h2 id="利用-GraphQL-API-從自己的-winget-pkgs-repo-發-Pull-Request-給-microsof-winget-pkgs-repo"><a href="#利用-GraphQL-API-從自己的-winget-pkgs-repo-發-Pull-Request-給-microsof-winget-pkgs-repo" class="headerlink" title="利用 GraphQL API 從自己的 winget-pkgs repo 發 Pull Request 給 microsof:winget-pkgs repo"></a>利用 GraphQL API 從自己的 winget-pkgs repo 發 Pull Request 給 microsof:winget-pkgs repo</h2><p>要程式化發送 Pull Request 需要使用 <a href="https://developer.github.com/v4/mutation/createpullrequest/">createPullRequest - GraphQL API v4</a>，根據 API 參數說明，我們需要：</p>
+<ul>
+<li><a href="https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line">Github Personal access token</a><ul>
+<li>點擊連結申請 Access Token</li>
+</ul>
+</li>
+<li>microsoft:winget-pkgs repo 的 repo ID<ul>
+<li>利用 <a href="https://developer.github.com/v4/explorer/">GraphQL API Explorer</a> 輸入下面的指令得到  repo ID  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    repository(owner: &quot;microsoft&quot;, name: &quot;winget-pkgs&quot;) &#123;</span><br><span class="line">      id</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+最後準備如下的程式碼：<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Write-Host &quot;7. create pull request for GitHub&quot;</span><br><span class="line">$graphql = &quot;https://api.github.com/graphql&quot;</span><br><span class="line">$accessToken = &quot;&#123;申請自己專用的 GitHub Access Token&#125;&quot;</span><br><span class="line"># microsoft:winget-pkgs 的 repo id</span><br><span class="line">$repoId = &quot;&#123;&#125;&quot;</span><br><span class="line"></span><br><span class="line"># 準備發送 api 的 http request headers</span><br><span class="line">$headers = New-Object &quot;System.Collections.Generic.Dictionary[[String],[String]]&quot;</span><br><span class="line">$headers.Add(&quot;User-Agent&quot;, &#x27;Agent&#x27;)</span><br><span class="line">$headers.Add(&quot;Authorization&quot;, &#x27;bearer &#x27; + $accessToken)</span><br><span class="line"> </span><br><span class="line"># 把 $branchName 加入來源</span><br><span class="line">$branchName = &quot;&#123;你的 github 帳號&#125;:$&#123;branchName&#125;&quot;</span><br><span class="line">$body = &#x27;&#123; &quot;query&quot;: &quot;mutation &#123; createPullRequest(input: &#123; baseRefName: \&quot;master\&quot;, headRefName: \&quot;&#x27; + $branchName + &#x27;\&quot;, repositoryId: \&quot;&#x27; + $repoId + &#x27;\&quot;, title: \&quot;&#x27; + $comment + &#x27;\&quot; , body: \&quot;\&quot;&#125;) &#123; clientMutationId&#125; &#125;&quot;  &#125;&#x27;</span><br><span class="line">echo $body</span><br><span class="line">$response = Invoke-WebRequest -Uri $graphql -Headers $headers -Method &#x27;POST&#x27; -Body $body </span><br><span class="line">echo $response</span><br><span class="line">  </span><br><span class="line">git checkout master</span><br></pre></td></tr></table></figure>
+執行的效果如同 <a href="https://github.com/microsoft/winget-pkgs/pull/1940">https://github.com/microsoft/winget-pkgs/pull/1940</a> 我發送的結果。</li>
+</ul>
+</li>
+</ul>
+<h2 id="重新整理整份的-script："><a href="#重新整理整份的-script：" class="headerlink" title="重新整理整份的 script："></a>重新整理整份的 script：</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Write-Host &quot;1. 從 https://poumason.internal.com/jlr/version.json 檢查是否有新版本&quot;</span><br><span class="line"></span><br><span class="line">$response = Invoke-WebRequest -Uri &quot;https://poumason.internal.com/jlr/version.json&quot;</span><br><span class="line">$jsonObj = ConvertFrom-Json $([String]::new($response.Content))</span><br><span class="line">$lastestVer = $jsonObj.versions[0].version</span><br><span class="line">$lastestUrl = $jsonObj.supports[0].url</span><br><span class="line">$previousVer = $lastestVer</span><br><span class="line"></span><br><span class="line"># 讀取本機的暫存檔，檢查上次抓到的版本跟最新的版本是否一致</span><br><span class="line">$cacheFile = &quot;..\.\winget_ver.txt&quot;</span><br><span class="line">if(![System.IO.File]::Exists($cacheFile))&#123; SET-Content -Path $cacheFile -Value $lastestVer &#125; else &#123; $previousVer = Get-Content -Path $cacheFile &#125;</span><br><span class="line">if ($previousVer -eq $lastestVer) &#123; </span><br><span class="line">   Write-Host &quot;*** The same version ***&quot; -ForeGroundColor Blue </span><br><span class="line">&#125; else &#123;</span><br><span class="line">  # 準備一個新的 branch</span><br><span class="line">  $branchName = &quot;jlr-$&#123;lastestVer&#125;&quot;</span><br><span class="line">  git branch -D $branchName</span><br><span class="line">  git branch $branchName</span><br><span class="line">  git checkout $branchName</span><br><span class="line">  # 準備一個存安裝檔</span><br><span class="line">  $exeFile  = &quot;.\jlr-$&#123;lastestVer&#125;.msi&quot;;</span><br><span class="line"></span><br><span class="line">  Write-Host &quot;2. 下載 url 中的檔案 $&#123;exeFile&#125;&quot;</span><br><span class="line">  Invoke-WebRequest $lastestUrl -OutFile $exeFile</span><br><span class="line"></span><br><span class="line">  Write-Host &quot;3. 取得下載好檔案的 checksum $&#123;exeFile&#125;&quot;</span><br><span class="line">  $checkSum = (Get-FileHash $exeFile -Algorithm sha256).hash</span><br><span class="line">  rm $exeFile</span><br><span class="line"></span><br><span class="line">  Write-Host &quot;4. 產生新版本的 $&#123;lastestVer&#125;.yaml&quot;</span><br><span class="line">  # publisherFolder 可根據自己的名稱與 App 名稱做改變</span><br><span class="line">  $publisherFolder = &quot;poulin\jlr&quot;</span><br><span class="line">  $fileName = &quot;.\manifests\$&#123;publisherFolder&#125;\$&#123;lastestVer&#125;.yaml&quot;</span><br><span class="line">  # 寫入 ID</span><br><span class="line">  $string = &quot;Id: poulin.jlr&quot;</span><br><span class="line">  write-output $string | out-file $filename</span><br><span class="line">  # 寫入 Version</span><br><span class="line">  $string = &quot;Version: &quot; + $lastestVer</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line">  # 寫入 App 名稱</span><br><span class="line">  $string = &quot;Name: Just Love Radio&quot;</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line">  # 寫入 Publisher </span><br><span class="line">  $string = &quot;Publisher: Pou Lin&quot;</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line">  # 寫入 License </span><br><span class="line">  $string = &quot;License: Copyright (c) Pou Lin All Rights Reserved.&quot;</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line">  # 寫入 InstallerType</span><br><span class="line">  $string = &quot;InstallerType: msi&quot;</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line"></span><br><span class="line">  $string = &quot;Installers:&quot;</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line"></span><br><span class="line">  $string = &quot;  - Arch: x86&quot;</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line"></span><br><span class="line">  $string = &quot;    Url: &quot; + $lastestUrl</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line"></span><br><span class="line">  $string = &quot;    Sha256: &quot; + $checkSum</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line">  # 加入 Silent 與 SilentWithProgress</span><br><span class="line">  $string = &quot;    Switches:&quot;</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line"></span><br><span class="line">  $string = &quot;      Silent: /S&quot;</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line"></span><br><span class="line">  $string = &quot;      SilentWithProgress: /S&quot;</span><br><span class="line">  write-output $string | out-file $filename -append</span><br><span class="line"></span><br><span class="line">  Write-Host &quot;5. 更新暫存檔案到最新檢查的版本 $&#123;cacheFile&#125;&quot;</span><br><span class="line">  SET-Content -Path $cacheFile -Value $lastestVer </span><br><span class="line">  Write-host GET-Content -Path $cacheFile</span><br><span class="line"></span><br><span class="line">  Write-Host &quot;6. 寫入 git commit 並送到自己的 winget-pkgs repo&quot;</span><br><span class="line">  git add $fileName</span><br><span class="line">  $comment = &quot;Add JLR new version $&#123;lastestVer&#125;&quot;</span><br><span class="line">  git commit -m $comment</span><br><span class="line"></span><br><span class="line">  git push --set-upstream origin $branchName</span><br><span class="line">  git push</span><br><span class="line">  </span><br><span class="line">  Write-Host &quot;7. create pull request for GitHub&quot;</span><br><span class="line">  $graphql = &quot;https://api.github.com/graphql&quot;</span><br><span class="line">  $accessToken = &quot;&#123;申請自己專用的 GitHub Access Token&#125;&quot;</span><br><span class="line">  # microsoft:winget-pkgs 的 repo id</span><br><span class="line">  $repoId = &quot;&#123;&#125;&quot;</span><br><span class="line"></span><br><span class="line">  # 準備發送 api 的 http request headers</span><br><span class="line">  $headers = New-Object &quot;System.Collections.Generic.Dictionary[[String],[String]]&quot;</span><br><span class="line">  $headers.Add(&quot;User-Agent&quot;, &#x27;Agent&#x27;)</span><br><span class="line">  $headers.Add(&quot;Authorization&quot;, &#x27;bearer &#x27; + $accessToken)</span><br><span class="line"> </span><br><span class="line">  # 把 $branchName 加入來源</span><br><span class="line">  $branchName = &quot;&#123;你的 github 帳號&#125;:$&#123;branchName&#125;&quot;</span><br><span class="line">  $body = &#x27;&#123; &quot;query&quot;: &quot;mutation &#123; createPullRequest(input: &#123; baseRefName: \&quot;master\&quot;, headRefName: \&quot;&#x27; + $branchName + &#x27;\&quot;, repositoryId: \&quot;&#x27; + $repoId + &#x27;\&quot;, title: \&quot;&#x27; + $comment + &#x27;\&quot; , body: \&quot;\&quot;&#125;) &#123; clientMutationId&#125; &#125;&quot;  &#125;&#x27;</span><br><span class="line">  echo $body</span><br><span class="line">  $response = Invoke-WebRequest -Uri $graphql -Headers $headers -Method &#x27;POST&#x27; -Body $body </span><br><span class="line">  echo $response</span><br><span class="line">   </span><br><span class="line">  git checkout master</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+<p>再次強調這個 script 要放在跟自己 winget-pkgs 的目錄下，這樣才能正常執行。</p>
+<p>在研究 <a href="https://developer.github.com/v4/">GraphQL API</a> 跟 Powershell 指令花了不少時間，感謝 Joe Wen 的幫忙讓我加快不少。<br>上面的 script 歡迎大家使用，如果有任何的 script 的問題歡迎跟我說，希望有幫忙到大家，謝謝。</p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://developer.github.com/v4/mutation/createpullrequest/">createPullRequest - GraphQL API v4</a></li>
+<li><a href="https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-7">Invoke-WebRequest</a></li>
+<li><a href="https://davidhamann.de/2019/04/12/powershell-invoke-webrequest-by-example/">HTTP requests with PowerShell’s Invoke-WebRequest – by Example</a></li>
+<li><a href="https://jonlabelle.com/snippets/view/powershell/send-a-json-http-api-request-in-powershell">Send a JSON HTTP API Request in PowerShell</a></li>
+<li><a href="https://www.systemcenterautomation.com/2019/05/building-json-payload-in-powershell/">Building JSON Payload in Powershell</a></li>
+<li><a href="https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line">Creating a personal access token for the command line</a></li>
+<li><a href="https://stackoverflow.com/questions/12936150/is-it-possible-to-send-additional-http-headers-to-web-services-via-new-webservic">Is it possible to send additional HTTP headers to web services via New-WebServiceProxy</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>DevOps</category>
+      </categories>
+      <tags>
+        <tag>DevOps</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>在 Azure functions 使用自定義的 Docker Image</title>
+    <url>/2022/01/28/DevOps/custom-image-on-azure-functions/</url>
+    <content><![CDATA[<p>如需在 Azure functions 使用特定的 Lib 版本或第三方套件，例如：ffmpeg，可建立專用的 Docker Image。本篇利用 <a href="https://docs.microsoft.com/en-us/azure/developer/javascript/how-to/develop-serverless-apps">Node.js</a> 為例分享使用的心得。</p>
+<span id="more"></span>
+
+<h1 id="基本需求"><a href="#基本需求" class="headerlink" title="基本需求"></a>基本需求</h1><ul>
+<li>使用 <a href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-premium-plan">Premium plan</a> 或是 <a href="https://docs.microsoft.com/en-us/azure/azure-functions/dedicated-plan">Dedicated (App Service) plan</a></li>
+<li>使用的 docker image 必須基於 <a href="https://hub.docker.com/_/microsoft-azure-functions-base">Azure Functions Base</a></li>
+<li>擁有 <a href="https://hub.docker.com/">docker hub</a> 或 <a href="https://azure.microsoft.com/zh-tw/services/container-registry/">Azure Container registry</a></li>
+<li><a href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-function-linux-custom-image?tabs=in-process,bash,azure-cli&pivots=programming-language-javascript#configure-your-local-environment">開發環境安裝必要的工具</a></li>
+</ul>
+<p>下面分別介紹幾個步驟</p>
+<h1 id="建立-Docker-Image-加入需要的內容"><a href="#建立-Docker-Image-加入需要的內容" class="headerlink" title="建立 Docker Image 加入需要的內容"></a>建立 Docker Image 加入需要的內容</h1><blockquote>
+<p>沒有 Azure functions 專案，參考 建立和測試本機 Functions 專案 準備具有 Http Trigger專案；<br>在本機專案的根目錄建立 Dockerfile，並填入 ffmpeg 與 curl 的安裝。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">FROM mcr.microsoft.com/azure-functions/node:3.0</span><br><span class="line"># Install ffmpeg and curl</span><br><span class="line">RUN apt-get update</span><br><span class="line">RUN apt-get -y install curl</span><br><span class="line">RUN apt-get -y install ffmpeg</span><br><span class="line"># Setting environment variables of Azure functions</span><br><span class="line">ENV AzureWebJobsScriptRoot=/home/site/wwwroot \</span><br><span class="line">    AzureFunctionsJobHost__Logging__Console__IsEnabled=true</span><br><span class="line">COPY . /home/site/wwwroot</span><br><span class="line">RUN cd /home/site/wwwroot &amp;&amp; \</span><br><span class="line">    npm install</span><br></pre></td></tr></table></figure>
+<p>上述指令把專案中所有的 functions 複製到 <strong>&#x2F;home&#x2F;site&#x2F;wwwroot</strong>。專案目錄結構需要符合基本規範。</p>
+<p>介紹環境變數：</p>
+<ul>
+<li>AzureWebJobsScriptRoot<br>代表 Azure functions 專案的執行根目錄，也就是 host.json 的目錄；</li>
+<li>AzureFunctionsJobHost{__path__to__setting}<br>設定需要複寫(overwrite) host.json 裡面的變數值，__path__to__settings 可<a href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-host-json#override-hostjson-values">參考說明</a>換成需要的變數名稱，例如：AzureFunctionsJobHost__Logging_Console__IsEnabled；</li>
+</ul>
+<p>設定 Azure functions 的環境變數，可以從兩個來源：</p>
+<ul>
+<li>固定寫在 Docker image：常放一些通用的資訊</li>
+<li>利用 Azure portal 上的應用程式設定：建議放有安全疑慮的資訊</li>
+</ul>
+<p>兩個來源在 functions 執行時組合在 environment variables，以 node.js 為例，可以使用 <code>process.env.XXXXX</code> 的方式來取得；<br>在測試 docker image 時，建議使用 Http Trigger 的 azure function，因為較能方便測試與除錯。</p>
+<h1 id="建立-docker-container-與本機測試"><a href="#建立-docker-container-與本機測試" class="headerlink" title="建立 docker container 與本機測試"></a>建立 docker container 與本機測試</h1><p><code>docker build --tag &lt;docker ID&gt;/my_az_functions_image:latest .</code><br>如果有修改專案，要記得重新建立 image 並送到 regsitry。</p>
+<p>本機測試檢查 http trigger 是否被掛起：<br><code>docker run -it --rm -p 8080:80 &lt;docker ID&gt;/my_az_functions_image:latest</code></p>
+<p>啟動後，利用 <code>http://localhost:8080/api/&#123;http trigger name&#125;?name=pou</code> 檢查 function 是否被掛起；如果預設使用 template 建立的 http trigger 會看到對應的 response，例如下面的 log：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">info: Function.HttpGreeting[1]</span><br><span class="line">      Executing &#x27;Functions.HttpGreeting&#x27; (Reason=&#x27;This function was programmatically called via the host APIs.&#x27;, Id=cb489e5e-ef7e-4840-aa08-9bf1bcc32961)</span><br><span class="line">info: Function.HttpGreeting.User[0]</span><br><span class="line">      JavaScript HTTP trigger function processed a request.</span><br><span class="line">info: Function.HttpGreeting[2]</span><br><span class="line">      Executed &#x27;Functions.HttpGreeting&#x27; (Succeeded, Id=cb489e5e-ef7e-4840-aa08-9bf1bcc32961, Duration=115ms)</span><br><span class="line">info: Function.HttpGreeting[1]</span><br><span class="line">      Executing &#x27;Functions.HttpGreeting&#x27; (Reason=&#x27;This function was programmatically called via the host APIs.&#x27;, Id=61e1265a-59c3-4d24-86c8-2c7d55021149)</span><br><span class="line">info: Function.HttpGreeting.User[0]</span><br><span class="line">      JavaScript HTTP trigger function processed a request.</span><br><span class="line">info: Function.HttpGreeting[2]</span><br><span class="line">      Executed &#x27;Functions.HttpGreeting&#x27; (Succeeded, Id=61e1265a-59c3-4d24-86c8-2c7d55021149, Duration=7ms)</span><br></pre></td></tr></table></figure>
+
+<p>使用 timer trigger 要記得啟動 docker 時帶入 AzureWebJobsStorage 的設定值才能正常執行，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 在根目錄加入 dev.env</span><br><span class="line">AzureWebJobsStorage=DefaultEndpointsProtocol=https;AccountName=myazfunctions;AccountKey=ONDu3VvJpg;EndpointSuffix=core.windows.net&quot;</span><br><span class="line"></span><br><span class="line">// 執行 docker 時加入 env file </span><br><span class="line">docker run -it --rm -p 8080:80 --env-file ./dev.env &lt;docker ID&gt;/my_az_functions_image:latest</span><br></pre></td></tr></table></figure>
+
+<h1 id="上傳-Docker-Image-到-Docker-Hub"><a href="#上傳-Docker-Image-到-Docker-Hub" class="headerlink" title="上傳 Docker Image 到 Docker Hub"></a>上傳 Docker Image 到 Docker Hub</h1><p><code>docker push &lt;docker ID&gt;/my_az_functions_image:latest </code><br>上傳完畢後，可以從 Docker Hub 看到上傳的內容。</p>
+<h1 id="建立-Azure-Function"><a href="#建立-Azure-Function" class="headerlink" title="建立 Azure Function"></a>建立 Azure Function</h1><ul>
+<li>選擇 Docker-Container<br><img src="/2022/01/28/DevOps/custom-image-on-azure-functions/1_sZr48yiG9sLcMsHJoeNFcw.png"></li>
+<li>建立 Storage account, 選擇 Linux 與 App service Plan(要 premium 喔)<br><img src="/2022/01/28/DevOps/custom-image-on-azure-functions/1_6GJoxBMqhhuNLP15Sa2WtQ.png"><br>也可以<a href="https://docs.microsoft.com/zh-tw/azure/azure-functions/functions-create-function-linux-custom-image?tabs=in-process,bash,azure-cli&pivots=programming-language-javascript#create-supporting-azure-resources-for-your-function">利用 CLI 的方式建立 Azure function 與對應的 resource group</a>。</li>
+</ul>
+<h1 id="到-Azure-functions-的-portal-把必要環境變數加入"><a href="#到-Azure-functions-的-portal-把必要環境變數加入" class="headerlink" title="到 Azure functions 的 portal 把必要環境變數加入"></a>到 Azure functions 的 portal 把必要環境變數加入</h1><p><img src="/2022/01/28/DevOps/custom-image-on-azure-functions/1_a2vR3iXjYmn0RS0DZ9HaGQ.png"><br>詳細設定可參考 <a href="https://docs.microsoft.com/en-us/azure/app-service/configure-common">Configure apps in the portal — Azure App Service</a> 與 <a href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-node?tabs=v2#environment-variables">JavaScript developer reference for Azure Functions</a>。</p>
+<h1 id="部署到-Azure-functions"><a href="#部署到-Azure-functions" class="headerlink" title="部署到 Azure functions"></a>部署到 Azure functions</h1><p><code>az functionapp create --name &lt;APP_NAME&gt; --storage-account &lt;STORAGE_NAME&gt; --resource-group &lt;RESOURCE_GROUP&gt; --plan myPremiumPlan --deployment-container-image-name &lt;DOCKER_ID&gt;/azurefunctionsimage:v1.0.0</code></p>
+<p>其中的 <App_Name>、<RESOURCE_GROUP>、<STORAGE_NAME>、<DOCKER_ID>請已上面步驟建立的值做更換。</p>
+<h1 id="設定-Azure-functions-使用的-Storage-connection"><a href="#設定-Azure-functions-使用的-Storage-connection" class="headerlink" title="設定 Azure functions 使用的 Storage connection"></a>設定 Azure functions 使用的 Storage connection</h1><p>設定 Storage connection 可參考下面的指令，或是使用步驟 4 的介紹從 Azure Portal 上進行設定。<br>Storage connection 的值必須設定在 AzureWebJobsStorage。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 取得 Stroage connection</span><br><span class="line">az storage account show-connection-string --resource-group &lt;RESOURCE_GROUP&gt; --name &lt;STORAGE_NAME&gt; --query connectionString --output tsv</span><br><span class="line"></span><br><span class="line">// 設定 Azure function 使用的 Storage connection</span><br><span class="line">az functionapp config appsettings set --name &lt;APP_NAME&gt; --resource-group &lt;RESOURCE_GROUP&gt; --settings AzureWebJobsStorage=&lt;CONNECTION_STRING&gt;</span><br></pre></td></tr></table></figure>
+
+<h1 id="確認-Azure-Function-是否正確被執行"><a href="#確認-Azure-Function-是否正確被執行" class="headerlink" title="確認 Azure Function 是否正確被執行"></a>確認 Azure Function 是否正確被執行</h1><p>在步驟 2 介紹使用 HTTP trigger，所以可透過下面的連結來做測試<br><code>https://&lt;APP_NAME&gt;.azurewebsites.net/api/&#123;http trigger name&#125;?name=pou</code></p>
+<p>以上是紀錄把 Azure Function 用 Docker Image 包裝起來的方法。<br>如果大家有遇到其他問題歡迎一起討論。</p>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ul>
+<li><a href="https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-node">Quickstart: Create a JavaScript function in Azure using Visual Studio Code</a></li>
+<li><a href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-function-linux-custom-image?tabs=in-process,bash,azure-cli&pivots=programming-language-javascript">Create a function on Linux using a custom container</a></li>
+<li><a href="https://hub.docker.com/_/microsoft-azure-functions-base?tab=description">Azure Functions base Images</a> &amp; <a href="https://github.com/Azure/azure-functions-docker">Github</a></li>
+<li><a href="https://www.programmingwithwolfgang.com/deploy-docker-container-azure-functions/">Deploy a Docker Container to Azure Functions using an Azure DevOps YAML Pipeline</a></li>
+<li><a href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings#azurewebjobsscriptroo">App settings reference for Azure Functions</a></li>
+<li><a href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-host-json#override-hostjson-values">Override host.json values</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>DevOps</category>
+      </categories>
+      <tags>
+        <tag>DevOps</tag>
+        <tag>Azure</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>如何取得 GitLab 另一個 Pipeline 的 artifacts</title>
+    <url>/2022/05/28/DevOps/gitlab-integrated-pipelines/</url>
+    <content><![CDATA[<p>介紹如何透過 GitLab API 在 Upstream 取得 Downstream 的 artifact。</p>
+<span id="more"></span>
+<p>大家都熟悉在 repo 裏面建立自己的 GitLab CI&#x2F;CD，一個 repo 每次產生一組 pipeline 裏面帶有多個 jobs，如下圖：</p>
+<p><img src="/2022/05/28/DevOps/gitlab-integrated-pipelines/0_N35pBzNuBNRg5K1b.png"></p>
+<p>那如果需要在 A repo 的 pipeline 通知 repo B 一起進行編譯，並把 repo B 的 artifact 放進 A repo 的 artifact 時，我們能怎麽做？</p>
+<p>option 1: 把 repo B 加入 repo A 的 sub module 一起編譯</p>
+<p>option 2: 利用 GitLab 的 multiple-project pipeline 機制觸發另一個 pipeline</p>
+<p>本篇將介紹 option 2 的 multiple-project pipeline 機制。</p>
+<h1 id="基本介紹-multiple-project-pipeline"><a href="#基本介紹-multiple-project-pipeline" class="headerlink" title="基本介紹 multiple-project pipeline"></a>基本介紹 multiple-project pipeline</h1><p>GitLab CI&#x2F;CD 支援跨 project 的特性，由一個 pipeline 觸發另一個 pipeline。</p>
+<p>觸發者被稱爲 upstream，接受被觸發的稱爲 downstream (它可以多個)。</p>
+<p>如何觸發另一個 repo 的 pipeline 呢？</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">stages:</span><br><span class="line">  - trigger_repob</span><br><span class="line">  - buildTrigger-Repo-B:</span><br><span class="line"> </span><br><span class="line">stage: trigger_repob</span><br><span class="line">  variables:</span><br><span class="line">    ENVIRONMENT: staging</span><br><span class="line">  trigger: </span><br><span class="line">    project: my_group/repoB</span><br><span class="line">    branc: dev</span><br><span class="line">    strategy: dependBuild-Repo-A:</span><br><span class="line">  stage: build</span><br><span class="line">  script:</span><br><span class="line">    - echo &quot;upstream&quot;</span><br></pre></td></tr></table></figure>
+<p>關鍵字：<strong>trigger</strong>，它可指定變數從到 downstream，或是要觸發的 project 與 branch，以及是否要等待 pipeline 執行狀態再接著往下。</p>
+<p>trigger 下可以用的 keywords 可以參考 Trigger job configuration keywords。</p>
+<p>觸發其他 project 的 pipeline 的畫面如下，可以看到 Downstream 可有多個，而且各自 Downstream 的 pipeline 可同時進行：</p>
+<p><img src="/2022/05/28/DevOps/gitlab-integrated-pipelines/0_nKLsfI8gNXjYY0W6.png"></p>
+<p>更多詳細的介紹請參考 Multiple-project pipelines。</p>
+<p>取得 Downstream 的 artifact</p>
+<p>熟悉 Multiple-project pipelines 後，接下來是重點，我怎麽能從 upstream 取得 downstream 裏面 Job 的 artifact 呢？</p>
+<p>從 GitLab issues 可以找到很多人許願這樣的功能：<a href="https://gitlab.com/gitlab-org/gitlab/-/issues/285100">Allow job in upstream pipeline to reference artifacts from a downstream pipeline</a>，但目前還沒有被支援，不過這篇裏面有人介紹了 workaround 做法，我們來看看吧。</p>
+<p>以下 GitLab API 是我們下手的機會：</p>
+<p><a href="https://docs.gitlab.com/ee/api/jobs.html#list-pipeline-trigger-jobs">List pipeline bridges</a>：取得 upstream 下擁有的 downstream pipeline<br><a href="https://docs.gitlab.com/ee/api/jobs.html#list-pipeline-jobs">List pipeline jobs</a>：取得 pipeline 的 jobs<br><a href="https://docs.gitlab.com/ee/api/job_artifacts.html#get-job-artifacts">Get job artifacts</a>：取得 job 的 artifacts</p>
+<p>API 的使用流程(記得要申請 GitLab API Token)如下：<br><img src="/2022/05/28/DevOps/gitlab-integrated-pipelines/0_QGpkFooLNK8YGmJU.png"></p>
+<p>使用 API 的流程，我不建議寫在 .gitlab-ci.yml，因爲非常難 debug，因此，如果您是熟悉 shell 或 powershell 的人可以直接包裝成執行檔來進行。</p>
+<p>以下是我用 powershell 寫的範例(rebuild.ps1: 假設 repoB 有一個 job: build-repo 是我想要的 artifact)：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># use Bridge API to get downstream project id</span><br><span class="line">$BRIDGE_API = &quot;$CI_API/$PROJECT_ID/pipelines/$PIPELINE_ID/bridges&quot;</span><br><span class="line">$response = Invoke-RestMethod -URI $BRIDGE_API -HEADERS @&#123;&#x27;PRIVATE-TKEN&#x27; = $TOKEN &#125;</span><br><span class="line">$downstream_project_id = $response.downstream_pipleline.project_id</span><br><span class="line"></span><br><span class="line"># use Job API to get job content by downstream pipeline id</span><br><span class="line">$JOB_API = &quot;$CI_API/$downstream_project_id/pipelines/jobs&quot;</span><br><span class="line">$response = Invoke-RestMethod -URI $JOB_API -HEADERS @&#123;&#x27;PRIVATE-TKEN&#x27; = $TOKEN &#125;</span><br><span class="line"></span><br><span class="line"># find target job to get id and artifact</span><br><span class="line">$job_id = &quot;&quot;</span><br><span class="line">$artifact = &quot;&quot;foreach ($job in $response) &#123;</span><br><span class="line">  if ($job.name -eq &quot;build-repo&quot;) &#123;</span><br><span class="line">     $artifact = $job.artifacts_file</span><br><span class="line">     $job_id = $job.id  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># download artifact</span><br><span class="line">$ARTIFACTS_API = &quot;$CI_API/$downstream_project_id/jobs/$job_id/artifacts&quot;</span><br><span class="line">Invoke-RestMethod -URI $ARTIFACTS_API -HEADERS @&#123;&#x27;PRIVATE-TKEN&#x27; = $TOKEN &#125; -OutFile &quot;./$($artifact.filename)&quot;</span><br></pre></td></tr></table></figure>
+<p>最終合并到 .gitlab-ci.yml 的内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">stages:</span><br><span class="line">  - build</span><br><span class="line">  - deploybuild-sharecode:</span><br><span class="line">  </span><br><span class="line">stage: build</span><br><span class="line">  trigger:</span><br><span class="line">    project: poulin/shopping-radar-sharecode</span><br><span class="line">    branch: master</span><br><span class="line">    strategy: depend</span><br><span class="line">    </span><br><span class="line">deploy-linbot:</span><br><span class="line">  stage: delpoy</span><br><span class="line">  script:</span><br><span class="line">    - echo &quot;start build&quot;</span><br><span class="line">    - powershell &quot;./rebuild.ps1&quot; &quot;$CI_API_V4_URL/projects&quot; $CI_PROJECT_ID $CI_PIPELINE_ID $env:GITLAB_TOKEN</span><br><span class="line">    - cp ./sharecode ./bin</span><br><span class="line">  needs:</span><br><span class="line">    - build-sharecode</span><br><span class="line">  only:</span><br><span class="line">    - master</span><br><span class="line">  tags:</span><br><span class="line">    - windows</span><br><span class="line"></span><br><span class="line">做法確實很 workaround，但很實用。上面的範例是針對 downstream 下的其中一個 job，如果您有多個 job 的 artifacts 要存取也可以修改裏面的程式碼進行使用哦。</span><br></pre></td></tr></table></figure>
+
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://gitlab.com/gitlab-org/gitlab/-/issues/285100">List pipeline bridges</a></li>
+<li><a href="https://docs.gitlab.com/ee/api/job_artifacts.html#get-job-artifacts">Get job artifacts</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>DevOps</category>
+      </categories>
+      <tags>
+        <tag>DevOps</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>利用 Jinja2 產生 gitlab-ci-yaml 並自動化 trigger pipeline</title>
+    <url>/2024/09/07/DevOps/using-jinja2-generate-gitlab-ci-yaml/</url>
+    <content><![CDATA[<p>介紹如何透過 Jinja2 套件動態產生 gitlab-ci.yml 檔，並透過 gitlab-ci.yml 來自動化 trigger 下一個 pipeline。</p>
+<span id="more"></span>
+<p>Jinja2 是一種 python package 可以用來動態產生程式碼，僅需先寫好要產生內容的 template 檔，再透過 Jinja2 的 render() 方法來產生想要的內容。</p>
+<p>為什麼我會需要動態產生 gitlab-ci.yml 檔？主因是 CD 過程需要分不同的環境佈署(ex: DEV&#x2F;STAGING&#x2F;PROD)，我希望可以一次產生不同的環境的 gitlab-ci.yaml 檔案，讓使用者自行選擇要佈署的環境。</p>
+<p>我知道，也許您會想到另一種方式，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">variables:</span><br><span class="line">  DEPLOY_ENVIRONMENT:</span><br><span class="line">    value: &quot;staging&quot;</span><br><span class="line">    description: &quot;The deployment target. Change this variable to &#x27;canary&#x27; or &#x27;production&#x27; if needed.&quot;</span><br><span class="line"></span><br><span class="line">stages:</span><br><span class="line">  - deploy</span><br><span class="line"></span><br><span class="line">deploy_$&#123;DEPLOY_ENVIRONMENT&#125;:</span><br><span class="line">  stage: deploy</span><br><span class="line">  script:</span><br><span class="line">    - echo $&#123;DEPLOY_ENVIRONMENT&#125;</span><br><span class="line">  rules:</span><br><span class="line">    - if $DEPLOY_ENVIRONMENT == &quot;staging&quot;</span><br></pre></td></tr></table></figure>
+<p>讓使用者在觸發 pipeline 的時候，自己再給值就好了。</p>
+<p>確實上述的方式是我一開始的作法，但考量到未來環境愈來愈多或是 gitlab runner 有不同環境時，不斷地用 rules 去判斷並不是一個好的維讀方式。</p>
+<p>因此，我需要 Jinja2 來幫助我完成這個需求。</p>
+<p>舉例來說：準備 gitlab-ci.yaml 的 template 將基本的任務寫上，並將會動態切換的內容用 Jinja2 語法保留起來。</p>
+<h1 id="定義-template"><a href="#定義-template" class="headerlink" title="定義 template"></a>定義 template</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">variables:</span><br><span class="line">  - RELEASE_NAME: &#123;&#123; data.release_name &#125;&#125;</span><br><span class="line"></span><br><span class="line">stages:</span><br><span class="line">  - deploy</span><br><span class="line"></span><br><span class="line">&#123;% for item in data.deploy_env %&#125;</span><br><span class="line">&#123;&#123; item.env &#125;&#125;_deploy_package:</span><br><span class="line">    stage: deploy</span><br><span class="line">    script:</span><br><span class="line">        - echo &quot;$RELEASE_NAME&quot;</span><br><span class="line">        - echo &quot;Deploying &#123;&#123; item.date &#125;&#125; to &#123;&#123; item.target &#125;&#125;&quot;</span><br><span class="line">    when: manual</span><br><span class="line">    tags:</span><br><span class="line">        - &#123;&#123; item.tag &#125;&#125;</span><br><span class="line">&#123;% endfor %&#125;</span><br></pre></td></tr></table></figure>
+<p>template 定義要使用的 yaml 檔，並且在撰寫的時候要記得它是使用 python dict 的結構來進行(也可以想像成 json)並將需要依不同環境的地方保留下來，例如∶</p>
+<ul>
+<li>job name</li>
+<li>job script</li>
+<li>job tag</li>
+</ul>
+<p>其中用了 <code>&#123;% for %&#125;</code> 迴圈，將 <code>data.deploy_env</code> 的每一項目依序渲染出來。</p>
+<h1 id="如何-redner-內容"><a href="#如何-redner-內容" class="headerlink" title="如何 redner 內容"></a>如何 redner 內容</h1><p>有了 template 之後，我們需要定義 data 內容與要如何使用 Jinja2 python library 將需要的內容組合出來。</p>
+<h2 id="data-內容"><a href="#data-內容" class="headerlink" title="data 內容"></a>data 內容</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;release_name&quot;: &quot;APP&quot;,</span><br><span class="line">    &quot;deploy_env&quot;: [</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;env&quot;: &quot;dev&quot;,</span><br><span class="line">            &quot;date&quot;: &quot;2024/09/12&quot;,</span><br><span class="line">            &quot;target&quot;: &quot;taipei&quot;,</span><br><span class="line">            &quot;tag&quot;: &quot;runner-taipei&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;env&quot;: &quot;stage&quot;,</span><br><span class="line">            &quot;date&quot;: &quot;2024/09/13&quot;,</span><br><span class="line">            &quot;target&quot;: &quot;taichung&quot;,</span><br><span class="line">            &quot;tag&quot;: &quot;runner-taichung&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>嘗試把實際的 data 先寫成一份 json，然後在經過 python 把它讀進來。如果要動態產生這份 data 的結構也沒有問題的。</p>
+<h2 id="python-code"><a href="#python-code" class="headerlink" title="python code"></a>python code</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">import jinja2</span><br><span class="line">import json</span><br><span class="line"></span><br><span class="line"># Load JSON data</span><br><span class="line">with open(&#x27;./templates/pipeline.json&#x27;) as f:</span><br><span class="line">    data = json.load(f)</span><br><span class="line"></span><br><span class="line"># Jinja2 template</span><br><span class="line">with open(&#x27;./templates/deploy-ci.j2&#x27;, &#x27;r&#x27;) as template_file:</span><br><span class="line">    template = template_file.read()</span><br><span class="line"></span><br><span class="line"># Render the template</span><br><span class="line">jinja_env = jinja2.Environment()</span><br><span class="line">rendered_template = jinja_env.from_string(template).render(data=data)</span><br><span class="line"></span><br><span class="line"># Save the rendered template to a file</span><br><span class="line">with open(&#x27;output.yaml&#x27;, &#x27;w&#x27;) as f:</span><br><span class="line">    f.write(rendered_template)</span><br></pre></td></tr></table></figure>
+<p>程式碼裡最重要的是先準備 <code>jinja2.Environment()</code> 再將寫好的 template 與 data 傳給它請它進行渲染。最後將渲染的結果寫到 output.yaml 如下的內容：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">variables:</span><br><span class="line">  - RELEASE_NAME: APP</span><br><span class="line"></span><br><span class="line">stages:</span><br><span class="line">  - deploy</span><br><span class="line"></span><br><span class="line">dev_deploy_package:</span><br><span class="line">    stage: deploy</span><br><span class="line">    script:</span><br><span class="line">        - echo &quot;Deploying 2024/09/12 to taipei&quot;</span><br><span class="line">    tags:</span><br><span class="line">        - runner-taipei</span><br><span class="line"></span><br><span class="line">stage_deploy_package:</span><br><span class="line">    stage: deploy</span><br><span class="line">    script:</span><br><span class="line">        - echo &quot;Deploying 2024/09/13 to taichung&quot;</span><br><span class="line">    tags:</span><br><span class="line">        - runner-taichung</span><br></pre></td></tr></table></figure>
+
+<h1 id="如何串接在-repo-的-gitlab-ci-yaml-讓產生的內容能被-trigger"><a href="#如何串接在-repo-的-gitlab-ci-yaml-讓產生的內容能被-trigger" class="headerlink" title="如何串接在 repo 的 gitlab-ci.yaml 讓產生的內容能被 trigger"></a>如何串接在 repo 的 gitlab-ci.yaml 讓產生的內容能被 trigger</h1><p>從上述了解如何使用 Jinja2 動態產生一份 yaml 後，那我們嘗試將它串回到原有的 repo 的 gitlab-ci.yaml 裡。</p>
+<p>舉例來說目前的 gitlab-ci.yaml 有以下的內容：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">stages:</span><br><span class="line">  - generate</span><br><span class="line"></span><br><span class="line">generate-deploy-env:</span><br><span class="line">  stage: generate</span><br><span class="line">  image:</span><br><span class="line">    name: python:3.9-alpine</span><br><span class="line">  script:</span><br><span class="line">    - ls</span><br><span class="line">    - pip install -r ./requirements.txt</span><br><span class="line">    - python3 main.py</span><br><span class="line">  artifacts:</span><br><span class="line">    paths:</span><br><span class="line">      - output.yaml</span><br></pre></td></tr></table></figure>
+<p>內容有負責利用 Jinja2 產生的 output.yaml，接著把 output.yaml 放入 artifacts 裡，提供給下一個 job 使用。</p>
+<p>接著加入一個新的 job，並使用上一個 job 所建立的 output.yaml 來觸發 trigger pipeline：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">deploy-trigger:</span><br><span class="line">  stage: deploy</span><br><span class="line">  trigger:</span><br><span class="line">    include:</span><br><span class="line">      - artifact: output.yaml</span><br><span class="line">        job: generate-deploy-env</span><br></pre></td></tr></table></figure>
+
+<p>最後的結果就會產生如下的 pipeline 結果：<br><img src="/2024/09/07/DevOps/using-jinja2-generate-gitlab-ci-yaml/Screenshot-0.png"></p>
+<p>以上是分享如何使用 Jinja2 動態產生 yaml 最後再串接至既有的 gitlab-ci.yaml 之間的流程。</p>
+<p>最後備註 Jinja2 的一些常用寫法。</p>
+<h2 id="基本語法介紹"><a href="#基本語法介紹" class="headerlink" title="基本語法介紹"></a>基本語法介紹</h2><ul>
+<li><code>&#123;% %&#125;</code>: 表示 Jinja2 的開始與結束，內容會被視為程式碼執行</li>
+<li><code>&#123;&#123; &#125;&#125;</code>: 代表一個變數或字串</li>
+<li><code>&#123;% %&#125;</code>: 代表一段程式碼</li>
+<li><code>&#123;% if %&#125;</code>: 判斷式</li>
+<li><code>&#123;% for %&#125;</code>: 迴圈</li>
+<li><code>&#123;% set %&#125;</code>: 設定變數</li>
+<li><code>&#123;% include %&#125;</code>: 引入檔案</li>
+<li><code>&#123;% extends %&#125;</code>: 繼承</li>
+<li><code>&#123;% block %&#125;</code>: 覆蓋父模板的區塊</li>
+<li><code>&#123;% macro %&#125;</code>: 定義宏</li>
+<li><code>&#123;% call %&#125;</code>: 呼叫</li>
+<li><code>&#123;% import %&#125;</code>: 匯入模組</li>
+<li><code>&#123;% from %&#125;</code>: 從模組中引入變數</li>
+<li><code>&#123;% with %&#125;</code>: 設定變數</li>
+<li><code>&#123;% set %&#125;</code>: 設定變數</li>
+</ul>
+<h2 id="常用的-filter"><a href="#常用的-filter" class="headerlink" title="常用的 filter"></a>常用的 filter</h2><ul>
+<li><code>&#123;&#123;  | safe &#125;&#125;</code>: 將 HTML 標籤轉換為安全的 HTML 標籤</li>
+<li><code>&#123;&#123; | striptags  &#125;&#125;</code> : 去除 HTML 標籤</li>
+<li><code>&#123;&#123;  | replace('a', 'b') &#125;&#125;</code> : 替換字串</li>
+<li><code>&#123;&#123;   | replace('a', 'b', count=n) &#125;&#125;</code>  : 替換字串，限制 n 次</li>
+<li><code>&#123;&#123; | int &#125;&#125;</code>: 轉換為整數</li>
+<li><code>&#123;&#123;   | float  &#125;&#125;</code>: 轉換為浮點數</li>
+<li><code>&#123;&#123; | trim &#125;&#125;</code>: 去除前後空白</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://jinja.palletsprojects.com/en/3.1/">Jinja2</a></li>
+<li><a href="https://docs.gitlab.com/ee/ci/yaml/#include">GitLab CI&#x2F;CD - GitLab Documentation</a></li>
+<li><a href="https://segmentfault.com/a/1190000018002480">一篇文章搞懂Jinja2 Template Engine 模版引擎</a></li>
+<li><a href="https://jones-coding-room.medium.com/python-%E7%B6%B2%E9%A0%81%E6%A8%A1%E6%9D%BF-jinja2-4081675adc12">Python — Jinja2 網頁模板</a></li>
+<li><a href="https://jinja.palletsprojects.com/en/3.1/templates/#include">Jinja2 Template Designer Documentation</a></li>
+<li><a href="https://blog.csdn.net/weixin_48419914/article/details/123579571">jinja2的基本介绍和使用</a></li>
+<li><a href="https://gitlab-book.tw/ithelp/gitlab-ci/chatops/">和艦長一起 30 天玩轉 GitLab</a></li>
+<li><a href="https://www.osgeo.cn/python-tutorial/webpub-jinja2.html">Jinja2模板引擎的用法</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>DevOps</category>
+      </categories>
+      <tags>
+        <tag>DevOps</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>如何利用 variables 切換不同的 CI template</title>
+    <url>/2024/06/13/DevOps/using-variable-with-rules-ctl-pipeline/</url>
+    <content><![CDATA[<p>.gitlab-ci.yml 是一份事先定義好的執行腳本，讓 Gitlab 根據裡面的設定產生對應的 pipeline。<br>那如何需要按不同的執行參數來切換不同的腳本內容，又要怎麼定義呢？</p>
+<span id="more"></span>
+
+<h1 id="定義變數來切換不同的-yml"><a href="#定義變數來切換不同的-yml" class="headerlink" title="定義變數來切換不同的 yml"></a>定義變數來切換不同的 yml</h1><p>repo 檔案結構如下:</p>
+<ul>
+<li>.gitlab-ci.yml</li>
+<li>HOME&#x2F;deploy.yml</li>
+<li>SCHOOL&#x2F;deploy.yml</li>
+</ul>
+<p>在 .gitlab-ci.yml 利用特定變數(ex: $ENV)與 rules 來判斷該讀取哪一份 yml 進來，如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">include:</span><br><span class="line">  - local: HOME/deploy.yml</span><br><span class="line">    rules:</span><br><span class="line">      - if: $ENV == &quot;home&quot;</span><br><span class="line">  - local: SCHOOL/deploy.yml</span><br><span class="line">    rules:</span><br><span class="line">      - if: $ENV == &quot;school&quot;</span><br><span class="line">stages:</span><br><span class="line">  - test</span><br><span class="line"></span><br><span class="line">test:</span><br><span class="line">  stage: test</span><br><span class="line">  script:</span><br><span class="line">    - echo $ENV</span><br><span class="line">    # 來自 deploy.yml 內有的變數</span><br><span class="line">    - echo $LOCATION</span><br><span class="line">  rules:</span><br><span class="line">    - if: $ENV != null</span><br></pre></td></tr></table></figure>
+<p>那 deploy.yml 要放什麼呢？</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">variables:</span><br><span class="line">  LOCATION: &quot;HOME&quot;</span><br></pre></td></tr></table></figure>
+
+<p>透過 $ENV 的變數來控制 .gitlab-ci.yml 應該 include 哪一份 yaml 進來。</p>
+<h1 id="如何讓-downstream-取得-upstream-的-artificat"><a href="#如何讓-downstream-取得-upstream-的-artificat" class="headerlink" title="如何讓 downstream 取得 upstream 的 artificat"></a>如何讓 downstream 取得 upstream 的 artificat</h1><h2 id="upstream-的-ci-yaml"><a href="#upstream-的-ci-yaml" class="headerlink" title="upstream 的 ci yaml"></a>upstream 的 ci yaml</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">stages:</span><br><span class="line">  - build</span><br><span class="line">  - trigger</span><br><span class="line"></span><br><span class="line">build-job:</span><br><span class="line">  stage: build</span><br><span class="line">  script:</span><br><span class="line">    - echo &quot;Building the project...&quot;</span><br><span class="line">    - mkdir -p output</span><br><span class="line">    - echo &quot;artifact content&quot; &gt; output/artifact.txt</span><br><span class="line">  artifacts:</span><br><span class="line">    paths:</span><br><span class="line">      - output/artifact.txt</span><br><span class="line">    expire_in: 1 day</span><br><span class="line"></span><br><span class="line">trigger_job:</span><br><span class="line">  stage: trigger</span><br><span class="line">  trigger:</span><br><span class="line">    project: poulin/cd-template</span><br><span class="line">    branch: main</span><br><span class="line">    #wait for pipeline to run</span><br><span class="line">    strategy: depend </span><br><span class="line">  variables:</span><br><span class="line">    UPSTREAM_PROJECT_ID: $CI_PROJECT_ID</span><br><span class="line">    UPSTREAM_PIPELINE_ID: $CI_PIPELINE_ID</span><br><span class="line">  when: manual</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="downstream-的-ci-yaml"><a href="#downstream-的-ci-yaml" class="headerlink" title="downstream 的 ci yaml"></a>downstream 的 ci yaml</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">stages:</span><br><span class="line">  - download</span><br><span class="line"></span><br><span class="line">download-upstream-artifacts:</span><br><span class="line">  stage: download</span><br><span class="line">  variables:</span><br><span class="line">    DEPLOY_TOKEN_PASSWORD: $TOKEN</span><br><span class="line">  image:</span><br><span class="line">    name: amazon/aws-cli:latest</span><br><span class="line">    entrypoint:</span><br><span class="line">      - &quot;&quot;</span><br><span class="line">  script:</span><br><span class="line">    - yum install jq unzip -y</span><br><span class="line">    - echo &quot;Downloading artifacts from upstream...&quot;</span><br><span class="line">    - |</span><br><span class="line">      job_id=$(curl --silent --header &quot;PRIVATE-TOKEN: $&#123;DEPLOY_TOKEN_PASSWORD&#125;&quot; \</span><br><span class="line">        &quot;https://gitlab.com/api/v4/projects/$&#123;UPSTREAM_PROJECT_ID&#125;/pipelines/$&#123;UPSTREAM_PIPELINE_ID&#125;/jobs&quot; \</span><br><span class="line">        | jq -r &#x27;.[] | select(.name==&quot;build-job&quot;) | .id&#x27;)</span><br><span class="line">      curl --location --header &quot;PRIVATE-TOKEN: $&#123;DEPLOY_TOKEN_PASSWORD&#125;&quot; \</span><br><span class="line">        &quot;https://gitlab.com/api/v4/projects/$&#123;UPSTREAM_PROJECT_ID&#125;/jobs/$&#123;job_id&#125;/artifacts&quot; --output artifacts.zip</span><br><span class="line">    - echo &quot;Unzipping the artifacts&quot;</span><br><span class="line">    - unzip artifacts.zip</span><br><span class="line">    - cat output/artifact.txt</span><br><span class="line">  needs:</span><br><span class="line">    - pipeline: $UPSTREAM_PIPELINE_ID</span><br><span class="line">      job: build-job</span><br><span class="line">      artifacts: false</span><br><span class="line">  dependencies: []</span><br><span class="line">  only:</span><br><span class="line">    - pipelines</span><br></pre></td></tr></table></figure>
+<ul>
+<li>需要設定一組 access token 放在 downstream 的 repo 中</li>
+</ul>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://blog.devops.dev/accessing-artifacts-created-in-a-gitlab-upstream-pipeline-from-a-downstream-pipeline-e50c16ab6f87">Accessing Artifacts Created in a GitLab Upstream Pipeline From A Downstream Pipeline</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>DevOps</category>
+      </categories>
+      <tags>
+        <tag>DevOps</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>實現 iOS 在 UIActivityViewController 加入行事曆</title>
+    <url>/2020/08/16/Flutter/flutter-ios-uiactivityviewcontroller-calendar/</url>
+    <content><![CDATA[<p>如果要在 Flutter 呼叫分享很簡單，利用 <a href="https://pub.dev/packages/share">share</a> plugin 一下就完成，開發過 Flutter 的人一定都知道。<br>剛好今天有需求是在 iOS 分享活動連結時可以多顯示一個自訂的按鈕，讓使用者可以加入到行事曆。</p>
+<span id="more"></span>
+<p>要做到 iOS 分享時加入自訂的按鈕，有兩個重要的元素： <a href="http://developer.apple.com/documentation/uikit/uiactivityviewcontroller">UIActivityController</a> 與 <a href="http://developer.apple.com/documentation/uikit/uiactivity">UIActivity</a> 。</p>
+<h2 id="UIActivityController"><a href="#UIActivityController" class="headerlink" title="UIActivityController"></a>UIActivityController</h2><p>系統提供多種 services (例如：複製內容到剪貼簿，分享文字到 social media 或 email …等)。也提供開發者自訂 service 來提供服務。</p>
+<p><a href="https://developer.apple.com/documentation/uikit/uiactivityviewcontroller">UIActivityController</a> 集合這些 services 來呈現在畫面上供用戶選擇。可設定該 View Controller 傳遞的資料結構與對應的 services。</p>
+<p>最簡單的分享如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">let shareItems = [&quot;Hello&quot;]</span><br><span class="line">let activityVC = UIActivityViewController(activityItems: shareItems, applicationActivities: nil)</span><br><span class="line"></span><br><span class="line">self.presentViewController(activityVC, animated: true, completion: nil)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><a href="https://developer.apple.com/documentation/uikit/uiactivityviewcontroller/1622019-init">activityItems</a> ：資料物件的 array，可以是字串，圖片或自訂的資料內容。</li>
+<li><a href="https://developer.apple.com/documentation/uikit/uiactivityviewcontroller/1622019-init">applicationActivities</a> <a href="https://developer.apple.com/documentation/uikit/uiactivity">：UIActivity</a> 的 array，放有自訂 service 的 <a href="http://developer.apple.com/documentation/uikit/uiactivity">UIActivity</a> 。</li>
+</ul>
+<h2 id="UIActivity"><a href="#UIActivity" class="headerlink" title="UIActivity"></a>UIActivity</h2><p>該類別配合 <a href="http://developer.apple.com/documentation/uikit/uiactivityviewcontroller">UIActivityController</a> 使用，如果想要提供自訂的 service 給用戶使用，需要繼承該類別來實作並處理用戶傳入的資料做互動。</p>
+<p>需要 override 幾個地方：</p>
+<ul>
+<li><a href="https://developer.apple.com/documentation/uikit/uiactivity/1620671-activitytype">activityType</a> ：代表該 service 的識別。例如：通常使用 <a href="https://developer.apple.com/documentation/foundation/nsbundle/1418023-bundleidentifier">Bundle.main.bundleIdentifier</a> 加一些自訂的值。</li>
+<li><a href="https://developer.apple.com/documentation/uikit/uiactivity/1620674-activitytitle">activityTitle</a> ：顯示在 <a href="http://developer.apple.com/documentation/uikit/uiactivityviewcontroller">UIActivityController</a> 的名稱，要記得做多國語系的處理。</li>
+<li><a href="https://developer.apple.com/documentation/uikit/uiactivity/1620658-activityimage">activityImage</a> ：顯示在 <a href="http://developer.apple.com/documentation/uikit/uiactivityviewcontroller">UIActivityController</a> 的圖示。需要處理不同 iOS 版本需要的圖示大小不一樣。如果使用 iOS 內建系統圖示的話，在 iOS13 可以額外設定大小：UIImage.SymbolConfiguration。</li>
+<li><a href="https://developer.apple.com/documentation/uikit/uiactivity/1620677-canperform">activityCategory</a> ：定義該 service 的類型，<a href="https://developer.apple.com/documentation/uikit/uiactivity/category">UIActivity.Category</a> 提供了 action 與 share，自訂的 service 要給 action。</li>
+<li><a href="https://developer.apple.com/documentation/uikit/uiactivity/1620677-canperform">canPerform</a> ：可以根據傳入的 data 先做檢查，如果可以處理就回傳 true。</li>
+<li><a href="https://developer.apple.com/documentation/uikit/uiactivity/1620668-prepare">prepare</a> ：在用戶選擇該 service 時會呼叫該 method，該 method 則實際處理資料被如何使用。如果需要而外的 UI 互動，也是在這裡準備好需要的 view controller。</li>
+</ul>
+<p>操作行事曆則需要： <a href="http://developer.apple.com/documentation/eventkit/ekeventstore">EKEventStore</a>，<a href="http://developer.apple.com/documentation/eventkitui/ekeventeditviewcontroller">EKEventEditViewController</a>。</p>
+<h2 id="EKEventStore"><a href="#EKEventStore" class="headerlink" title="EKEventStore"></a>EKEventStore</h2><p>管理存取行事曆與提醒權限的元件。需要在初始化後，利用 <a href="https://developer.apple.com/documentation/eventkit/ekeventstore/1507547-requestaccess">requestAccess(to:completion:)</a> 來取得存取權限。</p>
+<p>需要在 Info.plist 加入  <a href="https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html#//apple_ref/doc/uid/TP40009251-SW16">NSRemindersUsageDescription</a> 與 <a href="https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html#//apple_ref/doc/uid/TP40009251-SW15">NSCalendarsUsageDescription</a> 的宣告，才能使用  EKEventStore。</p>
+<h2 id="EKEventEditViewController"><a href="#EKEventEditViewController" class="headerlink" title="EKEventEditViewController"></a>EKEventEditViewController</h2><p>view controller 用來建立，編輯或刪除行事曆的活動。使用該 view congtroller 的 class 需要實作 <a href="https://developer.apple.com/documentation/eventkitui/ekeventeditviewdelegate">EKEventEditViewDelegate</a>。</p>
+<h2 id="範例"><a href="#範例" class="headerlink" title="範例"></a>範例</h2><p>介紹完 iOS 怎麼使用分享介面(<a href="http://developer.apple.com/documentation/uikit/uiactivityviewcontroller">UIActivityViewController</a>) 與操作行事曆(<a href="https://developer.apple.com/documentation/eventkitui/ekeventeditviewcontroller">EKEventEditViewController</a>)後，下面串起來從 Flutter 利用 method channel 通知 iOS 顯示分享的介面。</p>
+<ol>
+<li>實作 EventActivity 繼承 <a href="https://developer.apple.com/documentation/uikit/uiactivity">UIActivity</a> 處理傳入的活動資訊，並呼叫行事曆(<a href="https://developer.apple.com/documentation/eventkitui/ekeventeditviewcontroller">EKEventEditViewController</a>)<br>Info.plist 加入存取行事曆的宣告。<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;plist version=&quot;1.0&quot;&gt;</span><br><span class="line">  &lt;dict&gt;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    &lt;key&gt;NSCalendarsUsageDescription&lt;/key&gt;</span><br><span class="line">    &lt;string&gt;to add this event to your calendar&lt;/string&gt;</span><br><span class="line">  &lt;/dict&gt;</span><br><span class="line">&lt;/plist&gt;</span><br></pre></td></tr></table></figure>
+EventActivity.swift<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">override func prepare(withActivityItems activityItems: [Any]) &#123;</span><br><span class="line">  // 利用 EKEventStore 請求操作 Calendar 的權限</span><br><span class="line">  let eventStore = EKEventStore()</span><br><span class="line">  eventStore.requestAccess(to: .event) &#123; (granted, error) in</span><br><span class="line">    if (granted &amp;&amp; error == nil) &#123;</span><br><span class="line">      // 先關閉 UIActivityViewController 再開啟 EKEventEditViewController</span><br><span class="line">      DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) &#123;</span><br><span class="line">        // 把 activityItems 帶入的參數包裝成 EKEvent </span><br><span class="line">        let event = self.genereateEvent(eventStore: eventStore, arguments: activityItems as NSArray);</span><br><span class="line"></span><br><span class="line">        if (event == nil) &#123;</span><br><span class="line">          return</span><br><span class="line">        &#125;</span><br><span class="line">        // 利用 EKEventStore 把 EKEvent 加入             </span><br><span class="line">        self.insertEvent(event: event!, eventStore: eventStore)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      // 如果被取消授權要顯示訊息告訴使用者</span><br><span class="line">      self.showAccessDeinedOrRestricted()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+利用 <a href="https://developer.apple.com/documentation/eventkit/ekeventstore">EKEventStore</a> 請求並取得權限之後，利用  <a href="https://developer.apple.com/documentation/dispatch/dispatchqueue/2300020-asyncafter">DispatchQueue.main.asyncAfter(deadline: .now() + 0.7)</a> 延後 7 秒的方式來開啟 <a href="https://developer.apple.com/documentation/eventkitui/ekeventeditviewcontroller">EKEventEditViewController</a>。</li>
+</ol>
+<p>為什麼需要延後？<br><strong>因為 rootViewController 開啟了 UIActivityViewController ，無法再從 UIActivityViewController 開一個 ViewController，需要先關它後才能再開啟 EKEventEditViewController。</strong></p>
+<ol start="2">
+<li><p>iOS 定義 method channel 接受來自 Flutter 的傳入活動資訊<br>打開 AppDelegate.swift 加入下面的 code：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">override func application(</span><br><span class="line">        _ application: UIApplication,</span><br><span class="line">        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?</span><br><span class="line">    ) -&gt; Bool &#123;</span><br><span class="line">  </span><br><span class="line">  guard let controller = window?.rootViewController as? FlutterViewController else &#123;</span><br><span class="line">    fatalError(&quot;rootViewController is not type FlutterViewController&quot;)</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  // 定義要處理的 method channel      </span><br><span class="line">  let methodChannel = FlutterMethodChannel(name: &quot;sample.poumason.dev/channels&quot;, binaryMessenger: controller.binaryMessenger)</span><br><span class="line">        </span><br><span class="line">  methodChannel.setMethodCallHandler(&#123;</span><br><span class="line">    (call: FlutterMethodCall, result: @escaping FlutterResult) -&gt; Void in</span><br><span class="line">    // 處理 shared 的 method       </span><br><span class="line">    if (call.method == &quot;shared&quot;) &#123;</span><br><span class="line">      // 呼叫自訂的 UIActivity </span><br><span class="line">      self.showSharedActivityViewController(arguments: call.arguments)</span><br><span class="line">        result(&quot;OK&quot;)</span><br><span class="line">        return</span><br><span class="line">    &#125;</span><br><span class="line">             </span><br><span class="line">    result(FlutterMethodNotImplemented)</span><br><span class="line">  &#125;)</span><br><span class="line">        </span><br><span class="line">  GeneratedPluginRegistrant.register(with: self)</span><br><span class="line">  return super.application(application, didFinishLaunchingWithOptions: launchOptions)        </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>詳細介紹整合 method channel 的說明可以參考：<a href="https://flutter.dev/docs/development/platform-integration/platform-channels">Writing custom platform-specific code</a>。</p>
+</li>
+<li><p>在 AppDelegate.swift 實現 showSharedActivityViewController method 來呼叫 <a href="https://developer.apple.com/documentation/uikit/uiactivityviewcontroller">UIActivityViewController</a>，並加入自訂的 <a href="https://developer.apple.com/documentation/uikit/uiactivity">UIActivity</a>。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 要實現 EKEventEditViewDelegate 接受關閉 EKEventEditViewController 的事件</span><br><span class="line">@objc class AppDelegate: FlutterAppDelegate, EKEventEditViewDelegate  &#123;</span><br><span class="line"></span><br><span class="line">  func eventEditViewController(_ controller: EKEventEditViewController, didCompleteWith action: EKEventEditViewAction)</span><br><span class="line">  &#123;</span><br><span class="line">      print(action)</span><br><span class="line">      controller.dismiss(animated: true, completion: nil)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  private func showSharedActivityViewController(arguments: Any?) &#123;</span><br><span class="line">    if let args = arguments as? Dictionary&lt;String, Any?&gt; , !args.isEmpty &#123;</span><br><span class="line">            </span><br><span class="line">      guard let url = args[&quot;url&quot;] as? String, !url.isEmpty else &#123;</span><br><span class="line">        print(&quot;no any be shared data&quot;)</span><br><span class="line">        return</span><br><span class="line">      &#125;</span><br><span class="line">            </span><br><span class="line">      // 把傳入的資料裝到一個自訂的 Event 資料結構</span><br><span class="line">      let event = Event.init(title: args[&quot;title&quot;] as? String,</span><br><span class="line">                             location: args[&quot;location&quot;] as? String,</span><br><span class="line">                             url: args[&quot;url&quot;] as? String,</span><br><span class="line">                             startDate: args[&quot;startDate&quot;] as? Double,</span><br><span class="line">                             endDate: args[&quot;endDate&quot;] as? Double)</span><br><span class="line">            </span><br><span class="line">      let items: [Any]</span><br><span class="line">      let activities: [UIActivity]?</span><br><span class="line">      // 判斷如果是 Event 類型才呼叫自訂的 EventActivity，不然視為一般的分享</span><br><span class="line">      if (event.isValidated()) &#123;</span><br><span class="line">        items = [ url, event ]</span><br><span class="line">        activities = [ EventActivity() ]</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        items = [ url ]</span><br><span class="line">        activities = nil</span><br><span class="line">      &#125;</span><br><span class="line">            </span><br><span class="line">      let activityVC = UIActivityViewController(activityItems: items, applicationActivities: activities)</span><br><span class="line">      self.window.rootViewController?.present(activityVC, animated: true, completion:  nil)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>從 Flutter 使用 method channel 送出資料</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Future&lt;void&gt; _sharedEvent() async &#123;</span><br><span class="line">  // 建立相同 name 的 method channel</span><br><span class="line">  final platform = const MethodChannel(&#x27;sample.poumason.dev/channels&#x27;);</span><br><span class="line">  try &#123;</span><br><span class="line">    // 呼叫定義好的 shared method name</span><br><span class="line">    var result = await platform.invokeMethod(&#x27;shared&#x27;, &#123;</span><br><span class="line">      &#x27;url&#x27;: _urlKey.currentState.value,</span><br><span class="line">      &#x27;title&#x27;: _titleKey.currentState.value,</span><br><span class="line">      &#x27;location&#x27;: _addressKey.currentState.value,</span><br><span class="line">      &#x27;startDate&#x27;:</span><br><span class="line">         (_startKey.currentState.value.millisecondsSinceEpoch / 1000).roundToDouble(),</span><br><span class="line">      &#x27;endDate&#x27;: (_endKey.currentState.value.millisecondsSinceEpoch / 1000).roundToDouble(),</span><br><span class="line">      &#125;);</span><br><span class="line">    print(result);</span><br><span class="line">  &#125; on PlatformException catch (e) &#123;</span><br><span class="line">    print(e.message);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>method channel 傳遞參數的類型是有限制的，可以參考 <a href="https://flutter.dev/docs/development/platform-integration/platform-channels">Platform channel data types support and codecs</a> 的定義。</p>
+</li>
+<li><p>範例結果 </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><img src="/2020/08/16/Flutter/flutter-ios-uiactivityviewcontroller-calendar/1597566128.png"></td>
+<td><img src="/2020/08/16/Flutter/flutter-ios-uiactivityviewcontroller-calendar/1597566139.png"></td>
+<td><img src="/2020/08/16/Flutter/flutter-ios-uiactivityviewcontroller-calendar/1597566151.png"></td>
+</tr>
+</tbody></table>
+<p>範例程式：<a href="https://github.com/poumason/flutter_samples/tree/master/share_calendar">share_calednar</a>。</p>
+</li>
+</ol>
+<hr>
+<p>以上是介紹如何從 Flutter 加入活動資料到 iOS 的行事曆。希望對大家有所幫助，謝謝。</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><ul>
+<li><a href="https://www.itread01.com/content/1545857656.html">[iOS] Get the name of the running application</a></li>
+<li><a href="https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundledisplayname">CFBundleDisplayName</a></li>
+<li><a href="https://stackoverflow.max-everyday.com/2018/01/ios-swift-use-of-s-in-stringformat/">[iOS] swift : use of %s in String(format: …)</a></li>
+<li><a href="https://stackoverflow.com/questions/51593790/remove-html-tags-from-a-string-in-dart">Remove HTML tags from a String in Dart</a></li>
+<li><a href="https://medium.com/@fede_nieto/manage-calendar-events-with-eventkit-and-eventkitui-with-swift-74e1ecbe2524">Manage calendar events with EventKit and EventKitUI with Swift</a></li>
+<li><a href="https://medium.com/@zhongwei0717/ios-%E7%9A%84%E5%8E%9F%E7%94%9F%E5%88%86%E4%BA%AB-uiactivityviewcontroller-f73d272dc2a3">iOS 的原生分享， UIActivityViewController</a></li>
+<li><a href="https://dev.to/nemecek_f/how-to-use-ekeventeditviewcontroller-in-swift-to-let-user-save-event-to-ios-calendar-d8">How to use EKEventEditViewController in Swift to let user save event to iOS calendar</a></li>
+<li><a href="https://medium.com/@JJeremy.XUE/swift-%E7%8E%A9%E7%8E%A9-uiactivityviewcontroller-5995bb80ff68">Swift — 玩玩 UIActivityViewController</a></li>
+<li><a href="https://www.simpleswiftguide.com/how-to-use-sf-symbols-in-swiftui/">How to use SF Symbols in SwiftUI</a></li>
+<li><a href="https://www.hackingwithswift.com/articles/118/uiactivityviewcontroller-by-example">UIActivityViewController by example</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10223393">【Flutter基礎概念與實作】 Day18–Flutter測試框架以及Mockito Package使用範例介紹</a></li>
+<li><a href="https://medium.com/@craiggrummitt/sf-symbols-in-ios-13-55e5febf6db6">SF Symbols in iOS 13</a></li>
+<li><a href="https://www.appcoda.com.tw/social-framework-introduction/">初學者指南：使用社交框架與 UIActivityViewController</a></li>
+<li><a href="https://medium.com/flutterpub/sample-form-part-1-flutter-35664d57b0e5">Sample Form — Part 1— Flutter</a></li>
+<li><a href="https://pub.dev/packages/datetime_picker_formfield">datetime_picker_formfield</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Flutter</category>
+      </categories>
+      <tags>
+        <tag>Flutter</tag>
+        <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2025/12/04/K8S/cross-two-nginx-minio/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2026/01/21/K8S/dind-deployment/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2025/12/04/K8S/ingress-nginx-controller/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>學習如何使用 dnsmasq 在 local 建立 DNS server</title>
+    <url>/2026/01/21/K8S/local-dns-server/</url>
+    <content><![CDATA[<p>由於在自己的 Macbook 建立了 K8s，搭配 Ingress nginx Controller 為每個 Pod 建立對應的 ingress host，發現每次都要修改 <code>/etc/hosts</code> 非常辛苦，因此問了 Gemini 它推薦了可以使用 dnsmasq 解決問題，馬上就紀錄下來。</p>
+<span id="more"></span>
+
+<p>預期使用 <code>*.localhost</code> 為我的 domain，那如果 k8s 裡面有多個 AP，我就可以設定成： kubedash.localhost 或是 myservice.localhost，那搭配 dnsmasq 要怎麼做呢？</p>
+<h2 id="步驟"><a href="#步驟" class="headerlink" title="步驟"></a>步驟</h2><h3 id="1-利用-brew-安裝-dnsmasq"><a href="#1-利用-brew-安裝-dnsmasq" class="headerlink" title="1.利用 brew 安裝 dnsmasq"></a>1.利用 brew 安裝 dnsmasq</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">brew install dnsmasq</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-建立-Dnsmasq-的設定檔-例如-dnsmasq-conf-，加入監聽的-address-與解析本地的-domain"><a href="#2-建立-Dnsmasq-的設定檔-例如-dnsmasq-conf-，加入監聽的-address-與解析本地的-domain" class="headerlink" title="2.建立 Dnsmasq 的設定檔 (例如 dnsmasq.conf)，加入監聽的 address 與解析本地的 domain"></a>2.建立 Dnsmasq 的設定檔 (例如 dnsmasq.conf)，加入監聽的 address 與解析本地的 domain</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo &quot;address=/.localhost/127.0.0.1&quot; &gt;&gt; $(brew --prefix)/etc/dnsmasq.conf</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-建立-DNS-配置文件，將指定-domain-指向本地的-127-0-0-1"><a href="#3-建立-DNS-配置文件，將指定-domain-指向本地的-127-0-0-1" class="headerlink" title="3. 建立 DNS 配置文件，將指定 domain 指向本地的 127.0.0.1"></a>3. 建立 DNS 配置文件，將指定 domain 指向本地的 127.0.0.1</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo mkdir -p /etc/resolver</span><br><span class="line">sudo bash -c &#x27;echo &quot;nameserver 127.0.0.1&quot; &gt; /etc/resolver/localhost&#x27;</span><br></pre></td></tr></table></figure>
+<p>可利用 ping 的方式確定設定是否生效，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ping hello.localhost</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-啟動-dnsmasq"><a href="#4-啟動-dnsmasq" class="headerlink" title="4. 啟動 dnsmasq"></a>4. 啟動 dnsmasq</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo brew services start dnsmasq</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-設定-ingress"><a href="#5-設定-ingress" class="headerlink" title="5. 設定 ingress"></a>5. 設定 ingress</h3><p>以下是範例</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">apiVersion: networking.k8s.io/v1</span><br><span class="line">kind: Ingress</span><br><span class="line">metadata:</span><br><span class="line">  name: vscode-ingress</span><br><span class="line">  annotations:</span><br><span class="line">    # 這是重點：讓 code-server 的 Websocket 能正常運作</span><br><span class="line">    nginx.ingress.kubernetes.io/proxy-read-timeout: &quot;3600&quot;</span><br><span class="line">    nginx.ingress.kubernetes.io/proxy-send-timeout: &quot;3600&quot;</span><br><span class="line">spec:</span><br><span class="line">  ingressClassName: nginx</span><br><span class="line">  rules:</span><br><span class="line">  - host: vscode.localhost</span><br><span class="line">    http:</span><br><span class="line">      paths:</span><br><span class="line">        - path: /</span><br><span class="line">          pathType: Prefix</span><br><span class="line">          backend:</span><br><span class="line">            service:</span><br><span class="line">              name: vscode-svc</span><br><span class="line">              port:</span><br><span class="line">                number: 80</span><br></pre></td></tr></table></figure>
+
+<p>以上是簡單的筆記，相關 dnsmasq 與 local DNS server 相關設定，之後再補上。🙏</p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://tomme.me/use-dnsmasq-as-internal-dsn-server/">使用 dnsmasq 配置内部 DNS server</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>K8S</category>
+      </categories>
+      <tags>
+        <tag>dnsmasq</tag>
+        <tag>DNS</tag>
+      </tags>
+  </entry>
+</search>
