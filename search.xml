@@ -74,13 +74,12 @@
     <url>/2026/03/28/AI/openclaw-install-log/</url>
     <content><![CDATA[<p>Introducte how to install OpenClaw and using Ollama to interative agents&#x2F;skills&#x2F;mcps.</p>
 <span id="more"></span>
-
-<h2 id="How-to-using-chrome-devtools-mcp"><a href="#How-to-using-chrome-devtools-mcp" class="headerlink" title="How to using chrome-devtools-mcp"></a>How to using chrome-devtools-mcp</h2><ol>
+<h1 id="How-to-do"><a href="#How-to-do" class="headerlink" title="How to do"></a>How to do</h1><h2 id="How-to-using-chrome-devtools-mcp"><a href="#How-to-using-chrome-devtools-mcp" class="headerlink" title="How to using chrome-devtools-mcp"></a>How to using chrome-devtools-mcp</h2><ol>
 <li>Install chrome-devtools-mcp plugin</li>
 <li>Enable chrome-devtools-mcp in OpenClaw</li>
 <li>(optional) Using npm to install chrome-devtools-mcp package</li>
 </ol>
-<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ul>
+<h2 id="How-to-run-OpenClaw-on-OpenShell"><a href="#How-to-run-OpenClaw-on-OpenShell" class="headerlink" title="How to run OpenClaw on OpenShell"></a>How to run OpenClaw on OpenShell</h2><h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ul>
 <li><a href="https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/main/docs/tool-reference.md#new_page">chrome-devtools-mcp</a></li>
 </ul>
 ]]></content>
@@ -105,8 +104,13 @@
   <entry>
     <title>如何在 Pod 裡面利用 sidecar 的方式加入 dind</title>
     <url>/2026/01/22/K8S/dind-deployment/</url>
-    <content><![CDATA[<p>由於在自己的 Macbook 建立了 K8s，搭配 Ingress nginx Controller 為每個 Pod 建立對應的 ingress host，發現每次都要修改 <code>/etc/hosts</code> 非常辛苦，因此問了 Gemini 它推薦了可以使用 dnsmasq 解決問題，馬上就紀錄下來。</p>
-<span id="more"></span>]]></content>
+    <content><![CDATA[<p>由於在設計 GPU 開發環境給 User 使用時，原先使用了 VSCode container 讓大家方便經過 browser 進行開發，遇到新的需求是在 VSCode container 也想要使用 docker 的功能，等同於需要 Docker in Docker (dind) 的效果。因此紀錄了一下該怎麼做。</p>
+<span id="more"></span>
+<h1 id="How-to-do"><a href="#How-to-do" class="headerlink" title="How to do"></a>How to do</h1><h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://hub.docker.com/_/docker">Docker in Docker! (commonly known as “dind”)</a></li>
+<li><a href=""></a></li>
+</ul>
+]]></content>
       <categories>
         <category>K8S</category>
       </categories>
@@ -161,6 +165,10 @@
     <url>/2026/02/02/iTech/raspberry_nas/</url>
     <content><![CDATA[<p>老家的小米雲台 1080p 很常遇到記憶卡的問題，因此思考如何讓保存的影像往 NAS 存放，但 NAS 搭建一套不便宜，因此有了利用 Raspberry Pi 來搭建小型 NAS 的想法。</p>
 <span id="more"></span>
+<h1 id="How-to-do"><a href="#How-to-do" class="headerlink" title="How to do"></a>How to do</h1><h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href=""></a></li>
+<li><a href=""></a></li>
+</ul>
 ]]></content>
       <categories>
         <category>iTech</category>

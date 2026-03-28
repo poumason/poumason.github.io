@@ -19,15 +19,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"poumason.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"style":null,"show_result":false},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="由於在自己的 Macbook 建立了 K8s，搭配 Ingress nginx Controller 為每個 Pod 建立對應的 ingress host，發現每次都要修改 &#x2F;etc&#x2F;hosts 非常辛苦，因此問了 Gemini 它推薦了可以使用 dnsmasq 解決問題，馬上就紀錄下來。">
+    <meta name="description" content="由於在設計 GPU 開發環境給 User 使用時，原先使用了 VSCode container 讓大家方便經過 browser 進行開發，遇到新的需求是在 VSCode container 也想要使用 docker 的功能，等同於需要 Docker in Docker (dind) 的效果。因此紀錄了一下該怎麼做。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何在 Pod 裡面利用 sidecar 的方式加入 dind">
 <meta property="og:url" content="https://poumason.github.io/2026/01/22/K8S/dind-deployment/index.html">
 <meta property="og:site_name" content="Pou&#39;s Life">
-<meta property="og:description" content="由於在自己的 Macbook 建立了 K8s，搭配 Ingress nginx Controller 為每個 Pod 建立對應的 ingress host，發現每次都要修改 &#x2F;etc&#x2F;hosts 非常辛苦，因此問了 Gemini 它推薦了可以使用 dnsmasq 解決問題，馬上就紀錄下來。">
+<meta property="og:description" content="由於在設計 GPU 開發環境給 User 使用時，原先使用了 VSCode container 讓大家方便經過 browser 進行開發，遇到新的需求是在 VSCode container 也想要使用 docker 的功能，等同於需要 Docker in Docker (dind) 的效果。因此紀錄了一下該怎麼做。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2026-01-22T14:39:26.000Z">
-<meta property="article:modified_time" content="2026-01-22T14:56:44.139Z">
+<meta property="article:modified_time" content="2026-03-28T00:18:44.602Z">
 <meta property="article:author" content="Pou Lin">
 <meta property="article:tag" content="dind">
 <meta property="article:tag" content="pod">
@@ -130,7 +130,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           Table of Contents
@@ -143,6 +143,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#How-to-do"><span class="nav-number">1.</span> <span class="nav-text">How to do</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">2.</span> <span class="nav-text">References</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -231,9 +232,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2026-01-22 22:39:26 / Modified: 22:56:44" itemprop="dateCreated datePublished" datetime="2026-01-22T22:39:26+08:00">2026-01-22</time>
+      <time title="Created: 2026-01-22 22:39:26" itemprop="dateCreated datePublished" datetime="2026-01-22T22:39:26+08:00">2026-01-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2026-03-28 08:18:44" itemprop="dateModified" datetime="2026-03-28T08:18:44+08:00">2026-03-28</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -261,8 +268,13 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><p>由於在自己的 Macbook 建立了 K8s，搭配 Ingress nginx Controller 為每個 Pod 建立對應的 ingress host，發現每次都要修改 <code>/etc/hosts</code> 非常辛苦，因此問了 Gemini 它推薦了可以使用 dnsmasq 解決問題，馬上就紀錄下來。</p>
+    <div class="post-body" itemprop="articleBody"><p>由於在設計 GPU 開發環境給 User 使用時，原先使用了 VSCode container 讓大家方便經過 browser 進行開發，遇到新的需求是在 VSCode container 也想要使用 docker 的功能，等同於需要 Docker in Docker (dind) 的效果。因此紀錄了一下該怎麼做。</p>
 <span id="more"></span>
+<h1 id="How-to-do"><a href="#How-to-do" class="headerlink" title="How to do"></a>How to do</h1><h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://hub.docker.com/_/docker">Docker in Docker! (commonly known as “dind”)</a></li>
+<li><a href=""></a></li>
+</ul>
+
     </div>
 
     
