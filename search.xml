@@ -97,11 +97,6 @@
       </tags>
   </entry>
   <entry>
-    <title></title>
-    <url>/2025/12/04/K8S/cross-two-nginx-minio/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>如何在 Pod 裡面利用 sidecar 的方式加入 dind</title>
     <url>/2026/01/22/K8S/dind-deployment/</url>
     <content><![CDATA[<p>由於在設計 GPU 開發環境給 User 使用時，原先使用了 VSCode container 讓大家方便經過 browser 進行開發，遇到新的需求是在 VSCode container 也想要使用 docker 的功能，等同於需要 Docker in Docker (dind) 的效果。因此紀錄了一下該怎麼做。</p>
@@ -122,9 +117,18 @@
       </tags>
   </entry>
   <entry>
-    <title></title>
-    <url>/2025/12/04/K8S/ingress-nginx-controller/</url>
-    <content><![CDATA[]]></content>
+    <title>介紹如何安裝 ingress nginx controller</title>
+    <url>/2025/12/05/K8S/ingress-nginx-controller/</url>
+    <content><![CDATA[<p>介紹如何使用 ingress nginx controller 與設定 ingress</p>
+<span id="more"></span>]]></content>
+      <categories>
+        <category>K8S</category>
+      </categories>
+      <tags>
+        <tag>K8S</tag>
+        <tag>ingress</tag>
+        <tag>ingress nginx controller</tag>
+      </tags>
   </entry>
   <entry>
     <title>學習如何使用 dnsmasq 在 local 建立 DNS server</title>
@@ -578,6 +582,19 @@ EventActivity.swift<figure class="highlight plaintext"><table><tr><td class="cod
       </categories>
       <tags>
         <tag>DevOps</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>如何在跨兩層 Nginx 操作 Minio</title>
+    <url>/2025/12/04/DevOps/cross-two-nginx-minio/</url>
+    <content><![CDATA[<p>說明如果要經過 nginx 去存取 minio 需要怎麼設定 nginx config</p>
+<span id="more"></span>]]></content>
+      <categories>
+        <category>DevOps</category>
+      </categories>
+      <tags>
+        <tag>Nginx</tag>
+        <tag>Minio</tag>
       </tags>
   </entry>
 </search>
