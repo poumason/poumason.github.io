@@ -19,13 +19,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"poumason.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"style":null,"show_result":false},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta property="og:type" content="article">
+    <meta name="description" content="Examplesample 11234567891011121314151617181920# references: https:&#x2F;&#x2F;myapollo.com.tw&#x2F;blog&#x2F;langchain-streamlit-toolbox&#x2F;import osimport streamlit as st# from langchain_community.llms.ollama import Olla">
+<meta property="og:type" content="article">
 <meta property="og:title" content="學習使用 Streamlit 串接 RAG 做一個簡單的 AI 對話">
 <meta property="og:url" content="https://poumason.github.io/2025/10/14/AI/learn-streamlit-with-rag/index.html">
 <meta property="og:site_name" content="Pou&#39;s Life">
+<meta property="og:description" content="Examplesample 11234567891011121314151617181920# references: https:&#x2F;&#x2F;myapollo.com.tw&#x2F;blog&#x2F;langchain-streamlit-toolbox&#x2F;import osimport streamlit as st# from langchain_community.llms.ollama import Olla">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2025-10-14T14:39:26.000Z">
-<meta property="article:modified_time" content="2026-01-21T14:34:08.504Z">
+<meta property="article:modified_time" content="2026-03-29T15:21:05.472Z">
 <meta property="article:author" content="Pou Lin">
 <meta property="article:tag" content="AI">
 <meta property="article:tag" content="LLM">
@@ -126,7 +128,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           Table of Contents
@@ -139,6 +141,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Example"><span class="nav-number">1.</span> <span class="nav-text">Example</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#sample-1"><span class="nav-number">1.1.</span> <span class="nav-text">sample 1</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -153,7 +156,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-count">16</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -164,7 +167,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-count">33</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -235,7 +238,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-01-21 22:34:08" itemprop="dateModified" datetime="2026-01-21T22:34:08+08:00">2026-01-21</time>
+      <time title="Modified: 2026-03-29 23:21:05" itemprop="dateModified" datetime="2026-03-29T23:21:05+08:00">2026-03-29</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -264,6 +267,8 @@
     
     
     <div class="post-body" itemprop="articleBody"><span id="more"></span>
+
+<h1 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h1><h2 id="sample-1"><a href="#sample-1" class="headerlink" title="sample 1"></a>sample 1</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># references: https://myapollo.com.tw/blog/langchain-streamlit-toolbox/</span><br><span class="line">import os</span><br><span class="line">import streamlit as st</span><br><span class="line"># from langchain_community.llms.ollama import Ollama</span><br><span class="line">from langchain_ollama import OllamaLLM</span><br><span class="line"></span><br><span class="line">llm = OllamaLLM(model=&#x27;deepseek-r1:latest&#x27;)</span><br><span class="line"></span><br><span class="line">def generate_response(text):</span><br><span class="line">    # return llm.invoke(text)</span><br><span class="line">    for r in llm.stream(text):</span><br><span class="line">        yield r</span><br><span class="line"></span><br><span class="line">st.title(&#x27;Ask Me Anything&#x27;)</span><br><span class="line"></span><br><span class="line">with st.form(&#x27;form&#x27;):</span><br><span class="line">    text = st.text_area(&#x27;Enter text&#x27;, &#x27;&#x27;)</span><br><span class="line">    submitted = st.form_submit_button(&#x27;Submit&#x27;)</span><br><span class="line">    if submitted:</span><br><span class="line">        st.write_stream(generate_response(text))</span><br></pre></td></tr></table></figure>
     </div>
 
     
