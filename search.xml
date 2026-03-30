@@ -61,7 +61,8 @@
   <entry>
     <title>How to using Openshell to run OpenClaw</title>
     <url>/2026/03/28/AI/learn-openshell/</url>
-    <content><![CDATA[<span id="more"></span>
+    <content><![CDATA[<p>Try to understand how about the Openshell architecutre.</p>
+<span id="more"></span>
 <h1 id="How-to-install"><a href="#How-to-install" class="headerlink" title="How to install"></a>How to install</h1><h2 id="using-local-ollama-on-docker"><a href="#using-local-ollama-on-docker" class="headerlink" title="using local ollama on docker"></a>using local ollama on docker</h2><p><a href="https://docs.nvidia.com/openshell/latest/tutorials/inference-ollama.html">Run Local Inference with Ollama</a></p>
 <p>if you want to use local ollama, must be changed somethings.</p>
 <ul>
@@ -102,7 +103,8 @@
   <entry>
     <title>學習使用 Streamlit 串接 RAG 做一個簡單的 AI 對話</title>
     <url>/2025/10/14/AI/learn-streamlit-with-rag/</url>
-    <content><![CDATA[<span id="more"></span>
+    <content><![CDATA[<p>Try to use Streamlit for POC on projects.</p>
+<span id="more"></span>
 
 <h1 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h1><h2 id="sample-1"><a href="#sample-1" class="headerlink" title="sample 1"></a>sample 1</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># references: https://myapollo.com.tw/blog/langchain-streamlit-toolbox/</span><br><span class="line">import os</span><br><span class="line">import streamlit as st</span><br><span class="line"># from langchain_community.llms.ollama import Ollama</span><br><span class="line">from langchain_ollama import OllamaLLM</span><br><span class="line"></span><br><span class="line">llm = OllamaLLM(model=&#x27;deepseek-r1:latest&#x27;)</span><br><span class="line"></span><br><span class="line">def generate_response(text):</span><br><span class="line">    # return llm.invoke(text)</span><br><span class="line">    for r in llm.stream(text):</span><br><span class="line">        yield r</span><br><span class="line"></span><br><span class="line">st.title(&#x27;Ask Me Anything&#x27;)</span><br><span class="line"></span><br><span class="line">with st.form(&#x27;form&#x27;):</span><br><span class="line">    text = st.text_area(&#x27;Enter text&#x27;, &#x27;&#x27;)</span><br><span class="line">    submitted = st.form_submit_button(&#x27;Submit&#x27;)</span><br><span class="line">    if submitted:</span><br><span class="line">        st.write_stream(generate_response(text))</span><br></pre></td></tr></table></figure>]]></content>
       <categories>

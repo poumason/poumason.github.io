@@ -323,7 +323,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-03-30 22:01:54" itemprop="dateModified" datetime="2026-03-30T22:01:54+08:00">2026-03-30</time>
+      <time title="Modified: 2026-03-30 22:03:57" itemprop="dateModified" datetime="2026-03-30T22:03:57+08:00">2026-03-30</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -345,36 +345,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <span id="more"></span>
-<h1 id="How-to-install"><a href="#How-to-install" class="headerlink" title="How to install"></a>How to install</h1><h2 id="using-local-ollama-on-docker"><a href="#using-local-ollama-on-docker" class="headerlink" title="using local ollama on docker"></a>using local ollama on docker</h2><p><a target="_blank" rel="noopener" href="https://docs.nvidia.com/openshell/latest/tutorials/inference-ollama.html">Run Local Inference with Ollama</a></p>
-<p>if you want to use local ollama, must be changed somethings.</p>
-<ul>
-<li><p>create a provider</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">openshell provider create \</span><br><span class="line">    --name ollama \</span><br><span class="line">    --type openai \</span><br><span class="line">    --credential OPENAI_API_KEY=empty \</span><br><span class="line">    --config OPENAI_BASE_URL=http://host.openshell.internal:11434/v1</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>OpenShell injects host.openshell.internal so sandboxes and the gateway can reach the host machine. You can also use the host’s LAN IP.</p>
-</blockquote>
-</li>
-<li><p>set inference routing</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openshell inference set --provider ollama --model qwen3.5:0.8b</span><br></pre></td></tr></table></figure>
-<p>if you want to using other model, must be changed.</p>
-</li>
-</ul>
-<p>because the ollama be run in host docker.</p>
-<h2 id="OpenClaw"><a href="#OpenClaw" class="headerlink" title="OpenClaw"></a>OpenClaw</h2><ul>
-<li><p>how to solve port foward</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openshell forward start 18789 my-openclaw</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>openclaw.json</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;wizard&quot;: &#123;</span><br><span class="line">    &quot;lastRunAt&quot;: &quot;2026-03-29T14:40:04.962Z&quot;,</span><br><span class="line">    &quot;lastRunVersion&quot;: &quot;2026.3.11&quot;,</span><br><span class="line">    &quot;lastRunCommand&quot;: &quot;onboard&quot;,</span><br><span class="line">    &quot;lastRunMode&quot;: &quot;local&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;models&quot;: &#123;</span><br><span class="line">    &quot;mode&quot;: &quot;merge&quot;,</span><br><span class="line">    &quot;providers&quot;: &#123;</span><br><span class="line">      &quot;ollama&quot;: &#123;</span><br><span class="line">        &quot;baseUrl&quot;: &quot;https://inference.local&quot;,</span><br><span class="line">        &quot;apiKey&quot;: &quot;OLLAMA_API_KEY&quot;,</span><br><span class="line">        &quot;api&quot;: &quot;ollama&quot;,</span><br><span class="line">        &quot;models&quot;: [</span><br><span class="line">          &#123;</span><br><span class="line">            &quot;id&quot;: &quot;glm-4.7-flash&quot;,</span><br><span class="line">            &quot;name&quot;: &quot;glm-4.7-flash&quot;,</span><br><span class="line">            &quot;reasoning&quot;: false,</span><br><span class="line">            &quot;input&quot;: [</span><br><span class="line">              &quot;text&quot;</span><br><span class="line">            ],</span><br><span class="line">            &quot;cost&quot;: &#123;</span><br><span class="line">              &quot;input&quot;: 0,</span><br><span class="line">              &quot;output&quot;: 0,</span><br><span class="line">              &quot;cacheRead&quot;: 0,</span><br><span class="line">              &quot;cacheWrite&quot;: 0</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;contextWindow&quot;: 128000,</span><br><span class="line">            &quot;maxTokens&quot;: 8192</span><br><span class="line">          &#125;</span><br><span class="line">        ]</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;agents&quot;: &#123;</span><br><span class="line">    &quot;defaults&quot;: &#123;</span><br><span class="line">      &quot;model&quot;: &#123;</span><br><span class="line">        &quot;primary&quot;: &quot;ollama/minimax-m2.5:cloud&quot;</span><br><span class="line">      &#125;,</span><br><span class="line">      &quot;models&quot;: &#123;</span><br><span class="line">        &quot;ollama/glm-4.7-flash&quot;: &#123;&#125;,</span><br><span class="line">        &quot;ollama/minimax-m2.5:cloud&quot;: &#123;&#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &quot;workspace&quot;: &quot;/sandbox/.openclaw/workspace&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;tools&quot;: &#123;</span><br><span class="line">    &quot;profile&quot;: &quot;coding&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;commands&quot;: &#123;</span><br><span class="line">    &quot;native&quot;: &quot;auto&quot;,</span><br><span class="line">    &quot;nativeSkills&quot;: &quot;auto&quot;,</span><br><span class="line">    &quot;restart&quot;: true,</span><br><span class="line">    &quot;ownerDisplay&quot;: &quot;raw&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;session&quot;: &#123;</span><br><span class="line">    &quot;dmScope&quot;: &quot;per-channel-peer&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;gateway&quot;: &#123;</span><br><span class="line">    &quot;port&quot;: 18789,</span><br><span class="line">    &quot;mode&quot;: &quot;local&quot;,</span><br><span class="line">    &quot;bind&quot;: &quot;loopback&quot;,</span><br><span class="line">    &quot;auth&quot;: &#123;</span><br><span class="line">      &quot;mode&quot;: &quot;token&quot;,</span><br><span class="line">      &quot;token&quot;: &quot;22f72aa5bb549c9d0381a01ffc9bf73d7591861c4d2ece7e&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;tailscale&quot;: &#123;</span><br><span class="line">      &quot;mode&quot;: &quot;off&quot;,</span><br><span class="line">      &quot;resetOnExit&quot;: false</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;nodes&quot;: &#123;</span><br><span class="line">      &quot;denyCommands&quot;: [</span><br><span class="line">        &quot;camera.snap&quot;,</span><br><span class="line">        &quot;camera.clip&quot;,</span><br><span class="line">        &quot;screen.record&quot;,</span><br><span class="line">        &quot;contacts.add&quot;,</span><br><span class="line">        &quot;calendar.add&quot;,</span><br><span class="line">        &quot;reminders.add&quot;,</span><br><span class="line">        &quot;sms.send&quot;</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;meta&quot;: &#123;</span><br><span class="line">    &quot;lastTouchedVersion&quot;: &quot;2026.3.11&quot;,</span><br><span class="line">    &quot;lastTouchedAt&quot;: &quot;2026-03-29T14:40:04.968Z&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
-<li><a target="_blank" rel="noopener" href="https://docs.nvidia.com/openshell/latest/index.html">NVIDIA OpenShell Developer Guide</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/NVIDIA/OpenShell?tab=readme-ov-file">NVIDIA&#x2F;OpenShell</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/NVIDIA/OpenShell-Community">NVIDIA&#x2F;OpenShell-Community</a></li>
-<li><a target="_blank" rel="noopener" href="https://build.nvidia.com/spark/openshell/troubleshooting">Secure Long Running AI Agents with OpenShell on DGX Spark</a></li>
-</ul>
-
+          <p>Try to understand how about the Openshell architecutre.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2026/03/28/AI/learn-openshell/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -982,7 +961,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-03-29 23:21:05" itemprop="dateModified" datetime="2026-03-29T23:21:05+08:00">2026-03-29</time>
+      <time title="Modified: 2026-03-30 22:03:36" itemprop="dateModified" datetime="2026-03-30T22:03:36+08:00">2026-03-30</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1004,9 +983,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <span id="more"></span>
-
-<h1 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h1><h2 id="sample-1"><a href="#sample-1" class="headerlink" title="sample 1"></a>sample 1</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># references: https://myapollo.com.tw/blog/langchain-streamlit-toolbox/</span><br><span class="line">import os</span><br><span class="line">import streamlit as st</span><br><span class="line"># from langchain_community.llms.ollama import Ollama</span><br><span class="line">from langchain_ollama import OllamaLLM</span><br><span class="line"></span><br><span class="line">llm = OllamaLLM(model=&#x27;deepseek-r1:latest&#x27;)</span><br><span class="line"></span><br><span class="line">def generate_response(text):</span><br><span class="line">    # return llm.invoke(text)</span><br><span class="line">    for r in llm.stream(text):</span><br><span class="line">        yield r</span><br><span class="line"></span><br><span class="line">st.title(&#x27;Ask Me Anything&#x27;)</span><br><span class="line"></span><br><span class="line">with st.form(&#x27;form&#x27;):</span><br><span class="line">    text = st.text_area(&#x27;Enter text&#x27;, &#x27;&#x27;)</span><br><span class="line">    submitted = st.form_submit_button(&#x27;Submit&#x27;)</span><br><span class="line">    if submitted:</span><br><span class="line">        st.write_stream(generate_response(text))</span><br></pre></td></tr></table></figure>
+          <p>Try to use Streamlit for POC on projects.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/10/14/AI/learn-streamlit-with-rag/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
