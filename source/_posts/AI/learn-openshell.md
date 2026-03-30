@@ -6,9 +6,10 @@ tags:
     - K8s
     - OpenShell
 ---
-
-# How
-##
+Try to understand how about the Openshell architecutre.
+<!-- more-->
+# How to install
+## using local ollama on docker
 [Run Local Inference with Ollama](https://docs.nvidia.com/openshell/latest/tutorials/inference-ollama.html)
 
 if you want to use local ollama, must be changed somethings.

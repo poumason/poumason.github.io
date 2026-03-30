@@ -6,7 +6,7 @@ tags:
     - AI
     - LLM
 ---
-
+Try to use Streamlit for POC on projects.
 <!-- more-->
 
 # Example
