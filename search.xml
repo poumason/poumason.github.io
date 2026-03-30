@@ -61,7 +61,8 @@
   <entry>
     <title>How to using Openshell to run OpenClaw</title>
     <url>/2026/03/28/AI/learn-openshell/</url>
-    <content><![CDATA[<h1 id="How"><a href="#How" class="headerlink" title="How"></a>How</h1><h2 id=""><a href="#" class="headerlink" title=""></a></h2><p><a href="https://docs.nvidia.com/openshell/latest/tutorials/inference-ollama.html">Run Local Inference with Ollama</a></p>
+    <content><![CDATA[<span id="more"></span>
+<h1 id="How-to-install"><a href="#How-to-install" class="headerlink" title="How to install"></a>How to install</h1><h2 id="using-local-ollama-on-docker"><a href="#using-local-ollama-on-docker" class="headerlink" title="using local ollama on docker"></a>using local ollama on docker</h2><p><a href="https://docs.nvidia.com/openshell/latest/tutorials/inference-ollama.html">Run Local Inference with Ollama</a></p>
 <p>if you want to use local ollama, must be changed somethings.</p>
 <ul>
 <li><p>create a provider</p>
