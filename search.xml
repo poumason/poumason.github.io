@@ -145,8 +145,16 @@
   <entry>
     <title>介紹如何安裝 ingress nginx controller</title>
     <url>/2025/12/05/K8S/ingress-nginx-controller/</url>
-    <content><![CDATA[<p>介紹如何使用 ingress nginx controller 與設定 ingress</p>
-<span id="more"></span>]]></content>
+    <content><![CDATA[<p>介紹如何使用 ingress nginx controller 與設定 ingress.</p>
+<span id="more"></span>
+<h3 id="environment"><a href="#environment" class="headerlink" title="environment"></a>environment</h3><p>If you want to test ingress nginx controller in local machine. please using docker and kind to create cluster.</p>
+<p>create the kind-confing.yaml for create cluster of kind.</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kind: Cluster</span><br><span class="line">apiVersion: kind.x-k8s.io/v1alpha4</span><br><span class="line">nodes:</span><br><span class="line">- role: control-plane</span><br><span class="line">  # 這裡最重要：將主機的 80/443 對應到節點容器內</span><br><span class="line">  extraPortMappings:</span><br><span class="line">  - containerPort: 80</span><br><span class="line">    hostPort: 80</span><br><span class="line">    protocol: TCP</span><br><span class="line">  - containerPort: 443</span><br><span class="line">    hostPort: 443</span><br><span class="line">    protocol: TCP</span><br></pre></td></tr></table></figure>
+
+<p>because the kind container muse be public host port with container port.</p>
+<h3 id="for-cloud"><a href="#for-cloud" class="headerlink" title="for cloud"></a>for cloud</h3><p>download <a href="https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.13.1/deploy/static/provider/cloud/deploy.yaml">ingress-nginx&#x2F;controller-v1.13.1&#x2F;deploy</a> full deployment yaml.</p>
+<h3 id="for-kind"><a href="#for-kind" class="headerlink" title="for kind"></a>for kind</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml</span><br></pre></td></tr></table></figure>
+]]></content>
       <categories>
         <category>K8S</category>
       </categories>
@@ -641,6 +649,28 @@ EventActivity.swift<figure class="highlight plaintext"><table><tr><td class="cod
       <tags>
         <tag>Flutter</tag>
         <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>How using Claude Code Agent SDK to programming</title>
+    <url>/2026/03/31/AI/ccr-coding/</url>
+    <content><![CDATA[<p>Claude code is powerful agent for coding.</p>
+<span id="more"></span>
+
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview">Agent Skills</a></li>
+<li><a href="https://platform.claude.com/docs/en/agent-sdk/skills">Agent Skills in the SDK</a></li>
+<li><a href="https://code.claude.com/docs/en/headless">Run Claude Code programmatically</a></li>
+<li><a href="https://github.com/anthropics/claude-agent-sdk-python">claude-agent-sdk-python</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>AI</category>
+      </categories>
+      <tags>
+        <tag>Claude Code</tag>
+        <tag>Skills</tag>
+        <tag>Agents</tag>
       </tags>
   </entry>
 </search>
