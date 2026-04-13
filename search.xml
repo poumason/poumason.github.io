@@ -162,7 +162,7 @@
 <h3 id="for-kind"><a href="#for-kind" class="headerlink" title="for kind"></a>for kind</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml</span><br></pre></td></tr></table></figure>
 
 
-<h3 id="Install-K8s-Dashboard"><a href="#Install-K8s-Dashboard" class="headerlink" title="Install K8s Dashboard"></a>Install K8s Dashboard</h3><h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<h2 id="Install-K8s-Dashboard"><a href="#Install-K8s-Dashboard" class="headerlink" title="Install K8s Dashboard"></a>Install K8s Dashboard</h2><h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
 <li><a href="https://weng-albert.medium.com/ingress-controller-101-%E8%BC%95%E9%AC%86%E5%AD%B8%E6%9C%83%E5%9F%BA%E6%9C%AC%E6%8A%80%E5%B7%A7-82bb0285c382">Ingress Controller 101：輕鬆學會基本技巧</a></li>
 </ul>
 ]]></content>
