@@ -147,13 +147,24 @@
     <url>/2025/12/05/K8S/ingress-nginx-controller/</url>
     <content><![CDATA[<p>介紹如何使用 ingress nginx controller 與設定 ingress.</p>
 <span id="more"></span>
-<h3 id="environment"><a href="#environment" class="headerlink" title="environment"></a>environment</h3><p>If you want to test ingress nginx controller in local machine. please using docker and kind to create cluster.</p>
+<h2 id="environment-of-kind"><a href="#environment-of-kind" class="headerlink" title="environment of kind"></a>environment of kind</h2><p>If you want to test ingress nginx controller in local machine. please using docker and kind to create cluster.</p>
 <p>create the kind-confing.yaml for create cluster of kind.</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kind: Cluster</span><br><span class="line">apiVersion: kind.x-k8s.io/v1alpha4</span><br><span class="line">nodes:</span><br><span class="line">- role: control-plane</span><br><span class="line">  # 這裡最重要：將主機的 80/443 對應到節點容器內</span><br><span class="line">  extraPortMappings:</span><br><span class="line">  - containerPort: 80</span><br><span class="line">    hostPort: 80</span><br><span class="line">    protocol: TCP</span><br><span class="line">  - containerPort: 443</span><br><span class="line">    hostPort: 443</span><br><span class="line">    protocol: TCP</span><br></pre></td></tr></table></figure>
 
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kind: Cluster</span><br><span class="line">apiVersion: kind.x-k8s.io/v1alpha4</span><br><span class="line">nodes:</span><br><span class="line">- role: control-plane</span><br><span class="line">  kubeadmConfigPatches:</span><br><span class="line">  - |</span><br><span class="line">    kind: ClusterConfiguration</span><br><span class="line">    apiServer:</span><br><span class="line">      extraArgs:</span><br><span class="line">        # 告訴 API Server 誰是發證單位</span><br><span class="line">        oidc-issuer-url: &quot;https://gitlab.com&quot;</span><br><span class="line">        oidc-client-id: &quot;你的_GITLAB_CLIENT_ID&quot;</span><br><span class="line">        oidc-username-claim: &quot;email&quot; # 關鍵：指定用 email 欄位作為使用者名稱</span><br><span class="line">        oidc-groups-claim: &quot;groups&quot;  # (選填) 如果你之後想用 GitLab Group 控權限</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kind create cluster --config kind-config.yaml</span><br></pre></td></tr></table></figure>
+
 <p>because the kind container muse be public host port with container port.</p>
-<h3 id="for-cloud"><a href="#for-cloud" class="headerlink" title="for cloud"></a>for cloud</h3><p>download <a href="https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.13.1/deploy/static/provider/cloud/deploy.yaml">ingress-nginx&#x2F;controller-v1.13.1&#x2F;deploy</a> full deployment yaml.</p>
-<h3 id="for-kind"><a href="#for-kind" class="headerlink" title="for kind"></a>for kind</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml</span><br></pre></td></tr></table></figure>
+<h2 id="Install-Ingress-Nginx-Controller"><a href="#Install-Ingress-Nginx-Controller" class="headerlink" title="Install Ingress Nginx Controller"></a>Install Ingress Nginx Controller</h2><h3 id="for-cloud"><a href="#for-cloud" class="headerlink" title="for cloud"></a>for cloud</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kubectl apply -y https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.13.1/deploy/static/provider/cloud/deploy.yaml</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="for-kind"><a href="#for-kind" class="headerlink" title="for kind"></a>for kind</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Install-K8s-Dashboard"><a href="#Install-K8s-Dashboard" class="headerlink" title="Install K8s Dashboard"></a>Install K8s Dashboard</h3><h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="https://weng-albert.medium.com/ingress-controller-101-%E8%BC%95%E9%AC%86%E5%AD%B8%E6%9C%83%E5%9F%BA%E6%9C%AC%E6%8A%80%E5%B7%A7-82bb0285c382">Ingress Controller 101：輕鬆學會基本技巧</a></li>
+</ul>
 ]]></content>
       <categories>
         <category>K8S</category>

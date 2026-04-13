@@ -27,7 +27,7 @@
 <meta property="og:description" content="介紹如何使用 ingress nginx controller 與設定 ingress.">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2025-12-05T14:39:26.000Z">
-<meta property="article:modified_time" content="2026-04-12T15:08:33.570Z">
+<meta property="article:modified_time" content="2026-04-13T15:29:43.592Z">
 <meta property="article:author" content="Pou Lin">
 <meta property="article:tag" content="ingress">
 <meta property="article:tag" content="K8S">
@@ -142,7 +142,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#environment"><span class="nav-number">1.</span> <span class="nav-text">environment</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#for-cloud"><span class="nav-number">2.</span> <span class="nav-text">for cloud</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#for-kind"><span class="nav-number">3.</span> <span class="nav-text">for kind</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#environment-of-kind"><span class="nav-number">1.</span> <span class="nav-text">environment of kind</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Install-Ingress-Nginx-Controller"><span class="nav-number">2.</span> <span class="nav-text">Install Ingress Nginx Controller</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#for-cloud"><span class="nav-number">2.1.</span> <span class="nav-text">for cloud</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#for-kind"><span class="nav-number">2.2.</span> <span class="nav-text">for kind</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Install-K8s-Dashboard"><span class="nav-number">2.3.</span> <span class="nav-text">Install K8s Dashboard</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number"></span> <span class="nav-text">References</span></a></div>
         </div>
         <!--/noindex-->
 
@@ -239,7 +239,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-04-12 23:08:33" itemprop="dateModified" datetime="2026-04-12T23:08:33+08:00">2026-04-12</time>
+      <time title="Modified: 2026-04-13 23:29:43" itemprop="dateModified" datetime="2026-04-13T23:29:43+08:00">2026-04-13</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -269,13 +269,24 @@
     
     <div class="post-body" itemprop="articleBody"><p>介紹如何使用 ingress nginx controller 與設定 ingress.</p>
 <span id="more"></span>
-<h3 id="environment"><a href="#environment" class="headerlink" title="environment"></a>environment</h3><p>If you want to test ingress nginx controller in local machine. please using docker and kind to create cluster.</p>
+<h2 id="environment-of-kind"><a href="#environment-of-kind" class="headerlink" title="environment of kind"></a>environment of kind</h2><p>If you want to test ingress nginx controller in local machine. please using docker and kind to create cluster.</p>
 <p>create the kind-confing.yaml for create cluster of kind.</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">kind: Cluster</span><br><span class="line">apiVersion: kind.x-k8s.io/v1alpha4</span><br><span class="line">nodes:</span><br><span class="line">- role: control-plane</span><br><span class="line">  # 這裡最重要：將主機的 80/443 對應到節點容器內</span><br><span class="line">  extraPortMappings:</span><br><span class="line">  - containerPort: 80</span><br><span class="line">    hostPort: 80</span><br><span class="line">    protocol: TCP</span><br><span class="line">  - containerPort: 443</span><br><span class="line">    hostPort: 443</span><br><span class="line">    protocol: TCP</span><br></pre></td></tr></table></figure>
 
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">kind: Cluster</span><br><span class="line">apiVersion: kind.x-k8s.io/v1alpha4</span><br><span class="line">nodes:</span><br><span class="line">- role: control-plane</span><br><span class="line">  kubeadmConfigPatches:</span><br><span class="line">  - |</span><br><span class="line">    kind: ClusterConfiguration</span><br><span class="line">    apiServer:</span><br><span class="line">      extraArgs:</span><br><span class="line">        # 告訴 API Server 誰是發證單位</span><br><span class="line">        oidc-issuer-url: &quot;https://gitlab.com&quot;</span><br><span class="line">        oidc-client-id: &quot;你的_GITLAB_CLIENT_ID&quot;</span><br><span class="line">        oidc-username-claim: &quot;email&quot; # 關鍵：指定用 email 欄位作為使用者名稱</span><br><span class="line">        oidc-groups-claim: &quot;groups&quot;  # (選填) 如果你之後想用 GitLab Group 控權限</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kind create cluster --config kind-config.yaml</span><br></pre></td></tr></table></figure>
+
 <p>because the kind container muse be public host port with container port.</p>
-<h3 id="for-cloud"><a href="#for-cloud" class="headerlink" title="for cloud"></a>for cloud</h3><p>download <a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.13.1/deploy/static/provider/cloud/deploy.yaml">ingress-nginx&#x2F;controller-v1.13.1&#x2F;deploy</a> full deployment yaml.</p>
-<h3 id="for-kind"><a href="#for-kind" class="headerlink" title="for kind"></a>for kind</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml</span><br></pre></td></tr></table></figure>
+<h2 id="Install-Ingress-Nginx-Controller"><a href="#Install-Ingress-Nginx-Controller" class="headerlink" title="Install Ingress Nginx Controller"></a>Install Ingress Nginx Controller</h2><h3 id="for-cloud"><a href="#for-cloud" class="headerlink" title="for cloud"></a>for cloud</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -y https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.13.1/deploy/static/provider/cloud/deploy.yaml</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="for-kind"><a href="#for-kind" class="headerlink" title="for kind"></a>for kind</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Install-K8s-Dashboard"><a href="#Install-K8s-Dashboard" class="headerlink" title="Install K8s Dashboard"></a>Install K8s Dashboard</h3><h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://weng-albert.medium.com/ingress-controller-101-%E8%BC%95%E9%AC%86%E5%AD%B8%E6%9C%83%E5%9F%BA%E6%9C%AC%E6%8A%80%E5%B7%A7-82bb0285c382">Ingress Controller 101：輕鬆學會基本技巧</a></li>
+</ul>
 
     </div>
 
