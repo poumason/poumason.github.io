@@ -27,7 +27,7 @@
 <meta property="og:description" content="介紹如何使用 K8s Dashboard 加 Oauth2Proxy 進行 user 身分的驗證與管理。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2026-04-20T14:39:26.000Z">
-<meta property="article:modified_time" content="2026-04-21T14:26:57.151Z">
+<meta property="article:modified_time" content="2026-04-22T14:38:13.397Z">
 <meta property="article:author" content="Pou Lin">
 <meta property="article:tag" content="K8S">
 <meta property="article:tag" content="oidc">
@@ -143,7 +143,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%96%E5%82%99%E7%92%B0%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">準備環境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#kind-OIDC"><span class="nav-number">1.1.</span> <span class="nav-text">kind + OIDC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kubeadmin-OIDC"><span class="nav-number">1.2.</span> <span class="nav-text">kubeadmin + OIDC</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Deploy-K8s-Dashboard"><span class="nav-number">2.</span> <span class="nav-text">Deploy K8s Dashboard</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E5%85%A5-Oauth2Proxy"><span class="nav-number">3.</span> <span class="nav-text">加入 Oauth2Proxy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#References"><span class="nav-number">4.</span> <span class="nav-text">References</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%96%E5%82%99%E7%92%B0%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">準備環境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#kind-OIDC"><span class="nav-number">1.1.</span> <span class="nav-text">kind + OIDC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kubeadmin-OIDC"><span class="nav-number">1.2.</span> <span class="nav-text">kubeadmin + OIDC</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#apiVersion-v1kind-Servicemetadata-name-oauth2-proxy-namespace-kubernetes-dashboardspec-ports-name-http-port-4180-protocol-TCP-targetPort-4180-selector-app-oauth2-proxy"><span class="nav-number">2.</span> <span class="nav-text">apiVersion: v1kind: Servicemetadata:  name: oauth2-proxy  namespace: kubernetes-dashboardspec:  ports:  - name: http    port: 4180    protocol: TCP    targetPort: 4180  selector:    app: oauth2-proxy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spec-ingressClassName-nginx-rules-host-kubedashboard-localhost-http-paths-path-pathType-Prefix-backend-service-name-kubernetes-dashboard-kong-proxy-port-number-443"><span class="nav-number">3.</span> <span class="nav-text">spec:  ingressClassName: nginx  rules:  - host: kubedashboard.localhost    http:      paths:      - path: &#x2F;        pathType: Prefix        backend:          service:            name: kubernetes-dashboard-kong-proxy            port:              number: 443</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%99%E8%A3%A1%E4%B8%8D%E8%A6%81%E6%94%BE%E4%BB%BB%E4%BD%95-auth-url-%E6%88%96-auth-signin%EF%BC%81"><span class="nav-number"></span> <span class="nav-text">這裡不要放任何 auth-url 或 auth-signin！</span></a></div>
         </div>
         <!--/noindex-->
 
@@ -240,7 +240,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-04-21 22:26:57" itemprop="dateModified" datetime="2026-04-21T22:26:57+08:00">2026-04-21</time>
+      <time title="Modified: 2026-04-22 22:38:13" itemprop="dateModified" datetime="2026-04-22T22:38:13+08:00">2026-04-22</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -281,9 +281,44 @@
 
 <p>加入完成後，執行 <code>kind create cluster --config kind-config.yaml</code> 建立起 cluster。</p>
 <p>建立完成後，可使用 &#96;&#96; 檢查剛加入的 OIDC 設定是否有被寫入。</p>
-<h3 id="kubeadmin-OIDC"><a href="#kubeadmin-OIDC" class="headerlink" title="kubeadmin + OIDC"></a>kubeadmin + OIDC</h3><h2 id="Deploy-K8s-Dashboard"><a href="#Deploy-K8s-Dashboard" class="headerlink" title="Deploy K8s Dashboard"></a>Deploy K8s Dashboard</h2><h2 id="加入-Oauth2Proxy"><a href="#加入-Oauth2Proxy" class="headerlink" title="加入 Oauth2Proxy"></a>加入 Oauth2Proxy</h2><h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ul>
-<li><a href=""></a></li>
+<h3 id="kubeadmin-OIDC"><a href="#kubeadmin-OIDC" class="headerlink" title="kubeadmin + OIDC"></a>kubeadmin + OIDC</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">```</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## Install K8s Dashboard</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## Install Oauth2Proxy with gitlab to authorizate user</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<hr>
+<p>apiVersion: apps&#x2F;v1<br>kind: Deployment<br>metadata:<br>  name: oauth2-proxy<br>  namespace: kubernetes-dashboard<br>spec:<br>  replicas: 1<br>  selector:<br>    matchLabels:<br>      app: oauth2-proxy<br>  template:<br>    metadata:<br>      labels:<br>        app: oauth2-proxy<br>    spec:<br>      containers:<br>      - name: oauth2-proxy<br>        image: quay.io&#x2F;oauth2-proxy&#x2F;oauth2-proxy:v7.6.0<br>        # 如果在公司私有環境，記得換成內部 Harbor 的鏡像路徑<br>        args:<br>        - –provider&#x3D;oidc<br>        - –reverse-proxy&#x3D;true      # &lt;— 必加！告訴 Proxy 它在 Ingress 後面<br>        - –email-domain&#x3D;* # 限制特定的 email 網域可輸入公司網域<br>        - –upstream&#x3D;file:&#x2F;&#x2F;&#x2F;dev&#x2F;null    # 因為我們是用 Ingress 轉發，這裡設為 null<br>        - –http-address&#x3D;0.0.0.0:4180<br>        - –oidc-issuer-url&#x3D;<a target="_blank" rel="noopener" href="https://gitlab.com/">https://gitlab.com</a> # 或是公司內部 GitLab 地址<br>        - –cookie-secure&#x3D;false<br>        - –whitelist-domain&#x3D;kubedashboard.localhost # 加入這行<br>        - –cookie-refresh&#x3D;1h<br>        - –redirect-url&#x3D;<a target="_blank" rel="noopener" href="https://kubedashboard.localhost/oauth2/callback">https://kubedashboard.localhost/oauth2/callback</a><br>        - –set-authorization-header&#x3D;true<br>        - –pass-authorization-header&#x3D;true<br>        - –scope&#x3D;openid profile email<br>        env:<br>        - name: OAUTH2_PROXY_CLIENT_ID<br>          value: “8804a714b9f0a8ba58d0f58d22179cae34ffa2b66a7dcf4660b0a4ffe7204299”<br>        - name: OAUTH2_PROXY_CLIENT_SECRET<br>          value: “gloas-f90c1402e620e971231526a6eb0a1e126ad781d57caa9ebefeda499394f11de9”<br>        - name: OAUTH2_PROXY_COOKIE_SECRET<br>          value: “gJRFrVwfN8vJYB178rzdkw&#x3D;&#x3D;”<br>          # value: “ApLd9UBOd8YwaJcXqn&#x2F;DJA&#x3D;&#x3D;” # 例如：python -c ‘import os,base64; print(base64.b64encode(os.urandom(16)).decode())’</p>
+<hr>
+<h2 id="apiVersion-v1kind-Servicemetadata-name-oauth2-proxy-namespace-kubernetes-dashboardspec-ports-name-http-port-4180-protocol-TCP-targetPort-4180-selector-app-oauth2-proxy"><a href="#apiVersion-v1kind-Servicemetadata-name-oauth2-proxy-namespace-kubernetes-dashboardspec-ports-name-http-port-4180-protocol-TCP-targetPort-4180-selector-app-oauth2-proxy" class="headerlink" title="apiVersion: v1kind: Servicemetadata:  name: oauth2-proxy  namespace: kubernetes-dashboardspec:  ports:  - name: http    port: 4180    protocol: TCP    targetPort: 4180  selector:    app: oauth2-proxy"></a>apiVersion: v1<br>kind: Service<br>metadata:<br>  name: oauth2-proxy<br>  namespace: kubernetes-dashboard<br>spec:<br>  ports:<br>  - name: http<br>    port: 4180<br>    protocol: TCP<br>    targetPort: 4180<br>  selector:<br>    app: oauth2-proxy</h2><p>apiVersion: networking.k8s.io&#x2F;v1<br>kind: Ingress<br>metadata:<br>  name: kubernetes-dashboard-ingress<br>  namespace: kubernetes-dashboard<br>  annotations:<br>    # 1. 外部認證檢查 URL (指向 Service 的內部 DNS)<br>    nginx.ingress.kubernetes.io&#x2F;auth-url: “<a target="_blank" rel="noopener" href="http://oauth2-proxy.kubernetes-dashboard.svc.cluster.local:4180/oauth2/auth">http://oauth2-proxy.kubernetes-dashboard.svc.cluster.local:4180/oauth2/auth</a>“</p>
+<pre><code># 2. 未登入時跳轉的 SSO 登入起始頁面
+nginx.ingress.kubernetes.io/auth-signin: &quot;https://kubedashboard.localhost/oauth2/start?rd=$scheme://$host$request_uri$is_args$args&quot;
+
+# 3. 如果 Dashboard 服務本身是 HTTPS (預設通常是)
+nginx.ingress.kubernetes.io/backend-protocol: &quot;HTTPS&quot;
+# 將 OAuth2 Proxy 驗證後的 Authorization Header 傳給後端
+nginx.ingress.kubernetes.io/auth-response-headers: &quot;Authorization&quot;
+</code></pre>
+<h2 id="spec-ingressClassName-nginx-rules-host-kubedashboard-localhost-http-paths-path-pathType-Prefix-backend-service-name-kubernetes-dashboard-kong-proxy-port-number-443"><a href="#spec-ingressClassName-nginx-rules-host-kubedashboard-localhost-http-paths-path-pathType-Prefix-backend-service-name-kubernetes-dashboard-kong-proxy-port-number-443" class="headerlink" title="spec:  ingressClassName: nginx  rules:  - host: kubedashboard.localhost    http:      paths:      - path: &#x2F;        pathType: Prefix        backend:          service:            name: kubernetes-dashboard-kong-proxy            port:              number: 443"></a>spec:<br>  ingressClassName: nginx<br>  rules:<br>  - host: kubedashboard.localhost<br>    http:<br>      paths:<br>      - path: &#x2F;<br>        pathType: Prefix<br>        backend:<br>          service:<br>            name: kubernetes-dashboard-kong-proxy<br>            port:<br>              number: 443</h2><p>apiVersion: networking.k8s.io&#x2F;v1<br>kind: Ingress<br>metadata:<br>  name: oauth2-proxy-public<br>  namespace: kubernetes-dashboard</p>
+<h1 id="這裡不要放任何-auth-url-或-auth-signin！"><a href="#這裡不要放任何-auth-url-或-auth-signin！" class="headerlink" title="這裡不要放任何 auth-url 或 auth-signin！"></a>這裡不要放任何 auth-url 或 auth-signin！</h1><p>spec:<br>  ingressClassName: nginx<br>  rules:</p>
+<ul>
+<li>host: kubedashboard.localhost<br>http:<br>  paths:<ul>
+<li>path: &#x2F;oauth2<br>pathType: Prefix<br>backend:<br>  service:<br>name: oauth2-proxy<br>port:<br>  number: 4180</li>
 </ul>
+</li>
+</ul>
+<hr>
+<p>apiVersion: rbac.authorization.k8s.io&#x2F;v1<br>kind: ClusterRoleBinding<br>metadata:<br>  name: sso-admin-binding<br>roleRef:<br>  apiGroup: rbac.authorization.k8s.io<br>  kind: ClusterRole<br>  name: cluster-admin # 測試用，給予最大權限<br>subjects:</p>
+<ul>
+<li>kind: User<br>name: “<a href="mailto:&#112;&#111;&#x75;&#109;&#x61;&#x73;&#x6f;&#x6e;&#x40;&#108;&#x69;&#x76;&#101;&#x2e;&#99;&#x6f;&#x6d;">&#112;&#111;&#x75;&#109;&#x61;&#x73;&#x6f;&#x6e;&#x40;&#108;&#x69;&#x76;&#101;&#x2e;&#99;&#x6f;&#x6d;</a>“ # 這裡填寫你 GitLab 帳號的 Email<br>apiGroup: rbac.authorization.k8s.io</li>
+</ul>
+<pre><code>
+## References
+
+- [Authenticating](https://kubernetes.io/docs/reference/access-authn-authz/authentication/)
+- [Ingress Controller 101：輕鬆學會基本技巧](https://weng-albert.medium.com/ingress-controller-101-%E8%BC%95%E9%AC%86%E5%AD%B8%E6%9C%83%E5%9F%BA%E6%9C%AC%E6%8A%80%E5%B7%A7-82bb0285c382)
+- [Kind, Keycloak — Securing Kubernetes api server with OIDC](https://medium.com/@charled.breteche/kind-keycloak-securing-kubernetes-api-server-with-oidc-371c5faef902)
+- [Kubernetes RBAC 101: 如何通过 OIDC 强化集群安全](https://www.cloudnative101.net/posts/kubernetes-rbac-oidc-security-guide/)
+- [云原生小技巧 #4：OrbStack — 本地 K8s 环境的域名映射优化，开发者的新宠](https://mp.weixin.qq.com/s/f3vFf_GkURscjOwy2vXP1Q)
+- [Protect Kubernetes Dashboard using oauth2-proxy and Keycloak](https://www.enricobassetti.it/2021/04/protect-kubernetes-dashboard-using-oauth2-proxy-and-keycloak/)
+- [佈署 &amp; 存取 Kubernetes Dashboard](https://godleon.github.io/blog/Kubernetes/k8s-Deploy-and-Access-Dashboard/)
+- [Configure GitLab as an OAuth 2.0 authentication identity provider](https://docs.gitlab.com/integration/oauth_provider/#view-all-authorized-applications)
+</code></pre>
 
     </div>
 
