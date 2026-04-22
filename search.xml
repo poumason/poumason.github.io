@@ -774,7 +774,9 @@ nginx.ingress.kubernetes.io/auth-response-headers: &quot;Authorization&quot;
   <entry>
     <title>Agent Skills 最佳實踐</title>
     <url>/2026/04/22/AI/how-write-agent-skills/</url>
-    <content><![CDATA[<h1 id="Agent-Skills-最佳實踐"><a href="#Agent-Skills-最佳實踐" class="headerlink" title="Agent Skills 最佳實踐"></a>Agent Skills 最佳實踐</h1><p>本文檔總結了 Claude 官方發布的 Agent Skills 編寫最佳實踐，幫助你建立高效、可維護的技能。</p>
+    <content><![CDATA[<p>本文檔總結了 Claude 官方發布的 Agent Skills 編寫最佳實踐，幫助你建立高效、可維護的技能。</p>
+<span id="more"></span>
+
 <h2 id="核心原則"><a href="#核心原則" class="headerlink" title="核心原則"></a>核心原則</h2><h3 id="簡潔至上"><a href="#簡潔至上" class="headerlink" title="簡潔至上"></a>簡潔至上</h3><p>上下文視窗是公共資源。你的技能與 Claude 需要知道的所有內容共享上下文視窗，包括：</p>
 <ul>
 <li>系統提示</li>

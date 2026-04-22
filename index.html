@@ -225,7 +225,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2026-04-22 22:21:00 / Modified: 22:32:34" itemprop="dateCreated datePublished" datetime="2026-04-22T22:21:00+08:00">2026-04-22</time>
+      <time title="Created: 2026-04-22 22:21:00 / Modified: 22:40:14" itemprop="dateCreated datePublished" datetime="2026-04-22T22:21:00+08:00">2026-04-22</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -247,212 +247,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="Agent-Skills-最佳實踐"><a href="#Agent-Skills-最佳實踐" class="headerlink" title="Agent Skills 最佳實踐"></a>Agent Skills 最佳實踐</h1><p>本文檔總結了 Claude 官方發布的 Agent Skills 編寫最佳實踐，幫助你建立高效、可維護的技能。</p>
-<h2 id="核心原則"><a href="#核心原則" class="headerlink" title="核心原則"></a>核心原則</h2><h3 id="簡潔至上"><a href="#簡潔至上" class="headerlink" title="簡潔至上"></a>簡潔至上</h3><p>上下文視窗是公共資源。你的技能與 Claude 需要知道的所有內容共享上下文視窗，包括：</p>
-<ul>
-<li>系統提示</li>
-<li>對話歷史</li>
-<li>其他技能的元數據</li>
-<li>你的實際請求</li>
-</ul>
-<p><strong>預設假設：</strong> Claude 已經非常聰明</p>
-<p>只需要添加 Claude 不知道的上下文。質疑每一條資訊：</p>
-<ul>
-<li>“Claude 真的需要這個解釋嗎？”</li>
-<li>“我可以假設 Claude 知道這個嗎？”</li>
-<li>“這個段落值得消耗的 token 嗎？”</li>
-</ul>
-<p><strong>好的示例 - 簡潔</strong>（約 50 tokens）：</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">## Extract PDF text</span></span><br><span class="line"></span><br><span class="line">Use pdfplumber for text extraction:</span><br><span class="line"></span><br><span class="line"><span class="code">```python</span></span><br><span class="line"><span class="code">import pdfplumber</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">with pdfplumber.open(&quot;file.pdf&quot;) as pdf:</span></span><br><span class="line"><span class="code">    text = pdf.pages[0].extract_text()</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">**差的示例 - 過於冗長**（約 150 tokens）：</span><br><span class="line">```markdown</span><br><span class="line">## Extract PDF text</span><br><span class="line"></span><br><span class="line">PDF (Portable Document Format) files are a common file format that contains</span><br><span class="line">text, images, and other content. To extract text from a PDF, you&#x27;ll need to</span><br><span class="line">use a library. There are many libraries available for PDF processing, but</span><br><span class="line">pdfplumber is recommended because it&#x27;s easy to use and handles most cases well.</span><br><span class="line">First, you&#x27;ll need to install it using pip. Then you can use the code below...</span><br></pre></td></tr></table></figure>
-
-<p>簡潔版本假設 Claude 知道什麼是 PDF 以及庫的工作原理。</p>
-<h3 id="設定適當的自由度"><a href="#設定適當的自由度" class="headerlink" title="設定適當的自由度"></a>設定適當的自由度</h3><p>根據任務的脆弱性和可變性匹配具體程度：</p>
-<p><strong>高自由度</strong>（基於文字的指令）：</p>
-<p>適用於：</p>
-<ul>
-<li>多種方法都有效</li>
-<li>決策取決於上下文</li>
-<li>啟發式方法指導方法</li>
-</ul>
-<p><strong>中自由度</strong>（帶參數的偽代碼或腳本）：</p>
-<p>適用於：</p>
-<ul>
-<li>存在首選模式</li>
-<li>可以接受一些變化</li>
-<li>配置影響行為</li>
-</ul>
-<p><strong>低自由度</strong>（特定腳本，幾乎無參數）：</p>
-<p>適用於：</p>
-<ul>
-<li>操作脆弱且容易出錯</li>
-<li>一致性很關鍵</li>
-<li>必須遵循特定順序</li>
-</ul>
-<h3 id="使用所有計劃使用的模型進行測試"><a href="#使用所有計劃使用的模型進行測試" class="headerlink" title="使用所有計劃使用的模型進行測試"></a>使用所有計劃使用的模型進行測試</h3><p>技能作為模型的附加功能，因此效果取決於底層模型。在所有計劃使用的模型上測試你的技能。</p>
-<p><strong>按模型的測試考慮：</strong></p>
-<ul>
-<li><strong>Claude Haiku</strong>（快速、經濟）：技能是否提供足夠的指導？</li>
-<li><strong>Claude Sonnet</strong>（平衡）：技能是否清晰高效？</li>
-<li><strong>Claude Opus</strong>（強大推理）：技能是否避免過度解釋？</li>
-</ul>
-<p>對 Opus 完美的方案可能需要更多細節才能適用於 Haiku。如果計劃跨多個模型使用技能，請在所有模型上都能良好運行的說明。</p>
-<h2 id="技能結構"><a href="#技能結構" class="headerlink" title="技能結構"></a>技能結構</h2><h3 id="命名約定"><a href="#命名約定" class="headerlink" title="命名約定"></a>命名約定</h3><p>使用一致的命名模式使技能更容易引用和討論。考慮使用 <strong>動名詞形式</strong>（動詞 + -ing）作為技能名稱。</p>
-<p>技能名稱欄位要求：</p>
-<ul>
-<li>最多 64 個字元</li>
-<li>只能使用小寫字母、數字和連字符</li>
-<li>不能包含 XML 標籤</li>
-<li>不能包含保留詞：”anthropic”、”claude”</li>
-</ul>
-<p><strong>好的命名示例（動名詞形式）：</strong></p>
-<ul>
-<li><code>processing-pdfs</code></li>
-<li><code>analyzing-spreadsheets</code></li>
-<li><code>managing-databases</code></li>
-<li><code>testing-code</code></li>
-<li><code>writing-documentation</code></li>
-</ul>
-<h3 id="編寫有效的描述"><a href="#編寫有效的描述" class="headerlink" title="編寫有效的描述"></a>編寫有效的描述</h3><p><code>description</code> 欄位支援技能發現，應包括技能做什麼以及何時使用它。</p>
-<p><strong>始終使用第三人稱</strong>。描述被注入系統提示，不一致的人稱可能導致發現問題。</p>
-<ul>
-<li><strong>好的：</strong> “Processes Excel files and generates reports”</li>
-<li><strong>避免：</strong> “I can help you process Excel files”</li>
-<li><strong>避免：</strong> “You can use this to process Excel files”</li>
-</ul>
-<p><strong>具體並包含關鍵詞</strong>。包括技能做什麼以及具體的觸發條件&#x2F;上下文。</p>
-<p><strong>有效的示例：</strong></p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">description:</span> <span class="string">Extract</span> <span class="string">text</span> <span class="string">and</span> <span class="string">tables</span> <span class="string">from</span> <span class="string">PDF</span> <span class="string">files,</span> <span class="string">fill</span> <span class="string">forms,</span> <span class="string">merge</span> <span class="string">documents.</span> <span class="string">Use</span> <span class="string">when</span> <span class="string">working</span> <span class="string">with</span> <span class="string">PDF</span> <span class="string">files</span> <span class="string">or</span> <span class="string">when</span> <span class="string">the</span> <span class="string">user</span> <span class="string">mentions</span> <span class="string">PDFs,</span> <span class="string">forms,</span> <span class="string">or</span> <span class="string">document</span> <span class="string">extraction.</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="漸進式披露模式"><a href="#漸進式披露模式" class="headerlink" title="漸進式披露模式"></a>漸進式披露模式</h3><p>SKILL.md 作為概述，將 Claude 指向所需的詳細材料，就像入職指南中的目錄。</p>
-<p><strong>實用指導：</strong></p>
-<ul>
-<li>保持 SKILL.md 正文在 500 行以下以獲得最佳效能</li>
-<li>接近此限制時，將內容拆分到單獨的文件中</li>
-</ul>
-<h4 id="模式-1：帶引用的高級指南"><a href="#模式-1：帶引用的高級指南" class="headerlink" title="模式 1：帶引用的高級指南"></a>模式 1：帶引用的高級指南</h4><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">name: pdf-processing</span><br><span class="line"><span class="section">description: Extracts text and tables from PDF files, fills forms, and merges documents. Use when working with PDF files or when the user mentions PDFs, forms, or document extraction.</span></span><br><span class="line"><span class="section">---</span></span><br><span class="line"></span><br><span class="line"><span class="section"># PDF Processing</span></span><br><span class="line"></span><br><span class="line"><span class="section">## Quick start</span></span><br><span class="line"></span><br><span class="line">Extract text with pdfplumber:</span><br><span class="line"><span class="code">```python</span></span><br><span class="line"><span class="code">import pdfplumber</span></span><br><span class="line"><span class="code">with pdfplumber.open(&quot;file.pdf&quot;) as pdf:</span></span><br><span class="line"><span class="code">    text = pdf.pages[0].extract_text()</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="Advanced-features"><a href="#Advanced-features" class="headerlink" title="Advanced features"></a>Advanced features</h2><p><strong>Form filling</strong>: See <a href="FORMS.md">FORMS.md</a> for complete guide<br><strong>API reference</strong>: See <a href="REFERENCE.md">REFERENCE.md</a> for all methods<br><strong>Examples</strong>: See <a href="EXAMPLES.md">EXAMPLES.md</a> for common patterns</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#### 模式 2：按領域組織</span><br><span class="line"></span><br><span class="line">對於具有多個領域的技能，按領域組織內容以避免載入無關上下文。</span><br><span class="line"></span><br><span class="line">```text</span><br><span class="line">bigquery-skill/</span><br><span class="line">├── SKILL.md (overview and navigation)</span><br><span class="line">└── reference/</span><br><span class="line">    ├── finance.md (revenue, billing metrics)</span><br><span class="line">    ├── sales.md (opportunities, pipeline)</span><br><span class="line">    ├── product.md (API usage, features)</span><br><span class="line">    └── marketing.md (campaigns, attribution)</span><br></pre></td></tr></table></figure>
-
-<h4 id="模式-3：條件細節"><a href="#模式-3：條件細節" class="headerlink" title="模式 3：條件細節"></a>模式 3：條件細節</h4><p>顯示基本內容，連結到高級內容：</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># DOCX Processing</span></span><br><span class="line"></span><br><span class="line"><span class="section">## Creating documents</span></span><br><span class="line"></span><br><span class="line">Use docx-js for new documents. See [<span class="string">DOCX-JS.md</span>](<span class="link">DOCX-JS.md</span>).</span><br><span class="line"></span><br><span class="line"><span class="section">## Editing documents</span></span><br><span class="line"></span><br><span class="line">For simple edits, modify the XML directly.</span><br><span class="line"></span><br><span class="line"><span class="strong">**For tracked changes**</span>: See [<span class="string">REDLINING.md</span>](<span class="link">REDLINING.md</span>)</span><br><span class="line"><span class="strong">**For OOXML details**</span>: See [<span class="string">OOXML.md</span>](<span class="link">OOXML.md</span>)</span><br></pre></td></tr></table></figure>
-
-<h3 id="避免深度巢狀引用"><a href="#避免深度巢狀引用" class="headerlink" title="避免深度巢狀引用"></a>避免深度巢狀引用</h3><p>Claude 可能在從其他引用檔案引用時部分讀取檔案。保持引用從 SKILL.md 深度為一层。</p>
-<h3 id="為較長的引用檔案添加目錄"><a href="#為較長的引用檔案添加目錄" class="headerlink" title="為較長的引用檔案添加目錄"></a>為較長的引用檔案添加目錄</h3><p>對於超過 100 行的引用檔案，在頂部包含目錄。</p>
-<h2 id="工作流和回饋循環"><a href="#工作流和回饋循環" class="headerlink" title="工作流和回饋循環"></a>工作流和回饋循環</h2><h3 id="為複雜任務使用工作流"><a href="#為複雜任務使用工作流" class="headerlink" title="為複雜任務使用工作流"></a>為複雜任務使用工作流</h3><p>將複雜操作分解為清晰的順序步驟。對於特別複雜的工作流，提供一個清單供 Claude 複製到回應中並在進展時勾選。</p>
-<p><strong>示例：研究綜合工作流</strong></p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">## Research synthesis workflow</span></span><br><span class="line"></span><br><span class="line">Copy this checklist and track your progress:</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>Research Progress:</p>
-<ul>
-<li><input disabled="" type="checkbox"> Step 1: Read all source documents</li>
-<li><input disabled="" type="checkbox"> Step 2: Identify key themes</li>
-<li><input disabled="" type="checkbox"> Step 3: Cross-reference claims</li>
-<li><input disabled="" type="checkbox"> Step 4: Create structured summary</li>
-<li><input disabled="" type="checkbox"> Step 5: Verify citations<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">```</span><br><span class="line"></span><br><span class="line">### 實現回饋循環</span><br><span class="line"></span><br><span class="line">**常見模式：** 運行驗證器 → 修復錯誤 → 重複</span><br><span class="line"></span><br><span class="line">此模式大大提高輸出品質。</span><br><span class="line"></span><br><span class="line">```markdown</span><br><span class="line">## Content review process</span><br><span class="line"></span><br><span class="line">1. Draft your content following the guidelines in STYLE_GUIDE.md</span><br><span class="line">2. Review against the checklist:</span><br><span class="line">   - Check terminology consistency</span><br><span class="line">   - Verify examples follow the standard format</span><br><span class="line">   - Confirm all required sections are present</span><br><span class="line">3. If issues found:</span><br><span class="line">   - Note each issue with specific section reference</span><br><span class="line">   - Revise the content</span><br><span class="line">   - Review the checklist again</span><br><span class="line">4. Only proceed when all requirements are met</span><br><span class="line">5. Finalize and save the document</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="內容指南"><a href="#內容指南" class="headerlink" title="內容指南"></a>內容指南</h2><h3 id="避免時間敏感資訊"><a href="#避免時間敏感資訊" class="headerlink" title="避免時間敏感資訊"></a>避免時間敏感資訊</h3><p>不要包含會過時的資訊：</p>
-<p><strong>好的示例</strong>（使用 “old patterns” 部分）：</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">## Current method</span></span><br><span class="line"></span><br><span class="line">Use the v2 API endpoint: <span class="code">`api.example.com/v2/messages`</span></span><br><span class="line"></span><br><span class="line"><span class="section">## Old patterns</span></span><br><span class="line"></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">details</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">summary</span>&gt;</span></span>Legacy v1 API (deprecated 2025-08)<span class="language-xml"><span class="tag">&lt;/<span class="name">summary</span>&gt;</span></span></span><br><span class="line"></span><br><span class="line">The v1 API used: <span class="code">`api.example.com/v1/messages`</span></span><br><span class="line"></span><br><span class="line">This endpoint is no longer supported.</span><br><span class="line"><span class="language-xml"><span class="tag">&lt;/<span class="name">details</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
-
-<h3 id="使用一致的術語"><a href="#使用一致的術語" class="headerlink" title="使用一致的術語"></a>使用一致的術語</h3><p>選擇一個術語並在整個技能中使用它：</p>
-<p><strong>好 - 一致：</strong></p>
-<ul>
-<li>始終使用 “API endpoint”</li>
-<li>始終使用 “field”</li>
-<li>始終使用 “extract”</li>
-</ul>
-<p><strong>差 - 不一致：</strong></p>
-<ul>
-<li>混合使用 “API endpoint”、”URL”、”API route”、”path”</li>
-<li>混合使用 “field”、”box”、”element”、”control”</li>
-<li>混合使用 “extract”、”pull”、”get”、”retrieve”</li>
-</ul>
-<h2 id="常見模式"><a href="#常見模式" class="headerlink" title="常見模式"></a>常見模式</h2><h3 id="模板模式"><a href="#模板模式" class="headerlink" title="模板模式"></a>模板模式</h3><p>為輸出格式提供模板。根據需要匹配嚴格程度。</p>
-<h3 id="示例模式"><a href="#示例模式" class="headerlink" title="示例模式"></a>示例模式</h3><p>對於輸出品質取決於看到示例的技能，提供輸入&#x2F;輸出對：</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">## Commit message format</span></span><br><span class="line"></span><br><span class="line">Generate commit messages following these examples:</span><br><span class="line"></span><br><span class="line"><span class="strong">**Example 1:**</span></span><br><span class="line">Input: Added user authentication with JWT tokens</span><br><span class="line">Output:</span><br></pre></td></tr></table></figure>
-<p>feat(auth): implement JWT-based authentication</p>
-<p>Add login endpoint and token validation middleware</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">```</span><br><span class="line"></span><br><span class="line">### 條件工作流模式</span><br><span class="line"></span><br><span class="line">指導 Claude 穿過決策點：</span><br><span class="line"></span><br><span class="line">```markdown</span><br><span class="line">## Document modification workflow</span><br><span class="line"></span><br><span class="line">1. Determine the modification type:</span><br><span class="line"></span><br><span class="line">   **Creating new content?** → Follow &quot;Creation workflow&quot; below</span><br><span class="line">   **Editing existing content?** → Follow &quot;Editing workflow&quot; below</span><br><span class="line"></span><br><span class="line">2. Creation workflow:</span><br><span class="line">   - Use docx-js library</span><br><span class="line">   - Build document from scratch</span><br><span class="line">   - Export to .docx format</span><br><span class="line"></span><br><span class="line">3. Editing workflow:</span><br><span class="line">   - Unpack existing document</span><br><span class="line">   - Modify XML directly</span><br><span class="line">   - Validate after each change</span><br><span class="line">   - Repack when complete</span><br></pre></td></tr></table></figure>
-
-<h2 id="評估和迭代替換"><a href="#評估和迭代替換" class="headerlink" title="評估和迭代替換"></a>評估和迭代替換</h2><h3 id="先建立評估"><a href="#先建立評估" class="headerlink" title="先建立評估"></a>先建立評估</h3><p><strong>在編寫大量文件之前建立評估。</strong> 這確保你的技能解決實際問題而不是記錄想像的問題。</p>
-<p><strong>評估驅動的開發：</strong></p>
-<ol>
-<li><strong>識別差距：</strong> 在沒有技能的情況下運行 Claude 代表性任務</li>
-<li><strong>建立評估：</strong> 構建三個測試這些差距的場景</li>
-<li><strong>建立基線：</strong> 測量沒有技能的 Claude 效能</li>
-<li><strong>編寫最小指令：</strong> 建立足夠的內容來解決差距並通過評估</li>
-<li><strong>迭代：</strong> 執行評估，與基線比較，然後改進</li>
-</ol>
-<h3 id="使用-Claude-迭代開發技能"><a href="#使用-Claude-迭代開發技能" class="headerlink" title="使用 Claude 迭代開發技能"></a>使用 Claude 迭代開發技能</h3><p>最有效的技能開發過程涉及 Claude 本身。與一個 Claude 實例（”Claude A”）合作，建立被其他實例（”Claude B”）使用的技能。</p>
-<p><strong>迭代現有技能：</strong></p>
-<ol>
-<li><strong>在真實工作流中使用技能：</strong> 給 Claude B（載入了技能）實際任務</li>
-<li><strong>觀察 Claude B 的行為：</strong> 注意它在哪裡掙扎、成功或做出意外選擇</li>
-<li><strong>回到 Claude A 進行改進：</strong> 分享當前的 SKILL.md 並描述你觀察到的內容</li>
-</ol>
-<h2 id="反模式要避免"><a href="#反模式要避免" class="headerlink" title="反模式要避免"></a>反模式要避免</h2><h3 id="避免-Windows-風格路徑"><a href="#避免-Windows-風格路徑" class="headerlink" title="避免 Windows 風格路徑"></a>避免 Windows 風格路徑</h3><p>始終在檔案路徑中使用正斜杠，即使在 Windows 上：</p>
-<ul>
-<li>✓ <strong>好：</strong> <code>scripts/helper.py</code>、<code>reference/guide.md</code></li>
-<li>✗ <strong>避免：</strong> <code>scripts\helper.py</code>、<code>reference\guide.md</code></li>
-</ul>
-<h3 id="避免提供太多選項"><a href="#避免提供太多選項" class="headerlink" title="避免提供太多選項"></a>避免提供太多選項</h3><p>不要呈現多種方法，除非必要：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">**差示例：太多選擇**（令人困惑）：</span><br><span class="line">&quot;You can use pypdf, or pdfplumber, or PyMuPDF, or pdf2image, or...&quot;</span><br><span class="line"></span><br><span class="line">**好示例：提供預設**（帶出路）：</span><br><span class="line">&quot;Use pdfplumber for text extraction:</span><br><span class="line">```python</span><br><span class="line">import pdfplumber</span><br></pre></td></tr></table></figure>
-
-<p>For scanned PDFs requiring OCR, use pdf2image with pytesseract instead.”</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 高級：帶可執行代碼的技能</span><br><span class="line"></span><br><span class="line">### 解決，不要放棄</span><br><span class="line"></span><br><span class="line">為技能編寫腳本時，處理錯誤條件而不是放棄給 Claude。</span><br><span class="line"></span><br><span class="line">**好的示例：明確處理錯誤：**</span><br><span class="line"></span><br><span class="line">```python</span><br><span class="line">def process_file(path):</span><br><span class="line">    &quot;&quot;&quot;Process a file, creating it if it doesn&#x27;t exist.&quot;&quot;&quot;</span><br><span class="line">    try:</span><br><span class="line">        with open(path) as f:</span><br><span class="line">            return f.read()</span><br><span class="line">    except FileNotFoundError:</span><br><span class="line">        # Create file with default content instead of failing</span><br><span class="line">        print(f&quot;File &#123;path&#125; not found, creating default&quot;)</span><br><span class="line">        with open(path, &quot;w&quot;) as f:</span><br><span class="line">            f.write(&quot;&quot;)</span><br><span class="line">        return &quot;&quot;</span><br><span class="line">    except PermissionError:</span><br><span class="line">        # Provide alternative instead of failing</span><br><span class="line">        print(f&quot;Cannot access &#123;path&#125;, using default&quot;)</span><br><span class="line">        return &quot;&quot;</span><br></pre></td></tr></table></figure>
-
-<p><strong>差的示例：放棄給 Claude：</strong></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">process_file</span>(<span class="params">path</span>):</span><br><span class="line">    <span class="comment"># Just fail and let Claude figure it out</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">open</span>(path).read()</span><br></pre></td></tr></table></figure>
-
-<h3 id="提供實用腳本"><a href="#提供實用腳本" class="headerlink" title="提供實用腳本"></a>提供實用腳本</h3><p>即使 Claude 可以編寫腳本，預製腳本也有優勢：</p>
-<ul>
-<li>比生成的代碼更可靠</li>
-<li>節省 token（無需在上下文中包含代碼）</li>
-<li>節省時間（無需生成代碼）</li>
-<li>確保使用一致性</li>
-</ul>
-<h3 id="使用視覺分析"><a href="#使用視覺分析" class="headerlink" title="使用視覺分析"></a>使用視覺分析</h3><p>當輸入可以渲染為圖像時，讓 Claude 分析它們：</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">## Form layout analysis</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">1.</span> Convert PDF to images:</span><br><span class="line">   <span class="code">```bash</span></span><br><span class="line"><span class="code">   python scripts/pdf_to_images.py form.pdf</span></span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>Analyze each page image to identify form fields</li>
-<li>Claude can see field locations and types visually<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">### 建立可驗證的中間輸出</span><br><span class="line"></span><br><span class="line">當 Claude 執行複雜、開放性任務時，它可能會犯錯。&quot;計畫-驗證-執行&quot;模式通過讓 Claude 首先以結構化格式建立計畫，然後在執行之前用腳本驗證該計畫來及早發現錯誤。</span><br><span class="line"></span><br><span class="line">### 執行環境</span><br><span class="line"></span><br><span class="line">技能在具有檔案系統存取、bash 命令和代碼執行功能的代碼執行環境中運行。</span><br><span class="line"></span><br><span class="line">**Claude 如何存取技能：**</span><br><span class="line"></span><br><span class="line">1. **元數據預載入：** 在啟動時，所有技能的 YAML frontmatter 中的名稱和描述被載入到系統提示中</span><br><span class="line">2. **檔案按需讀取：** Claude 使用 bash Read 工具在需要時從檔案系統存取 SKILL.md 和其他檔案</span><br><span class="line">3. **腳本高效執行：** 實用腳本可以通過 bash 執行，而無需將其完整內容載入到上下文中。只有腳本的輸出消耗 token</span><br><span class="line">4. **大檔案無上下文懲罰：** 引用檔案、資料或文件在實際讀取之前不消耗上下文 token</span><br><span class="line"></span><br><span class="line">### MCP 工具引用</span><br><span class="line"></span><br><span class="line">如果你的技能使用 MCP（模型上下文協定）工具，始終使用完全限定的工具名稱以避免&quot;工具未找到&quot;錯誤。</span><br><span class="line"></span><br><span class="line">**格式：** `ServerName:tool_name`</span><br><span class="line"></span><br><span class="line">**示例：**</span><br><span class="line">```markdown</span><br><span class="line">Use the BigQuery:bigquery_schema tool to retrieve table schemas.</span><br><span class="line">Use the GitHub:create_issue tool to create issues.</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h3 id="避免假設工具已安裝"><a href="#避免假設工具已安裝" class="headerlink" title="避免假設工具已安裝"></a>避免假設工具已安裝</h3><p>不要假設套件可用：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">**差的示例：假設安裝**：</span><br><span class="line">&quot;Use the pdf library to process the file.&quot;</span><br><span class="line"></span><br><span class="line">**好的示例：明確依賴**：</span><br><span class="line">&quot;Install required package: `pip install pypdf`</span><br><span class="line"></span><br><span class="line">Then use it:</span><br><span class="line">```python</span><br><span class="line">from pypdf import PdfReader</span><br><span class="line">reader = PdfReader(&quot;file.pdf&quot;)</span><br></pre></td></tr></table></figure>
-<pre><code>
-## 有效技能的檢查清單
-
-### 核心品質
-- [ ] 描述具體且包含關鍵詞
-- [ ] 描述包括技能做什麼以及何時使用它
-- [ ] SKILL.md 正文在 500 行以下
-- [ ] 詳細資訊在單獨的檔案中（如需要）
-- [ ] 無時間敏感資訊（或在 &quot;old patterns&quot; 部分）
-- [ ] 整個過程一致的術語
-- [ ] 示例具體，而非抽象
-- [ ] 檔案引用深度為一层
-- [ ] 適當使用漸進式披露
-- [ ] 工作流有清晰的步驟
-
-### 代碼和腳本
-- [ ] 腳本解決問題而不是放棄給 Claude
-- [ ] 錯誤處理明確且有幫助
-- [ ] 無&quot;巫毒常數&quot;（所有值都有理由）
-- [ ] 所需套件在說明中列出並驗證可用
-- [ ] 腳本有清晰的文檔
-- [ ] 無 Windows 風格路徑（全部使用正斜杠）
-- [ ] 關鍵操作有驗證/驗證步驟
-- [ ] 品質關鍵任務包含回饋循環
-
-### 測試
-- [ ] 至少建立三個評估
-- [ ] 使用 Haiku、Sonnet 和 Opus 測試
-- [ ] 使用真實使用場景測試
-- [ ] 如適用，納入團隊回饋
-</code></pre>
-
+          <p>本文檔總結了 Claude 官方發布的 Agent Skills 編寫最佳實踐，幫助你建立高效、可維護的技能。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2026/04/22/AI/how-write-agent-skills/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
