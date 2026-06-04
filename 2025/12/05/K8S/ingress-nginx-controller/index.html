@@ -27,7 +27,7 @@
 <meta property="og:description" content="介紹如何使用 ingress nginx controller 與設定 ingress.">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2025-12-05T14:39:26.000Z">
-<meta property="article:modified_time" content="2026-04-23T14:58:14.376Z">
+<meta property="article:modified_time" content="2026-06-04T15:05:38.478Z">
 <meta property="article:author" content="Pou Lin">
 <meta property="article:tag" content="ingress">
 <meta property="article:tag" content="K8S">
@@ -142,7 +142,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Environment-of-Cluster"><span class="nav-number">1.</span> <span class="nav-text">Environment of Cluster</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Install-Ingress-Nginx-Controller"><span class="nav-number">2.</span> <span class="nav-text">Install Ingress Nginx Controller</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#for-kind"><span class="nav-number">2.1.</span> <span class="nav-text">for kind</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#for-cloud"><span class="nav-number">2.2.</span> <span class="nav-text">for cloud</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Check-result"><span class="nav-number">2.3.</span> <span class="nav-text">Check result</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Add-Ingress"><span class="nav-number">3.</span> <span class="nav-text">Add Ingress</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number"></span> <span class="nav-text">References</span></a></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Environment-of-Cluster"><span class="nav-number">1.</span> <span class="nav-text">Environment of Cluster</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Install-Ingress-Nginx-Controller"><span class="nav-number">2.</span> <span class="nav-text">Install Ingress Nginx Controller</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#for-kind"><span class="nav-number">2.1.</span> <span class="nav-text">for kind</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#for-cloud"><span class="nav-number">2.2.</span> <span class="nav-text">for cloud</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Check-result"><span class="nav-number">2.3.</span> <span class="nav-text">Check result</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Add-Ingress"><span class="nav-number">3.</span> <span class="nav-text">Add Ingress</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%9C%A8-Mac-%E4%B8%8A%E6%90%AD%E9%85%8D-kind-%E5%8F%96%E5%BE%97-external-ip"><span class="nav-number">4.</span> <span class="nav-text">如何在 Mac 上搭配 kind 取得 external-ip</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number"></span> <span class="nav-text">References</span></a></div>
         </div>
         <!--/noindex-->
 
@@ -239,7 +239,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-04-23 22:58:14" itemprop="dateModified" datetime="2026-04-23T22:58:14+08:00">2026-04-23</time>
+      <time title="Modified: 2026-06-04 23:05:38" itemprop="dateModified" datetime="2026-06-04T23:05:38+08:00">2026-06-04</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -294,7 +294,25 @@
 </ol>
 <p>預設 ingress nginx controller 利用 deployment 部署，所以通常會使用 pod 所屬的 node IP 為主。</p>
 <p>這樣有風險因為把入口點集中在一個地方，所以通常會在改為使用 daemonsets 的方式讓 ingress nginx controller 灑到所有的 node 上，然後再進入點放一個 nginx 或是其他的 proxy 來負責倒流進入 private k8s。</p>
-<h3 id="Check-result"><a href="#Check-result" class="headerlink" title="Check result"></a>Check result</h3><h2 id="Add-Ingress"><a href="#Add-Ingress" class="headerlink" title="Add Ingress"></a>Add Ingress</h2><h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1>
+<h3 id="Check-result"><a href="#Check-result" class="headerlink" title="Check result"></a>Check result</h3><h2 id="Add-Ingress"><a href="#Add-Ingress" class="headerlink" title="Add Ingress"></a>Add Ingress</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.k8s.io/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Ingress</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">dashboard-ingress</span></span><br><span class="line">  <span class="attr">annotations:</span></span><br><span class="line">    <span class="attr">nginx.ingress.kubernetes.io/backend-protocol:</span> <span class="string">&quot;HTTPS&quot;</span></span><br><span class="line">    <span class="attr">nginx.ingress.kubernetes.io/ssl-passthrough:</span> <span class="string">&quot;true&quot;</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">kubernetes-dashboard</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ingressClassName:</span> <span class="string">nginx</span></span><br><span class="line">  <span class="attr">rules:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">host:</span> <span class="string">kubedashboard2.localhost</span></span><br><span class="line">    <span class="attr">http:</span></span><br><span class="line">      <span class="attr">paths:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">/</span></span><br><span class="line">          <span class="attr">pathType:</span> <span class="string">Prefix</span></span><br><span class="line">          <span class="attr">backend:</span></span><br><span class="line">            <span class="attr">service:</span></span><br><span class="line">              <span class="attr">name:</span> <span class="string">kubernetes-dashboard-kong-proxy</span></span><br><span class="line">              <span class="attr">port:</span></span><br><span class="line">                <span class="attr">number:</span> <span class="number">443</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="如何在-Mac-上搭配-kind-取得-external-ip"><a href="#如何在-Mac-上搭配-kind-取得-external-ip" class="headerlink" title="如何在 Mac 上搭配 kind 取得 external-ip"></a>如何在 Mac 上搭配 kind 取得 external-ip</h2><p>Kind 官方提供了一個名為 cloud-provider-kind 的工具，它專門用來在 local 環境為 LoadBalancer 類型的 Service 分配 127.0.0.1（localhost）的外部 IP。</p>
+<ol>
+<li>安裝 cloud-provider-kind<br>使用 Homebrew 即可直接安裝：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install cloud-provider-kind</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>啟動服務（需保持終端機開啟）<br>在您的電腦上打開一個獨立的終端機視窗，運行以下指令：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cloud-provider-kind</span><br></pre></td></tr></table></figure>
+<p>這個程式會常駐並監聽您的 Kind 叢集。此時，您再去檢查 Ingress Service：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get svc ingress-nginx-controller -n ingress-nginx</span><br></pre></td></tr></table></figure>
+<p>您會發現 EXTERNAL-IP 成功從 <pending> 變成了 127.0.0.1！</p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a href="">kind</a></li>
+</ul>
+
     </div>
 
     
