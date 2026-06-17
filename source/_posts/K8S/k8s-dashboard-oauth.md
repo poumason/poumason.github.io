@@ -190,6 +190,46 @@ subjects:
   apiGroup: rbac.authorization.k8s.io
 ```
 
+## 補充
+建立完成。部署前需要三個步驟：
+
+1. 產生自簽 TLS 憑證
+
+openssl req -x509 -nodes -newkey rsa:2048 -days 3650 \
+  -keyout dex.key -out dex.crt \
+  -subj "/CN=dex.localhost" \
+  -addext "subjectAltName=DNS:dex.localhost"
+
+產生後把憑證填入 dex-tls Secret（或改用 cert-manager 自動管理）：
+# 直接用 kubectl 建立比較省事
+kubectl create secret tls dex-tls \
+  --cert=dex.crt --key=dex.key \
+  -n dex --dry-run=client -o yaml | kubectl apply -f -
+
+2. 在 GitLab 建立新的 OAuth Application
+
+GitLab → User Settings → Applications：
+- Redirect URI: https://dex.localhost/callback
+- Scopes: openid, profile, email
+
+把新的 client ID / secret 更新到 dex-gitlab-secret。
+
+3. 更新 kind-config.yaml 指向 Dex
+
+oidc-issuer-url: "https://dex.localhost"
+oidc-client-id: "kubernetes-dashboard"
+oidc-username-claim: "email"
+
+注意：kind-config.yaml 的 OIDC 設定改了需要重建 cluster（kind delete cluster && kind create cluster --config kind-config.yaml）。
+
+4. 更新 oauth2proxy-deployment.yaml 改指向 Dex
+
+- --oidc-issuer-url=https://dex.localhost
+- --scope=openid p # Dex 支援offline_access！
+- --cookie-refresh
+
+Dex 自己發的 tokenoffline_access，oauth2-proxy 的 cookie refresh 就能正常運作了。
+
 ## References
 
 - [Authenticating](https://kubernetes.io/docs/reference/access-authn-authz/authentication/)
