@@ -1006,4 +1006,29 @@ EventActivity.swift<figure class="highlight plaintext"><table><tr><td class="cod
         <tag>Best Practices</tag>
       </tags>
   </entry>
+  <entry>
+    <title>How using pack Hermes agent windows desktop app</title>
+    <url>/2026/06/30/AI/hermes-agent-win32/</url>
+    <content><![CDATA[<p>try to pack it.</p>
+<span id="more"></span>
+<p>What install.ps1 does</p>
+<p>It’s a staged PowerShell bootstrapper with 15 stages:</p>
+<p>┌─────────────────────┬───────────────────────────────────────────────────────────────────────────┐<br>│        Stage        │                               What it does                                │<br>├─────────────────────┼───────────────────────────────────────────────────────────────────────────┤<br>│ uv                  │ Installs uv Python package manager to %LOCALAPPDATA%\hermes\bin\uv.exe    │<br>├─────────────────────┼───────────────────────────────────────────────────────────────────────────┤<br>│ python              │ Installs Python 3.11 via uv (fallbacks: 3.12, 3.13, 3.10)                 │<br>├─────────────────────┼───────────────────────────────────────────────────────────────────────────┤<br>│ git                 │ Downloads PortableGit 2.54.0 if git not found                             │<br>├─────────────────────┼───────────────────────────────────────────────────────────────────────────┤<br>│ node                │ Downloads portable Node.js 22 LTS                                         │<br>├─────────────────────┼───────────────────────────────────────────────────────────────────────────┤<br>│ system-packages     │ Installs ripgrep + ffmpeg via winget&#x2F;choco&#x2F;scoop                          │<br>├─────────────────────┼───────────────────────────────────────────────────────────────────────────┤<br>│ repository          │ Clones NousResearch&#x2F;hermes-agent to %LOCALAPPDATA%\hermes\hermes-agent    │<br>├─────────────────────┼───────────────────────────────────────────────────────────────────────────┤<br>│ venv                │ Creates Python venv via uv venv                                           │<br>├─────────────────────┼───────────────────────────────────────────────────────────────────────────┤<br>│ dependencies        │ Installs Python deps (hash-verified via uv.lock, tiered fallback)         │<br>├─────────────────────┼───────────────────────────────────────────────────────────────────────────┤<br>│ node-deps           │ npm install + Playwright Chromium                                         │<br>├─────────────────────┼───────────────────────────────────────────────────────────────────────────┤<br>│ desktop (opt-in)    │ npm run pack → produces apps&#x2F;desktop&#x2F;release&#x2F;win-unpacked&#x2F;Hermes.exe      │<br>├─────────────────────┼───────────────────────────────────────────────────────────────────────────┤<br>│ path                │ Adds venv\Scripts to user PATH                                            │<br>├─────────────────────┼───────────────────────────────────────────────────────────────────────────┤<br>│ config-templates    │ Creates %LOCALAPPDATA%\hermes\ dir structure + .env, config.yaml, SOUL.md │<br>├─────────────────────┼───────────────────────────────────────────────────────────────────────────┤<br>│ platform-sdks       │ Installs Telegram&#x2F;Discord&#x2F;Slack&#x2F;WhatsApp SDKs if tokens are in .env       │<br>├─────────────────────┼───────────────────────────────────────────────────────────────────────────┤<br>│ bootstrap-marker    │ Writes .hermes-bootstrap-complete JSON marker for the desktop app         │<br>├─────────────────────┼───────────────────────────────────────────────────────────────────────────┤<br>│ configure &#x2F; gateway │ Interactive setup wizard + gateway autostart                              │<br>└─────────────────────┴───────────────────────────────────────────────────────────────────────────┘</p>
+<p>Key design facts:</p>
+<ul>
+<li>All installs are user-scoped (no admin needed)</li>
+<li>Supports stage protocol (-Manifest, -Stage <name>, -NonInteractive, -Json) for GUI-driven installs</li>
+<li>The script is designed to be called by a signed Tauri bootstrap installer (Hermes-Setup.exe) with -IncludeDesktop -NonInteractive -Commit <sha></li>
+<li>The desktop app target is apps&#x2F;desktop&#x2F;release&#x2F;win-unpacked&#x2F;Hermes.exe</li>
+</ul>
+]]></content>
+      <categories>
+        <category>AI</category>
+      </categories>
+      <tags>
+        <tag>Skills</tag>
+        <tag>Agents</tag>
+        <tag>Hermes agent</tag>
+      </tags>
+  </entry>
 </search>
